@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="page-title" data-i18n-attr="text" data-i18n-key="site.faqPage.title">DealWatch FAQ | AI Explanations, Stores, MCP, and Product Boundaries</title>
+    <meta name="theme-color" content="#14213d" />
+    <meta
+      name="description"
+      content="Get direct answers about DealWatch's AI-assisted compare explanations, store support, PostgreSQL, read-only MCP access, and builder onboarding for Claude Code, Codex, OpenHands, OpenCode, OpenClaw, and recommendation boundaries."
+      data-i18n-attr="content"
+      data-i18n-key="site.faqPage.description"
+    />
+    <link rel="canonical" href="https://xiaojiou176.github.io/dealwatch/faq.html" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="./site.webmanifest" />
+    <link rel="alternate" type="application/atom+xml" title="DealWatch Updates" href="./feed.xml" />
+    <meta property="og:title" content="DealWatch FAQ | AI Explanations, Stores, MCP, and Product Boundaries" data-i18n-attr="content" data-i18n-key="site.faqPage.title" />
+    <meta
+      property="og:description"
+      content="Get direct answers about DealWatch's AI-assisted compare explanations, store support, PostgreSQL, read-only MCP access, and builder onboarding for Claude Code, Codex, OpenHands, OpenCode, OpenClaw, and recommendation boundaries."
+      data-i18n-attr="content"
+      data-i18n-key="site.faqPage.description"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://xiaojiou176.github.io/dealwatch/faq.html" />
+    <meta property="og:site_name" content="DealWatch" />
+    <meta property="og:image" content="https://xiaojiou176.github.io/dealwatch/assets/social/og-faq.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="DealWatch FAQ | AI Explanations, Stores, MCP, and Product Boundaries" data-i18n-attr="content" data-i18n-key="site.faqPage.title" />
+    <meta
+      name="twitter:description"
+      content="Get direct answers about DealWatch's AI-assisted compare explanations, store support, PostgreSQL, read-only MCP access, and builder onboarding for Claude Code, Codex, OpenHands, OpenCode, OpenClaw, and recommendation boundaries."
+      data-i18n-attr="content"
+      data-i18n-key="site.faqPage.description"
+    />
+    <meta name="twitter:image" content="https://xiaojiou176.github.io/dealwatch/assets/social/og-faq.png" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./i18n.js" defer></script>
+    <script type="application/ld+json" data-i18n-json="site.faqPage.schema">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is DealWatch a hosted service?","acceptedAnswer":{"@type":"Answer","text":"No. DealWatch is an open-source, local-first product repository. It is not a hosted SaaS."}},{"@type":"Question","name":"Which stores are live right now?","acceptedAnswer":{"@type":"Answer","text":"Today the repository exposes live store adapters through the current compare-first product surface, and the safest current proof path stays inside Compare Preview plus the store cockpit instead of a hand-maintained count on this page."}},{"@type":"Question","name":"Does the product require PostgreSQL?","acceptedAnswer":{"@type":"Answer","text":"Yes for the product source of truth. PostgreSQL is the product database via `DATABASE_URL`, while SQLite remains import-only."}},{"@type":"Question","name":"Is Compare Preview read-only?","acceptedAnswer":{"@type":"Answer","text":"Yes. Compare Preview helps you inspect product URLs before creating a watch task or compare-aware watch group."}},{"@type":"Question","name":"Does it support cashback and notifications?","acceptedAnswer":{"@type":"Answer","text":"Yes. The runtime includes cashback-aware effective price, alert delivery history, and task health / backoff signals."}},{"@type":"Question","name":"What is the best first page to open locally?","acceptedAnswer":{"@type":"Answer","text":"Start at `#compare`. The local app now opens there by default because Compare Preview is still the fastest way to understand whether the product target is worth turning into a watch task or should remain inside a compare-aware group."}},{"@type":"Question","name":"What does the AI layer actually do?","acceptedAnswer":{"@type":"Answer","text":"DealWatch uses AI-assisted explanations for compare decisions, watch-group decisions, and recovery guidance. AI helps explain the evidence; it does not replace deterministic product truth."}},{"@type":"Question","name":"Does DealWatch already make buy or wait recommendations?","acceptedAnswer":{"@type":"Answer","text":"No. The current product explains compare evidence, price movement, and runtime risk, but it does not yet claim to decide purchase timing for the user."}},{"@type":"Question","name":"Can agents call DealWatch safely?","acceptedAnswer":{"@type":"Answer","text":"Yes. DealWatch now exposes a thin read-only MCP surface plus stable read-oriented API entry points that Claude Code, Codex, OpenHands, OpenCode, OpenClaw, and similar agent clients can consume, and the repo ships builder starter assets under `docs/integrations/`, including per-client prompt starters, skill cards, `client-starters --json`, and the builder starter pack read surface. Write-side operator actions and maintainer-only browser debug commands still stay outside the default public tool surface."}}]}</script>
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="topbar">
+        <div class="brand">
+          <span class="eyebrow" data-i18n="site.faqPage.eyebrow">FAQ</span>
+          <strong data-i18n="site.faqPage.brandTagline">Clear boundaries beat hand-wavy promises.</strong>
+        </div>
+        <nav class="nav">
+          <a data-i18n="site.common.home" href="./">Home</a>
+          <a data-i18n="site.common.comparePreview" href="./compare-preview.html">Compare Preview</a>
+          <a data-i18n="site.common.quickStart" href="./quick-start.html">Quick Start</a>
+          <a data-i18n="site.common.builders" href="./builders.html">Builders</a>
+          <a data-i18n="site.common.comparison" href="./compare-vs-tracker.html">Comparison</a>
+          <a data-i18n="site.common.proof" href="./proof.html">Proof</a>
+          <a data-i18n="site.common.useCases" href="./use-cases.html">Use Cases</a>
+          <a data-i18n="site.common.community" href="./community.html">Community</a>
+          <a data-i18n="site.common.faq" href="./faq.html">FAQ</a>
+          <span class="locale-switcher-label" data-i18n="site.common.localeLabel">Language</span>
+          <button class="locale-button" data-locale-option="en" type="button">English</button>
+          <button class="locale-button" data-locale-option="zh-CN" type="button">Chinese (Simplified)</button>
+        </nav>
+      </header>
+
+      <section class="section">
+        <div class="section-head">
+          <h1 data-i18n="site.faqPage.heroTitle">Frequently asked questions about AI, scope, setup, and trust</h1>
+          <p data-i18n="site.faqPage.heroSummary">DealWatch is easier to trust when the boundaries are explicit, especially around compare-first workflow, AI-assisted explanations, read-only agent access, and what the product still does not promise.</p>
+        </div>
+        <div class="faq-grid">
+          <div class="faq-item">
+            <h3 data-i18n="site.faqPage.questionHostedTitle">Is DealWatch a hosted service?</h3>
+            <p data-i18n="site.faqPage.questionHostedAnswer">No. DealWatch is an open-source, local-first product repository. It is not a hosted SaaS.</p>
+          </div>
+          <div class="faq-item">
+            <h3 data-i18n="site.faqPage.questionReadonlyTitle">Is Compare Preview read-only?</h3>
+            <p data-i18n="site.faqPage.questionReadonlyAnswer">Yes. Compare Preview helps you inspect product URLs before creating a watch task or compare-aware watch group.</p>
+          </div>
+          <div class="faq-item">
+            <h3 data-i18n="site.faqPage.questionAiTitle">What does the AI layer actually do?</h3>
+            <p data-i18n="site.faqPage.questionAiAnswer">DealWatch uses AI-assisted explanations for compare decisions, watch-group decisions, and recovery guidance. AI helps explain the evidence; it does not replace deterministic product truth.</p>
+          </div>
+          <div class="faq-item">
+            <h3 data-i18n="site.faqPage.questionRecommendationTitle">Does DealWatch already make buy or wait recommendations?</h3>
+            <p data-i18n="site.faqPage.questionRecommendationAnswer">No. The current product explains compare evidence, price movement, and runtime risk, but it does not yet claim to decide purchase timing for the user.</p>
+          </div>
+          <div class="faq-item">
+            <h3 data-i18n="site.faqPage.questionMcpTitle">Can agents call DealWatch safely?</h3>
+            <p data-i18n="site.faqPage.questionMcpAnswer">Yes. DealWatch now exposes a thin read-only MCP surface plus stable read-oriented API entry points that Claude Code, Codex, OpenHands, OpenCode, OpenClaw, and similar agent clients can consume, and the repo ships builder starter assets under `docs/integrations/`, including per-client prompt starters, skill cards, `client-starters --json`, and the builder starter pack read surface. Write-side operator actions and maintainer-only browser debug commands still stay outside the default public tool surface.</p>
+          </div>
+          <div class="faq-item">
+            <h3 data-i18n="site.faqPage.questionFirstPageTitle">What is the best first page to open locally?</h3>
+            <p data-i18n="site.faqPage.questionFirstPageAnswer">Start at `#compare`. The local app now opens there by default because Compare Preview is still the fastest way to understand whether the product target is worth turning into a watch task or should remain inside a compare-aware group.</p>
+          </div>
+          <div class="faq-item">
+            <h3 data-i18n="site.faqPage.questionStoresTitle">Which stores are live right now?</h3>
+            <p data-i18n="site.faqPage.questionStoresAnswer">Today the repository exposes live store adapters through the current compare-first product surface, and the safest current proof path stays inside Compare Preview plus the store cockpit instead of a hand-maintained count on this page.</p>
+          </div>
+          <div class="faq-item">
+            <h3 data-i18n="site.faqPage.questionPostgresTitle">Does the product require PostgreSQL?</h3>
+            <p data-i18n="site.faqPage.questionPostgresAnswer">Yes for the product source of truth. PostgreSQL is the product database via `DATABASE_URL`, while SQLite remains import-only.</p>
+          </div>
+          <div class="faq-item">
+            <h3 data-i18n="site.faqPage.questionCashbackTitle">Does it support cashback and notifications?</h3>
+            <p data-i18n="site.faqPage.questionCashbackAnswer">Yes. The runtime includes cashback-aware effective price, alert delivery history, and task health / backoff signals.</p>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <span data-i18n="site.faqPage.footerPrompt">Ready to try it?</span>
+        <span><a href="./quick-start.html" data-i18n="site.faqPage.footerCta">Go to Quick Start</a></span>
+      </footer>
+    </div>
+  </body>
+  </html>

@@ -1,0 +1,17 @@
+{
+  "name": "DealWatch",
+  "short_name": "DealWatch",
+  "description": "Cross-store grocery price tracking with compare preview, compare-aware watch groups, effective price, health, and alert history.",
+  "start_url": "/dealwatch/",
+  "display": "standalone",
+  "background_color": "#fcfaf5",
+  "theme_color": "#14213d",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

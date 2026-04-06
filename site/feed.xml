@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>DealWatch Updates</title>
+  <subtitle>Canonical release and changelog entrypoints for DealWatch.</subtitle>
+  <link href="https://xiaojiou176.github.io/dealwatch/feed.xml" rel="self" />
+  <link href="https://xiaojiou176.github.io/dealwatch/" />
+  <id>https://xiaojiou176.github.io/dealwatch/feed.xml</id>
+  <updated>2026-03-25T11:02:00Z</updated>
+  <author>
+    <name>DealWatch</name>
+  </author>
+  <entry>
+    <title>Latest release notes</title>
+    <link href="https://github.com/xiaojiou176/dealwatch/releases/latest" />
+    <id>https://github.com/xiaojiou176/dealwatch/releases/latest</id>
+    <updated>2026-03-27T00:00:00Z</updated>
+    <summary>The stable entrypoint for the newest DealWatch release notes and public change summary. Latest tagged release: v0.1.2.</summary>
+  </entry>
+  <entry>
+    <title>Release history</title>
+    <link href="https://github.com/xiaojiou176/dealwatch/releases" />
+    <id>https://github.com/xiaojiou176/dealwatch/releases</id>
+    <updated>2026-03-27T00:00:00Z</updated>
+    <summary>The canonical GitHub release history for DealWatch without copying version text into site pages.</summary>
+  </entry>
+  <entry>
+    <title>Changelog</title>
+    <link href="https://github.com/xiaojiou176/dealwatch/blob/main/CHANGELOG.md" />
+    <id>https://github.com/xiaojiou176/dealwatch/blob/main/CHANGELOG.md</id>
+    <updated>2026-03-27T00:00:00Z</updated>
+    <summary>The repository changelog remains the written release ledger behind the public release surface.</summary>
+  </entry>
+</feed>

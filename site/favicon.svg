@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="DealWatch icon">
+  <defs>
+    <linearGradient id="dealwatch-bg" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#fcfaf5" />
+      <stop offset="100%" stop-color="#f5efe4" />
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="url(#dealwatch-bg)" />
+  <rect x="14" y="14" width="100" height="100" rx="22" fill="none" stroke="#14213d" stroke-opacity=".1" />
+  <path d="M28 76c10-4 16-8 24-18 8-10 14-16 22-16 12 0 18 8 26 22" fill="none" stroke="#14213d" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="84" cy="44" r="10" fill="#b84c27" />
+  <path d="M34 92h60" stroke="#4e6e58" stroke-width="8" stroke-linecap="round" />
+</svg>

@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="page-title" data-i18n-attr="text" data-i18n-key="site.quickStartPage.title">DealWatch Quick Start | Local Runtime for Compare Preview, Watch Tasks, and Watch Groups</title>
+    <meta name="theme-color" content="#14213d" />
+    <meta
+      name="description"
+      content="Use the local runtime path after the static sample compare preview when you want to test your own grocery URLs."
+      data-i18n-attr="content"
+      data-i18n-key="site.quickStartPage.description"
+    />
+    <link rel="canonical" href="https://xiaojiou176.github.io/dealwatch/quick-start.html" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="./site.webmanifest" />
+    <link rel="alternate" type="application/atom+xml" title="DealWatch Updates" href="./feed.xml" />
+    <meta property="og:title" content="DealWatch Quick Start | Local Runtime for Compare Preview, Watch Tasks, and Watch Groups" data-i18n-attr="content" data-i18n-key="site.quickStartPage.title" />
+    <meta
+      property="og:description"
+      content="Use the local runtime path after the static sample compare preview when you want to test your own grocery URLs."
+      data-i18n-attr="content"
+      data-i18n-key="site.quickStartPage.description"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://xiaojiou176.github.io/dealwatch/quick-start.html" />
+    <meta property="og:site_name" content="DealWatch" />
+    <meta property="og:image" content="https://xiaojiou176.github.io/dealwatch/assets/social/og-quick-start.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="DealWatch Quick Start | Local Runtime for Compare Preview, Watch Tasks, and Watch Groups" data-i18n-attr="content" data-i18n-key="site.quickStartPage.title" />
+    <meta
+      name="twitter:description"
+      content="Use the local runtime path after the static sample compare preview when you want to test your own grocery URLs."
+      data-i18n-attr="content"
+      data-i18n-key="site.quickStartPage.description"
+    />
+    <meta name="twitter:image" content="https://xiaojiou176.github.io/dealwatch/assets/social/og-quick-start.png" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./i18n.js" defer></script>
+    <script type="application/ld+json" data-i18n-json="site.quickStartPage.schema">{"@context":"https://schema.org","@type":"HowTo","name":"DealWatch Quick Start","description":"Use the local runtime path after the static sample compare preview when you want to compare your own grocery URLs.","step":[{"@type":"HowToStep","name":"Open the sample compare preview","text":"Visit the Compare Preview page and load the static public sample. It is read-only and saves nothing."},{"@type":"HowToStep","name":"Start the local runtime","text":"Run ./scripts/quickstart_stack.sh when you are ready to compare your own URLs with the local API, worker, and WebUI."},{"@type":"HowToStep","name":"Open the live Compare Preview route","text":"After the local runtime is ready, open http://localhost:5173/#compare and paste your own URLs."}]}</script>
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="topbar">
+        <div class="brand">
+          <span class="eyebrow" data-i18n="site.quickStartPage.eyebrow">Quick Start</span>
+          <strong data-i18n="site.quickStartPage.brandTagline">Move from Compare Preview into the local runtime.</strong>
+        </div>
+        <nav class="nav">
+          <a href="./" data-i18n="site.common.home">Home</a>
+          <a href="./compare-preview.html" data-i18n="site.common.comparePreview">Compare Preview</a>
+          <a href="./quick-start.html" data-i18n="site.common.quickStart">Quick Start</a>
+          <a href="./builders.html" data-i18n="site.common.builders">Builders</a>
+          <a href="./compare-vs-tracker.html" data-i18n="site.common.comparison">Comparison</a>
+          <a href="./proof.html" data-i18n="site.common.proof">Proof</a>
+          <a href="./use-cases.html" data-i18n="site.common.useCases">Use Cases</a>
+          <a href="./community.html" data-i18n="site.common.community">Community</a>
+          <a href="./faq.html" data-i18n="site.common.faq">FAQ</a>
+        </nav>
+        <div class="locale-switcher" data-i18n-aria-label="site.common.localeLabel">
+          <span class="locale-switcher-label" data-i18n="site.common.localeLabel">Language</span>
+          <button class="locale-button" data-locale-option="en" type="button">English</button>
+          <button class="locale-button" data-locale-option="zh-CN" type="button">Chinese (Simplified)</button>
+        </div>
+      </header>
+
+      <section class="section quickstart">
+        <div class="panel">
+          <div class="kicker" data-i18n="site.quickStartPage.heroKicker">Local runtime path</div>
+          <h1 data-i18n="site.quickStartPage.heroTitle">Run the local stack once you are ready to test your own URLs.</h1>
+          <p class="lede" data-i18n="site.quickStartPage.heroSummary">
+            Use Quick Start when you are ready to run the local API, worker, and WebUI for your own grocery URLs. If you still only need the first product step, stay on the static sample compare preview instead. If you are wiring a coding agent, jump to Builders.
+          </p>
+          <div class="cta-row">
+            <a class="button" href="#local-runtime-path" data-i18n="site.quickStartPage.heroPrimaryCta">Jump to the local runtime commands</a>
+            <a class="button-secondary" href="./compare-preview.html#sample-compare-demo" data-i18n="site.quickStartPage.heroSecondaryCta">Try the sample compare preview</a>
+            <a class="button-secondary" href="./builders.html" data-i18n="site.quickStartPage.heroBuilderCta">Builder starter paths</a>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="media-frame">
+            <img
+              src="./assets/screens/compare-preview.png"
+              alt="Compare Preview screen showing supported URLs, normalized results, and match scores"
+              data-i18n-key="site.quickStartPage.heroVisualAlt"
+              data-i18n-attr="alt"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="local-runtime-path">
+        <div class="section-head">
+          <h2 data-i18n="site.quickStartPage.layersTitle">Start with Compare Preview, then move into the local runtime</h2>
+          <p data-i18n="site.quickStartPage.layersSummary">Layer one is the sample compare preview. Layer two is the local stack for your own URLs. Builders is the separate route for coding-agent wiring. This keeps first contact lighter than a full manual setup wall.</p>
+        </div>
+        <div class="card-grid">
+          <div class="card">
+            <h3 data-i18n="site.quickStartPage.step1Title">1. Try the sample compare preview</h3>
+            <pre data-i18n="site.quickStartPage.step1Body">Open Compare Preview
+Click “Load sample compare”
+Inspect match reasons
+Remember: read-only, no data saved</pre>
+          </div>
+          <div class="card">
+            <h3 data-i18n="site.quickStartPage.step2Title">2. Start the local runtime fast</h3>
+            <pre>./scripts/quickstart_stack.sh</pre>
+          </div>
+          <div class="card">
+            <h3 data-i18n="site.quickStartPage.step3Title">3. Open the live Compare Preview route after the local runtime is ready</h3>
+            <pre>http://localhost:5173/#compare</pre>
+          </div>
+          <div class="card">
+            <h3 data-i18n="site.quickStartPage.step4Title">4. Use your own URLs</h3>
+            <pre data-i18n="site.quickStartPage.step4Body">Use your own grocery product URLs,
+or copy the public sample URLs from
+the README quick-start section.</pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2 data-i18n="site.quickStartPage.manualTitle">Manual local setup</h2>
+          <p data-i18n="site.quickStartPage.manualSummary">Use this path if you want each process in its own terminal instead of the one-command Compose flow.</p>
+        </div>
+        <div class="card-grid">
+          <div class="card">
+            <h3 data-i18n="site.quickStartPage.manualBootstrapTitle">Bootstrap</h3>
+            <pre>python3 -m venv .venv
+source .venv/bin/activate
+./scripts/bootstrap.sh
+cp .env.example .env</pre>
+          </div>
+          <div class="card">
+            <h3 data-i18n="site.quickStartPage.manualApiTitle">Start API and worker</h3>
+            <pre>source .venv/bin/activate
+PYTHONPATH=src python -m dealwatch server
+PYTHONPATH=src python -m dealwatch worker</pre>
+          </div>
+          <div class="card">
+            <h3 data-i18n="site.quickStartPage.manualWebuiTitle">Start WebUI</h3>
+            <pre>cd frontend
+corepack enable
+pnpm install
+pnpm dev --host 0.0.0.0</pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2 data-i18n="site.quickStartPage.pitfallsTitle">Common pitfalls</h2>
+          <p data-i18n="site.quickStartPage.pitfallsSummary">These are the three most common reasons a first local run feels harder than it should.</p>
+        </div>
+        <div class="faq-grid">
+          <div class="faq-item">
+            <h3 data-i18n="site.quickStartPage.pitfallSampleTitle">Treating the sample compare as live product data</h3>
+            <p data-i18n="site.quickStartPage.pitfallSampleSummary">The sample compare preview is static and read-only. It exists to show the first step quickly, not to verify your own URLs or create watch tasks or watch groups.</p>
+          </div>
+          <div class="faq-item">
+            <h3 data-i18n="site.quickStartPage.pitfallDbTitle">No working product data connection</h3>
+            <p data-i18n="site.quickStartPage.pitfallDbSummary">Make sure your local environment points at a working database before you expect durable task state. The proof page and repo docs are the right places to confirm the current runtime contract.</p>
+          </div>
+          <div class="faq-item">
+            <h3 data-i18n="site.quickStartPage.pitfallDockerTitle">Corrupted local Docker volume after an interrupted run</h3>
+            <p data-i18n="site.quickStartPage.pitfallDockerSummary">If the local database fails to start cleanly after an interrupted container run, reset the quickstart state with `docker compose down -v --remove-orphans` and then rerun `./scripts/quickstart_stack.sh -d --build`.</p>
+          </div>
+          <div class="faq-item">
+            <h3 data-i18n="site.quickStartPage.pitfallWrongPageTitle">Starting at the wrong page</h3>
+            <p data-i18n="site.quickStartPage.pitfallWrongPageSummary">Do not start by manually creating a task unless you already know the right target URL. Start at Compare Preview first.</p>
+          </div>
+          <div class="faq-item">
+            <h3 data-i18n="site.quickStartPage.pitfallReadonlyTitle">Assuming Compare Preview writes data</h3>
+            <p data-i18n="site.quickStartPage.pitfallReadonlySummary">Compare Preview is intentionally read-only. It validates candidate URLs before task creation, whether you are viewing the static sample or using the live local route.</p>
+          </div>
+          <div class="faq-item">
+            <h3 data-i18n="site.quickStartPage.pitfallPartialTitle">Starting only part of the stack</h3>
+            <p data-i18n="site.quickStartPage.pitfallPartialSummary">The API alone is not the whole product loop. Run both runtime commands from the manual setup section if you want durable task state and recurring watch activity to behave normally.</p>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <span data-i18n="site.quickStartPage.footerPrompt">Need the quickest no-install proof first?</span>
+        <span><a href="./compare-preview.html#sample-compare-demo" data-i18n="site.quickStartPage.footerCompareCta">Go to the sample compare preview</a></span>
+        <span><a href="./builders.html" data-i18n="site.quickStartPage.footerBuilderCta">See the builder starter paths</a></span>
+      </footer>
+    </div>
+  </body>
+</html>

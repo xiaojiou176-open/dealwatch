@@ -1,0 +1,165 @@
+{
+  "label": "Asian Honey Pears two-store match plus one obvious distractor",
+  "sample_note": "Static sample fixture for the public Compare Preview page. Read-only. No data is saved.",
+  "zip_code": "98004",
+  "submitted_urls": [
+    "https://www.sayweee.com/zh/product/Asian-Honey-Pears-3ct/5869",
+    "https://www.99ranch.com/product-details/1615424/8899/078895126389",
+    "https://www.target.com/p/utz-ripples-original-potato-chips-7-75oz/-/A-13202943"
+  ],
+  "submitted_count": 3,
+  "resolved_count": 3,
+  "comparisons": [
+    {
+      "submitted_url": "https://www.sayweee.com/zh/product/Asian-Honey-Pears-3ct/5869",
+      "supported": true,
+      "store_key": "weee",
+      "normalized_url": "https://www.sayweee.com/zh/product/Asian-Honey-Pears-3ct/5869",
+      "fetch_succeeded": true,
+      "candidate_key": "asian honey pears 3 ct",
+      "brand_hint": "golden orchard",
+      "size_hint": "3 ct",
+      "offer": {
+        "store_id": "weee",
+        "product_key": "5869",
+        "deal_id": "weee-5869",
+        "title": "Asian Honey Pears 3ct",
+        "url": "https://www.sayweee.com/zh/product/Asian-Honey-Pears-3ct/5869",
+        "price": 7.49,
+        "original_price": 8.49,
+        "fetch_at": "2026-03-25T08:20:00+00:00",
+        "context": {
+          "region": "98004",
+          "currency": "USD",
+          "is_member": false
+        },
+        "unit_price_info": {
+          "raw": "3 ct",
+          "brand": "Golden Orchard"
+        }
+      }
+    },
+    {
+      "submitted_url": "https://www.99ranch.com/product-details/1615424/8899/078895126389",
+      "supported": true,
+      "store_key": "ranch99",
+      "normalized_url": "https://www.99ranch.com/product-details/1615424/8899/078895126389",
+      "fetch_succeeded": true,
+      "candidate_key": "asian honey pears 3 ct",
+      "brand_hint": "golden orchard",
+      "size_hint": "3 ct",
+      "offer": {
+        "store_id": "ranch99",
+        "product_key": "078895126389",
+        "deal_id": "ranch99-078895126389",
+        "title": "Asian Honey Pears 3 ct",
+        "url": "https://www.99ranch.com/product-details/1615424/8899/078895126389",
+        "price": 6.99,
+        "original_price": 7.49,
+        "fetch_at": "2026-03-25T08:20:00+00:00",
+        "context": {
+          "region": "98004",
+          "currency": "USD",
+          "is_member": false
+        },
+        "unit_price_info": {
+          "raw": "3 ct",
+          "brand": "Golden Orchard"
+        }
+      }
+    },
+    {
+      "submitted_url": "https://www.target.com/p/utz-ripples-original-potato-chips-7-75oz/-/A-13202943",
+      "supported": true,
+      "store_key": "target",
+      "normalized_url": "https://www.target.com/p/utz-ripples-original-potato-chips-7-75oz/-/A-13202943",
+      "fetch_succeeded": true,
+      "candidate_key": "utz ripples original potato chips 7 75 oz",
+      "brand_hint": "utz",
+      "size_hint": "7.75 oz",
+      "offer": {
+        "store_id": "target",
+        "product_key": "13202943",
+        "deal_id": "target-13202943",
+        "title": "Utz Ripples Original Potato Chips 7.75oz",
+        "url": "https://www.target.com/p/utz-ripples-original-potato-chips-7-75oz/-/A-13202943",
+        "price": 4.39,
+        "original_price": 4.99,
+        "fetch_at": "2026-03-25T08:20:00+00:00",
+        "context": {
+          "region": "98004",
+          "currency": "USD",
+          "is_member": false
+        },
+        "unit_price_info": {
+          "raw": "7.75 oz",
+          "brand": "Utz"
+        }
+      }
+    }
+  ],
+  "matches": [
+    {
+      "left_store_key": "weee",
+      "left_product_key": "5869",
+      "right_store_key": "ranch99",
+      "right_product_key": "078895126389",
+      "score": 96.4,
+      "title_similarity": 78.4,
+      "brand_signal": "match",
+      "size_signal": "match",
+      "product_key_signal": "different-product-key",
+      "why_like": [
+        "Titles stay close after normalization.",
+        "Brand hints match.",
+        "Size hints match.",
+        "Product keys differ, which is normal across stores."
+      ],
+      "why_unlike": [],
+      "left_candidate_key": "asian honey pears 3 ct",
+      "right_candidate_key": "asian honey pears 3 ct"
+    },
+    {
+      "left_store_key": "weee",
+      "left_product_key": "5869",
+      "right_store_key": "target",
+      "right_product_key": "13202943",
+      "score": 0.0,
+      "title_similarity": 8.6,
+      "brand_signal": "mismatch",
+      "size_signal": "mismatch",
+      "product_key_signal": "different-product-key",
+      "why_like": [
+        "Product keys differ, which is normal across stores."
+      ],
+      "why_unlike": [
+        "Titles diverge after normalization.",
+        "Brand hints disagree.",
+        "Size hints differ."
+      ],
+      "left_candidate_key": "asian honey pears 3 ct",
+      "right_candidate_key": "utz ripples original potato chips 7 75 oz"
+    },
+    {
+      "left_store_key": "ranch99",
+      "left_product_key": "078895126389",
+      "right_store_key": "target",
+      "right_product_key": "13202943",
+      "score": 0.0,
+      "title_similarity": 6.8,
+      "brand_signal": "mismatch",
+      "size_signal": "mismatch",
+      "product_key_signal": "different-product-key",
+      "why_like": [
+        "Product keys differ, which is normal across stores."
+      ],
+      "why_unlike": [
+        "Titles diverge after normalization.",
+        "Brand hints disagree.",
+        "Size hints differ."
+      ],
+      "left_candidate_key": "asian honey pears 3 ct",
+      "right_candidate_key": "utz ripples original potato chips 7 75 oz"
+    }
+  ]
+}
