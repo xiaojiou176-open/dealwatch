@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: read
+  issues: read
+  pull-requests: read
 
 jobs:
   governance:
@@ -18,6 +20,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
@@ -35,11 +38,15 @@ jobs:
           fi
 
       - name: Verify public surface and English boundary
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           python scripts/verify_no_live_legacy_imports.py
           python scripts/verify_package_publish_surface.py
           python scripts/verify_store_capability_registry.py
           python scripts/verify_tracked_artifacts.py
+          python scripts/verify_sensitive_surface.py
           python scripts/verify_english_boundary.py
           python scripts/verify_docs_contract.py
           python scripts/verify_host_process_safety.py
@@ -48,6 +55,7 @@ jobs:
           python scripts/verify_feed_surface.py
           python scripts/verify_public_entrypoints.py
           python scripts/verify_public_surface.py
+          python scripts/verify_remote_public_hygiene.py
           python scripts/verify_ci_runner_contract.py
           python scripts/verify_runtime_diagnostics.py
           python scripts/verify_social_preview_asset.py
@@ -62,6 +70,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
@@ -69,7 +79,7 @@ jobs:
           python-version: "3.13"
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78
+        uses: astral-sh/setup-uv@cec208311dfd045dd5311c1add060b2062131d57
         with:
           version: "0.8.15"
           python-version: "3.13"
@@ -111,6 +121,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Install gitleaks
         run: |
@@ -126,10 +137,31 @@ jobs:
           git -C /tmp/git-secrets checkout --detach ad82d68ee924906a0401dfd48de5057731a9bc84
           sudo make -C /tmp/git-secrets install
 
+      - name: Install TruffleHog
+        run: |
+          TRUFFLEHOG_VERSION="3.94.2"
+          TRUFFLEHOG_ASSET="trufflehog_${TRUFFLEHOG_VERSION}_linux_amd64.tar.gz"
+          curl -sSLo "/tmp/${TRUFFLEHOG_ASSET}" "https://github.com/trufflesecurity/trufflehog/releases/download/v${TRUFFLEHOG_VERSION}/${TRUFFLEHOG_ASSET}"
+          curl -sSLo /tmp/trufflehog_checksums.txt "https://github.com/trufflesecurity/trufflehog/releases/download/v${TRUFFLEHOG_VERSION}/trufflehog_${TRUFFLEHOG_VERSION}_checksums.txt"
+          grep " ${TRUFFLEHOG_ASSET}$" /tmp/trufflehog_checksums.txt | (cd /tmp && sha256sum --check --ignore-missing -)
+          tar -xzf "/tmp/${TRUFFLEHOG_ASSET}" -C /tmp trufflehog
+          sudo mv /tmp/trufflehog /usr/local/bin/trufflehog
+          trufflehog --version
+
       - name: Scan git history
         run: |
           gitleaks git . --no-banner --redact
+          trufflehog git --no-update --fail file://"$PWD"
           ./scripts/run_git_secrets_audit.sh --scan-history
+
+      - name: Scan a fresh clone
+        run: ./scripts/run_fresh_clone_secret_scan.sh
+
+      - name: Scan authenticated GitHub public surface
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python3 scripts/verify_remote_public_hygiene.py
 
   frontend:
     runs-on: ubuntu-latest
@@ -137,6 +169,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
 
       - name: Set up Node
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
@@ -191,6 +225,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
@@ -198,7 +234,7 @@ jobs:
           python-version: "3.13"
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78
+        uses: astral-sh/setup-uv@cec208311dfd045dd5311c1add060b2062131d57
         with:
           version: "0.8.15"
           python-version: "3.13"

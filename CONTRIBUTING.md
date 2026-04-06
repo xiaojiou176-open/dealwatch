@@ -17,6 +17,7 @@ The goal is not to add noise. The best contribution is one that makes DealWatch 
 - Do not reintroduce `tracker`, `src/tracker`, or `var/` runtime paths.
 - Do not track `.agents/`, `.agent/`, `.codex/`, `.claude/`, `.runtime-cache/`, `logs/`, `log/`, or `*.log`.
 - Do not commit secrets, local databases, browser state, or runtime artifacts.
+- Do not commit host-specific absolute paths, macOS temp-path literals, or personal sample markers into tracked text files.
 - Do not introduce `killall`, `pkill`, broad `kill -9`, `osascript`, `System Events`, direct `process.kill(...)`, or direct `os.kill(...)`; DealWatch must stay on repo-owned browser/runtime cleanup entrypoints.
 - Do not use `scripts/clean.py`; it is a hard-stop legacy entrypoint and no longer participates in DealWatch cleanup.
 - Keep changes surgical.
@@ -49,6 +50,7 @@ corepack enable
 ./scripts/smoke_product_hermetic.sh
 python3 scripts/verify_host_process_safety.py
 python3 scripts/verify_tracked_artifacts.py
+python3 scripts/verify_sensitive_surface.py
 python3 scripts/verify_english_boundary.py
 python3 scripts/verify_docs_contract.py
 python3 scripts/verify_feed_surface.py
@@ -89,7 +91,9 @@ These commands compare the repo contract with current GitHub API-visible remote 
 
 - `python3 scripts/print_remote_repo_settings_checklist.py`
 - `python3 scripts/verify_remote_github_state.py`
+- `python3 scripts/verify_remote_public_hygiene.py`
 - `GITHUB_TOKEN=... python3 scripts/verify_remote_github_state.py`
+- `GITHUB_TOKEN=... python3 scripts/verify_remote_public_hygiene.py`
 
 The checklist script intentionally separates `expected contract`, `current remote facts`, and `manual-only` checks so the repo does not mistake an intended GitHub setup for proof that it is currently live.
 
@@ -100,6 +104,7 @@ With `GITHUB_TOKEN`, the remote verifier now also checks:
 - the current open code-scanning alert count
 - the current open secret-scanning alert count
 - the current open Dependabot alert count
+- public PR / issue / release / comment bodies for host-path and personal-marker residue
 
 ### Manual-Admin Verification
 

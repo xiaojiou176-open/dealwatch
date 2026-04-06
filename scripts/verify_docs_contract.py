@@ -29,7 +29,9 @@ REQUIRED_SNIPPETS = {
         "Required Development",
         "pre-commit run --all-files",
         "python3 scripts/verify_host_process_safety.py",
+        "python3 scripts/verify_sensitive_surface.py",
         "./scripts/run_git_secrets_audit.sh --scan-history",
+        "python3 scripts/verify_remote_public_hygiene.py",
         "store-onboarding-contract.md",
     ],
     ROOT / "SECURITY.md": [

@@ -1,0 +1,52 @@
+name: Workflow Hygiene
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  workflow-hygiene:
+    name: workflow-hygiene
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+        with:
+          python-version: "3.13"
+
+      - name: Install actionlint
+        run: |
+          ACTIONLINT_VERSION="1.7.12"
+          ACTIONLINT_ASSET="actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+          curl -sSLo "/tmp/${ACTIONLINT_ASSET}" "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/${ACTIONLINT_ASSET}"
+          curl -sSLo /tmp/actionlint_checksums.txt https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_checksums.txt
+          grep " ${ACTIONLINT_ASSET}$" /tmp/actionlint_checksums.txt | (cd /tmp && sha256sum --check --ignore-missing -)
+          tar -xzf "/tmp/${ACTIONLINT_ASSET}" -C /tmp actionlint
+          sudo mv /tmp/actionlint /usr/local/bin/actionlint
+          actionlint -version
+
+      - name: Install zizmor
+        run: |
+          python3 -m pip install --disable-pip-version-check zizmor==1.23.1
+          zizmor --version
+
+      - name: Run actionlint
+        run: actionlint .github/workflows/*.yml
+
+      - name: Run zizmor
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: zizmor --persona regular --no-progress .github/workflows

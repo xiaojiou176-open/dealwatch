@@ -86,6 +86,7 @@ def main() -> int:
     print("   - README public entrypoints present: #start-here and #roadmap")
     print("   - Pages entrypoints present: Home, Proof, Community")
     print(f"   - Latest release object resolves to: {EXPECTED_LATEST_RELEASE}")
+    print(f"   - Public release set on the rebuilt repo should now be: {EXPECTED_LATEST_RELEASE} only")
     print(f"   - Expected discussion entrypoints: {format_csv(EXPECTED_DISCUSSION_ENTRYPOINTS)}")
     print("   - Repo-side social preview asset file exists and should pass the asset verifier")
     print("")

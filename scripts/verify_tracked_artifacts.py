@@ -57,9 +57,14 @@ def is_forbidden(path: str) -> bool:
         return False
     return (
         path.endswith(".log")
+        or path.endswith(".db")
+        or path.endswith(".sqlite")
         or path.startswith(FORBIDDEN_PREFIXES)
         or ".egg-info/" in path
         or path.endswith(".egg-info")
+        or "storage_state_" in path
+        or "browser-support-bundle-" in path
+        or "browser-identity/" in path
     )
 
 
