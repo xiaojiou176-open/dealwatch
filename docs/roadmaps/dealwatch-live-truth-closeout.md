@@ -17,7 +17,7 @@ For the full hard-cut split, use the dated overlay:
 
 ## Current Live/Public Verdict
 
-> **Live/public verdict:** the rebuilt canonical GitHub repository and GitHub Pages surfaces are reachable, while the Render API and WebUI still return `404`, GitHub still reports `usesCustomOpenGraphImage=false`, and PyPI still serves the stale `dealwatch==1.0.0` metadata, so the remaining blockers stay on the external platform side.
+> **Live/public verdict:** the rebuilt canonical GitHub repository and GitHub Pages surfaces are reachable, while the Render API and WebUI still return `404` and GitHub still reports `usesCustomOpenGraphImage=false`; PyPI no longer resolves the `dealwatch` JSON API, so the remaining blockers stay on the external platform side.
 
 ## Fresh Live/Public Matrix
 
@@ -31,14 +31,14 @@ For the full hard-cut split, use the dated overlay:
 | Render API | `https://dealwatch-api.onrender.com/api/health` returns `404` | Blocked |
 | Render WebUI | `https://dealwatch-webui.onrender.com/` returns `404` | Blocked |
 | GitHub social preview selection | GraphQL still reports `usesCustomOpenGraphImage=false` | External/UI-only |
-| PyPI package surface | `dealwatch==1.0.0` still points at the pre-cutover personal-owner URLs | External/non-GitHub |
+| PyPI package surface | `https://pypi.org/pypi/dealwatch/json` now returns `404`; the browser-facing project URL still falls behind a generic client-challenge page and does not provide project-specific proof | Cleared at authoritative API layer |
 
 ## Exact Remaining External Blockers
 
 1. Render API still returns `404`.
 2. Render WebUI still returns `404`.
 3. GitHub GraphQL still reports `usesCustomOpenGraphImage=false`, so the desired social preview image is not active yet and must still be enabled in the GitHub UI.
-4. PyPI `dealwatch==1.0.0` still exists and still points at the pre-cutover personal-owner URLs, but repo-side automation cannot remove or reassign that package without a separate PyPI authority path.
+4. PyPI no longer resolves `https://pypi.org/pypi/dealwatch/json`; the remaining browser-facing PyPI URL behavior is a generic client-challenge surface rather than project-specific metadata, so there is no longer an active stale-metadata blocker at the authoritative API layer.
 
 ## What This File Does Not Claim
 

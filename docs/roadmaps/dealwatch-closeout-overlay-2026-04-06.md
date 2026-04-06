@@ -13,7 +13,7 @@ Use this file when you need the exact split between:
 
 ## One-Line Summary
 
-> The old local mainline was captured during hard-cut truth anchoring, a new clean public canonical repo took over `xiaojiou176-open/dealwatch`, the public release surface was reduced to a single reissued `v0.1.2`, the temporary local rollback assets were deleted after verification, and the remaining blockers are now external Render `404`, an inactive GitHub social preview custom image, and the unresolved PyPI package question.
+> The old local mainline was captured during hard-cut truth anchoring, a new clean public canonical repo took over `xiaojiou176-open/dealwatch`, the public release surface was reduced to a single reissued `v0.1.2`, the temporary local rollback assets were deleted after verification, the PyPI `dealwatch` JSON API now returns `404`, and the remaining blockers are now external Render `404` plus an inactive GitHub social preview custom image.
 
 ## Archive / Context Says
 
@@ -90,4 +90,4 @@ Fresh public probes after cutover say:
 | repo-side engineering | clean after hard-cut |
 | delivery landed | clean on the current public canonical repo |
 | git closure | clean on Git/GitHub surfaces; only `main` remains and the archive repo is gone |
-| external blocker | Render `404`, inactive social preview custom image, and the PyPI package ownership/removal path |
+| external blocker | Render `404` and an inactive social preview custom image |

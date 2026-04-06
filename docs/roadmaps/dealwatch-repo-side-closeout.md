@@ -99,7 +99,7 @@ The earlier release objects and legacy tag story are no longer kept as repo-owne
 
 - **repo-side engineering:** closed
 - **Git/GitHub closure:** closed on the current canonical repo and GitHub surface
-- **external blockers:** Render endpoints, GitHub social preview UI selection, and the unresolved PyPI package ownership/removal path remain outside repo-owned control
+- **external blockers:** Render endpoints and GitHub social preview UI selection remain outside repo-owned control
 
 ## Related Ledgers
 
