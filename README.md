@@ -529,6 +529,8 @@ If you want repo-native builder examples instead of only command references, con
   Runtime truth stays in the runtime contract, public proof stays on the proof page, and release truth stays in the GitHub Releases surface instead of being hand-copied into every public page.
 - **Repo-side closeout stays separate from live deployment truth**
   [`docs/roadmaps/dealwatch-repo-side-closeout.md`](./docs/roadmaps/dealwatch-repo-side-closeout.md) records what the current working tree proves today. It should not be read as proof that Render or any live environment is already re-verified end to end.
+- **Current closeout overlay stays separate from historical task boards**
+  [`docs/roadmaps/dealwatch-closeout-overlay-2026-04-06.md`](./docs/roadmaps/dealwatch-closeout-overlay-2026-04-06.md) is the dated SSOT for the current closeout hardening turn, including archive drift, repo-local truth, GitHub remote truth, and external blockers.
 - **Post-archive strategy has its own contract**
   [`docs/roadmaps/dealwatch-decision-memo.md`](./docs/roadmaps/dealwatch-decision-memo.md) records the locked strategic boundaries after the archive deep-read, including local-first posture, read-only MCP boundary, systematic i18n requirement, and recommendation defer order.
 - **Live truth has its own closeout ledger**

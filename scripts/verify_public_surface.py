@@ -51,6 +51,7 @@ ALLOWED_TRACKED_MARKDOWN = {
     "docs/runbooks/runtime-hygiene.md",
     "docs/runbooks/store-onboarding-contract.md",
     "docs/roadmaps/dealwatch-api-mcp-substrate-phase1.md",
+    "docs/roadmaps/dealwatch-closeout-overlay-2026-04-06.md",
     "docs/roadmaps/dealwatch-decision-memo.md",
     "docs/roadmaps/dealwatch-i18n-discovery.md",
     "docs/roadmaps/dealwatch-i18n-substrate.md",
