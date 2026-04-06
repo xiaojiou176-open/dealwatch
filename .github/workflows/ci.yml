@@ -1,0 +1,216 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  governance:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+        with:
+          python-version: "3.13"
+
+      - name: Enforce Signed-off-by on PR tip commit
+        if: github.event_name == 'pull_request'
+        run: |
+          head_sha="${{ github.event.pull_request.head.sha }}"
+          if ! git log -1 --format=%B "$head_sha" | grep -q '^Signed-off-by: '; then
+            echo "The pull request tip commit is missing a Signed-off-by trailer:"
+            echo "$head_sha"
+            exit 1
+          fi
+
+      - name: Verify public surface and English boundary
+        run: |
+          python scripts/verify_no_live_legacy_imports.py
+          python scripts/verify_package_publish_surface.py
+          python scripts/verify_store_capability_registry.py
+          python scripts/verify_tracked_artifacts.py
+          python scripts/verify_english_boundary.py
+          python scripts/verify_docs_contract.py
+          python scripts/verify_host_process_safety.py
+          python scripts/verify_builder_contract_sync.py
+          python scripts/verify_builder_public_boundary.py
+          python scripts/verify_feed_surface.py
+          python scripts/verify_public_entrypoints.py
+          python scripts/verify_public_surface.py
+          python scripts/verify_ci_runner_contract.py
+          python scripts/verify_runtime_diagnostics.py
+          python scripts/verify_social_preview_asset.py
+          python scripts/verify_social_preview_matrix.py
+          python scripts/verify_site_surface.py
+          python scripts/verify_schema_contract.py
+          python scripts/verify_root_allowlist.py
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+        with:
+          python-version: "3.13"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78
+        with:
+          version: "0.8.15"
+          python-version: "3.13"
+          activate-environment: true
+          enable-cache: true
+
+      - name: Sync backend dependencies
+        run: |
+          uv sync --frozen --group dev
+
+      - name: Install Playwright browser
+        run: uv run python -m playwright install --with-deps chromium
+
+      - name: Run baseline verification
+        run: ./scripts/test.sh -q
+
+      - name: Verify Python package build
+        run: uv run python -m build --sdist --wheel
+
+      - name: Guard legacy names
+        run: |
+          ! rg -n '\btracker\b|src/tracker|python -m tracker|var/' README.md AGENTS.md CHANGELOG.md CONTRIBUTING.md SECURITY.md SUPPORT.md Dockerfile docker-compose.yml scripts src tests .github
+
+      - name: Validate render blueprint syntax
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import yaml
+
+          yaml.safe_load(Path("render.yaml").read_text(encoding="utf-8"))
+          print("render.yaml syntax OK")
+          PY
+
+  secret-hygiene:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 0
+
+      - name: Install gitleaks
+        run: |
+          curl -sSLo /tmp/gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/download/v8.24.2/gitleaks_8.24.2_linux_x64.tar.gz
+          echo "fa0500f6b7e41d28791ebc680f5dd9899cd42b58629218a5f041efa899151a8e  /tmp/gitleaks.tar.gz" | sha256sum --check --
+          tar -xzf /tmp/gitleaks.tar.gz
+          sudo mv gitleaks /usr/local/bin/gitleaks
+          gitleaks version
+
+      - name: Install git-secrets
+        run: |
+          git clone --branch 1.3.0 --depth=1 https://github.com/awslabs/git-secrets.git /tmp/git-secrets
+          git -C /tmp/git-secrets checkout --detach ad82d68ee924906a0401dfd48de5057731a9bc84
+          sudo make -C /tmp/git-secrets install
+
+      - name: Scan git history
+        run: |
+          gitleaks git . --no-banner --redact
+          ./scripts/run_git_secrets_audit.sh --scan-history
+
+  frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Set up Node
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
+        with:
+          node-version: "22"
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - name: Install frontend deps
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Guard canonical pnpm store
+        run: |
+          test ! -d frontend/.pnpm-store
+
+      - name: Build frontend
+        working-directory: frontend
+        run: pnpm build
+
+  product-smoke:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: dealwatch
+          POSTGRES_USER: dealwatch
+          POSTGRES_PASSWORD: dealwatch
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U dealwatch -d dealwatch"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql+psycopg://dealwatch:dealwatch@127.0.0.1:5432/dealwatch
+      OWNER_EMAIL: owner@example.com
+      OWNER_DISPLAY_NAME: DealWatch Owner
+      OWNER_BOOTSTRAP_TOKEN: smoke-token
+      POSTMARK_FROM_EMAIL: dealwatch@example.com
+      POSTMARK_MESSAGE_STREAM: outbound
+      WEBUI_DEV_URL: http://localhost:5173
+      APP_BASE_URL: http://127.0.0.1:8000
+      ZIP_CODE: 98004
+      ENABLED_STORES: weee
+      WORKER_POLL_SECONDS: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+        with:
+          python-version: "3.13"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78
+        with:
+          version: "0.8.15"
+          python-version: "3.13"
+          activate-environment: true
+          enable-cache: true
+
+      - name: Sync backend dependencies
+        run: |
+          uv sync --frozen --group dev
+
+      - name: Validate runtime contract
+        run: uv run python scripts/check_runtime_env.py --target ci-smoke
+
+      - name: Run product smoke
+        run: uv run ./scripts/smoke_product.sh
