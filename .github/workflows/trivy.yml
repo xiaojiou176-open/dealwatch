@@ -1,0 +1,42 @@
+name: Trivy
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  trivy:
+    name: trivy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+
+      - name: Install Trivy CLI
+        run: |
+          TRIVY_VERSION="0.69.3"
+          TRIVY_ASSET="trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+          curl -sSLo "/tmp/${TRIVY_ASSET}" "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/${TRIVY_ASSET}"
+          curl -sSLo /tmp/trivy_checksums.txt "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_checksums.txt"
+          grep " ${TRIVY_ASSET}$" /tmp/trivy_checksums.txt | (cd /tmp && sha256sum --check --ignore-missing -)
+          tar -xzf "/tmp/${TRIVY_ASSET}" -C /tmp trivy
+          sudo mv /tmp/trivy /usr/local/bin/trivy
+          trivy --version
+
+      - name: Run Trivy filesystem scan
+        run: |
+          trivy fs \
+            --scanners vuln,misconfig \
+            --severity HIGH,CRITICAL \
+            --ignore-unfixed \
+            --exit-code 1 \
+            --no-progress \
+            .

@@ -6,6 +6,11 @@ repos:
         entry: python3 scripts/verify_host_process_safety.py
         language: system
         pass_filenames: false
+      - id: verify-sensitive-surface
+        name: verify-sensitive-surface
+        entry: python3 scripts/verify_sensitive_surface.py
+        language: system
+        pass_filenames: false
       - id: gitleaks-staged
         name: gitleaks-staged
         entry: bash -lc 'if git diff --cached --quiet; then gitleaks git . --no-banner --redact; else gitleaks git --pre-commit --staged --redact --no-banner; fi'

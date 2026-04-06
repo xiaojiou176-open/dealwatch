@@ -28,10 +28,21 @@ EXPECTED_TOPICS = {
     "price-monitoring",
     "price-tracking",
 }
-EXPECTED_REQUIRED_CHECKS = {"governance", "test", "frontend", "product-smoke", "secret-hygiene", "CodeQL"}
-EXPECTED_WORKFLOWS = {"CI", "CodeQL"}
+EXPECTED_REQUIRED_CHECKS = {
+    "governance",
+    "test",
+    "frontend",
+    "product-smoke",
+    "secret-hygiene",
+    "CodeQL",
+    "Dependency Review",
+    "workflow-hygiene",
+    "trivy",
+}
+EXPECTED_WORKFLOWS = {"CI", "CodeQL", "Pages", "Dependabot Updates", "Dependency Review", "Workflow Hygiene", "Trivy"}
 EXPECTED_LABELS = {"store-request", "compare-preview", "public-surface", "release"}
 EXPECTED_LATEST_RELEASE = "v0.1.2"
+EXPECTED_PUBLIC_RELEASES = {"v0.1.2"}
 EXPECTED_DISCUSSION_ENTRYPOINTS = {
     "https://github.com/xiaojiou176/dealwatch/discussions",
     "https://github.com/xiaojiou176/dealwatch/discussions/categories/announcements",
@@ -233,8 +244,12 @@ def main() -> int:
     if releases_status == 200 and isinstance(releases, list):
         release_names = [item.get("tag_name", "") for item in releases if isinstance(item, dict)]
         print(f"releases={','.join(name for name in release_names if name)}")
-        if "v0.1.0" not in release_names or "v0.1.1" not in release_names:
-            findings.append("expected public releases v0.1.0 and v0.1.1 must exist")
+        current_release_set = {name for name in release_names if name}
+        if current_release_set != EXPECTED_PUBLIC_RELEASES:
+            findings.append(
+                "public releases on the rebuilt canonical repo must be exactly: "
+                + ", ".join(sorted(EXPECTED_PUBLIC_RELEASES))
+            )
     elif releases_status in {401, 403} and not auth_enabled:
         manual_checks.append("release listing requires authenticated GitHub API access")
     else:
