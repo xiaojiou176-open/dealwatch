@@ -1,0 +1,30 @@
+# DealWatch crontab example
+#
+# How to use it:
+# 1. Copy the block you need.
+# 2. Run: `crontab -e`
+# 3. Paste it and replace the placeholder path.
+# 4. Save and exit.
+#
+# Replace `/path/to/dealwatch` with the real repository path.
+# If the real path contains spaces or parentheses, keep the quoted style below.
+
+#########################################################
+# Daily price scan (9 AM and 5 PM)
+#########################################################
+# Format: minute hour day month weekday command
+0 9,17 * * * PROJECT_DIR='/path/to/dealwatch' && cd "$PROJECT_DIR" && PYTHONPATH=src "$PROJECT_DIR/.venv/bin/python" -m dealwatch legacy --store weee --zip 98004 >> "$PROJECT_DIR/.runtime-cache/logs/run.log" 2>&1
+
+#########################################################
+# Weekly legacy data cleanup (Sunday at 3 AM)
+#########################################################
+0 3 * * 0 PROJECT_DIR='/path/to/dealwatch' && cd "$PROJECT_DIR" && PYTHONPATH=src "$PROJECT_DIR/.venv/bin/python" -m dealwatch legacy --cleanup >> "$PROJECT_DIR/.runtime-cache/logs/cleanup.log" 2>&1
+
+#########################################################
+# Notes:
+# - `9,17` means 9 AM and 5 PM.
+# - `>> run.log 2>&1` records both stdout and stderr in the log file.
+# - `PROJECT_DIR='...'` is safer when the real path contains spaces or parentheses.
+# - Use absolute paths so cron can always find the repository.
+# - Make sure `.venv/bin/python` points at the real project interpreter.
+#########################################################

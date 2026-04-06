@@ -1,0 +1,64 @@
+from __future__ import annotations
+
+import argparse
+import asyncio
+from typing import List, Optional
+
+from dealwatch.core.models import Offer, PriceContext
+from dealwatch.infra.config import Settings
+from dealwatch.infra.playwright_client import PlaywrightClient
+from dealwatch.stores.base_adapter import BaseStoreAdapter, SkipParse, safe_parse
+from dealwatch.stores.ranch99.discovery import Ranch99Discovery
+from dealwatch.stores.ranch99.parser import Ranch99Parser
+
+
+class Ranch99Adapter(BaseStoreAdapter):
+    store_id = "ranch99"
+    base_url = "https://www.99ranch.com"
+    cashback_merchant_key = "99-ranch-market"
+
+    def __init__(self, client: PlaywrightClient, settings: Settings) -> None:
+        super().__init__(client, settings)
+        self._discovery = Ranch99Discovery()
+        self._parser = Ranch99Parser(
+            store_id=self.store_id,
+            context=PriceContext(region=settings.ZIP_CODE),
+        )
+
+    async def discover_deals(self) -> List[str]:
+        return await self._discovery.discover_deals()
+
+    @classmethod
+    def normalize_product_url(cls, raw_url: str) -> str | None:
+        return Ranch99Discovery._normalize_product_url(raw_url)
+
+    @safe_parse
+    async def parse_product(self, url: str) -> Optional[Offer]:
+        page = await self.client.fetch_page(url, return_page=True)
+        try:
+            offer = await self._parser.parse(page)
+            if offer is None:
+                await self._capture_failed_page(page, url, "parse_returned_none")
+            return offer
+        except SkipParse:
+            raise
+        except Exception as exc:
+            await self._capture_failed_page(page, url, f"parse_exception:{type(exc).__name__}")
+            raise
+        finally:
+            await page.close()
+
+
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="99 Ranch Adapter Self-Test")
+    parser.add_argument("--test", required=True, help="Product URL to test")
+    return parser.parse_args()
+
+
+def _main() -> None:
+    args = _parse_args()
+    asyncio.run(Ranch99Adapter.test_adapter(args.test))
+
+
+if __name__ == "__main__":
+    _main()

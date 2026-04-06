@@ -1,0 +1,75 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: dealwatch-postgres
+    environment:
+      POSTGRES_DB: dealwatch
+      POSTGRES_USER: dealwatch
+      POSTGRES_PASSWORD: dealwatch
+      PGDATA: /data/postgres
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - dealwatch-postgres:/data/postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dealwatch -d dealwatch"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  api:
+    build:
+      context: .
+      target: runtime
+    container_name: dealwatch-api
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://dealwatch:dealwatch@postgres:5432/dealwatch
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./.runtime-cache:/app/.runtime-cache
+    ports:
+      - "${API_PORT:-8000}:8000"
+    command: ["python", "-m", "dealwatch", "server"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=3)"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  worker:
+    build:
+      context: .
+      target: runtime
+    container_name: dealwatch-worker
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://dealwatch:dealwatch@postgres:5432/dealwatch
+    depends_on:
+      postgres:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+    volumes:
+      - ./.runtime-cache:/app/.runtime-cache
+    command: ["python", "-m", "dealwatch", "worker"]
+
+  frontend:
+    image: node:22-bookworm-slim
+    container_name: dealwatch-frontend
+    working_dir: /app/frontend
+    environment:
+      CI: "true"
+    volumes:
+      - ./.pnpm-store:/app/.pnpm-store
+      - ./frontend:/app/frontend
+    ports:
+      - "${WEBUI_PORT:-5173}:5173"
+    command: ["sh", "-lc", "corepack enable && pnpm install --config.confirmModulesPurge=false && pnpm dev --host 0.0.0.0"]
+
+volumes:
+  dealwatch-postgres:

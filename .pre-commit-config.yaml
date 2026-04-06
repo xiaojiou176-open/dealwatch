@@ -1,0 +1,13 @@
+repos:
+  - repo: local
+    hooks:
+      - id: verify-host-process-safety
+        name: verify-host-process-safety
+        entry: python3 scripts/verify_host_process_safety.py
+        language: system
+        pass_filenames: false
+      - id: gitleaks-staged
+        name: gitleaks-staged
+        entry: bash -lc 'if git diff --cached --quiet; then gitleaks git . --no-banner --redact; else gitleaks git --pre-commit --staged --redact --no-banner; fi'
+        language: system
+        pass_filenames: false

@@ -1,0 +1,54 @@
+# Baseline ignore rules
+# Path contract:
+# - `.runtime-cache/` is the repo-owned runtime/operator namespace (`cache/`, `logs/`, `operator/`, `runs/`)
+# - `.legacy-runtime/` is legacy bridge only
+# - `.agents/local-artifacts/` is a legacy local-only namespace kept ignored for backward safety while the active contract moves to `.runtime-cache/operator/`
+
+node_modules/
+.pnpm-store/
+dist/
+build/
+out/
+.next/
+.turbo/
+.cache/
+coverage/
+*.log
+data/
+tmp/
+artifacts/
+*.db
+*.pyc
+.DS_Store
+.env
+.env.*
+.pytest_cache/
+.ruff_cache/
+.venv/
+.venv_py313/
+__pycache__/
+*.tsbuildinfo
+*.egg-info/
+.agents/
+.agents/local-artifacts/
+.agent/
+.codex/
+.claude/
+# Local MCP / tool state that does not belong to DealWatch runtime governance.
+.serena/
+.agents/local-artifacts/smoke/
+.agents/local-artifacts/temp/
+log/
+cleanup.log
+logs/
+run.log
+storage_state_*.json
+.runtime-cache/
+.legacy-runtime/
+test-results/
+playwright-report/
+site-dist/
+!site/data/
+!site/data/*.json
+!.env.example
+!.env.production.example

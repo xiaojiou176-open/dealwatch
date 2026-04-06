@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #14213d;
+  background:
+    radial-gradient(circle at top left, rgba(184, 76, 39, 0.12), transparent 32%),
+    linear-gradient(180deg, #fcfaf5 0%, #f6f0e6 100%);
+  font-family:
+    "Avenir Next",
+    "SF Pro Display",
+    "Segoe UI",
+    sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+.grid-fade {
+  background-image:
+    linear-gradient(rgba(20, 33, 61, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20, 33, 61, 0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+}

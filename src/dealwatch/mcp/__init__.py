@@ -1,0 +1,1 @@
+"""DealWatch MCP package."""
