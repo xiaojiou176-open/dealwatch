@@ -26,6 +26,8 @@ _LIMITED_SUPPORT_TRUTH_SOURCES = [
     "src/dealwatch/application/services.py",
     "src/dealwatch/api/schemas.py",
     "frontend/src/pages/ComparePage.tsx",
+    "frontend/src/pages/compare/copy.ts",
+    "frontend/src/pages/compare/helpers.ts",
     "tests/test_product_api.py",
     "tests/test_product_providers.py",
 ]
@@ -196,6 +198,8 @@ def build_store_onboarding_cockpit(
         "src/dealwatch/application/services.py",
         "src/dealwatch/api/schemas.py",
         "frontend/src/pages/ComparePage.tsx",
+        "frontend/src/pages/compare/copy.ts",
+        "frontend/src/pages/compare/helpers.ts",
         "docs/runbooks/store-onboarding-contract.md",
         "tests/test_adapter_contracts.py",
         "scripts/verify_store_capability_registry.py",

@@ -53,7 +53,6 @@ from dealwatch.persistence.models import (
 )
 from dealwatch.providers.cashback import CashbackMonitorProvider, CashbackProvider, CashbackQuotePayload
 from dealwatch.providers.email import (
-    EmailDispatchPayload,
     EmailProvider,
     PostmarkEmailProvider,
     SmtpFallbackEmailProvider,
@@ -63,6 +62,40 @@ from dealwatch.stores import STORE_CAPABILITY_REGISTRY, STORE_REGISTRY
 from dealwatch.stores.base_adapter import SkipParse
 
 from .ai_integration import AiNarrativeService
+from .compare_evidence import (
+    build_compare_ai_explain as build_compare_ai_explain_payload,
+    build_compare_evidence_payload as build_compare_evidence_payload_artifact,
+    build_compare_evidence_truth as build_compare_evidence_truth_payload,
+    build_compare_recommendation_shadow_payload as build_compare_recommendation_shadow_payload_artifact,
+    build_compare_support_contract as build_compare_support_contract_payload,
+    render_compare_evidence_html as render_compare_evidence_html_payload,
+    render_compare_recommendation_shadow_html as render_compare_recommendation_shadow_html_payload,
+    validate_compare_preview_result as validate_compare_preview_result_payload,
+)
+from .runtime_attention import (
+    attention_sort_key,
+    build_attention_guidance,
+    build_backoff_until,
+    build_notification_readiness_check,
+    build_readiness_check,
+    build_smoke_readiness_check,
+    build_task_attention_item,
+    build_task_summary,
+    build_watch_group_attention_item,
+    build_watch_group_summary,
+)
+from .runtime_notifications import (
+    dispatch_group_notifications,
+    dispatch_task_notifications,
+    should_notify_group,
+    should_notify_task,
+)
+from .runtime_watch_groups import (
+    build_group_decision_reason,
+    build_watch_group_ai_decision_explain,
+    build_watch_group_decision_explain,
+    build_watch_group_detail,
+)
 from .store_onboarding import build_store_onboarding_cockpit
 from .urls import resolve_store_for_url
 
@@ -284,7 +317,7 @@ class ProductService:
         await session.execute(select(1))
         database_backend = str(self.settings.DATABASE_URL).split(":", 1)[0]
         checks.append(
-            self._build_readiness_check(
+            build_readiness_check(
                 key="database",
                 label="Database",
                 severity="required",
@@ -304,7 +337,7 @@ class ProductService:
 
         owner = await session.scalar(select(User).where(User.role == "owner").limit(1))
         checks.append(
-            self._build_readiness_check(
+            build_readiness_check(
                 key="owner",
                 label="Owner bootstrap",
                 severity="advisory",
@@ -327,7 +360,7 @@ class ProductService:
         enabled_bindings = [item for item in bindings if item["enabled"]]
         compare_enabled = [item["store_key"] for item in enabled_bindings if item["supports_compare_intake"]]
         checks.append(
-            self._build_readiness_check(
+            build_readiness_check(
                 key="stores",
                 label="Store runtime switches",
                 severity="required",
@@ -348,14 +381,20 @@ class ProductService:
             )
         )
 
-        checks.append(await self._build_notification_readiness_check(session, checked_at=checked_at))
+        checks.append(
+            await build_notification_readiness_check(
+                session,
+                settings=self.settings,
+                checked_at=checked_at,
+            )
+        )
 
         values = load_settings_values(self.settings)
         startup_checks, startup_warnings = validate_runtime(values, target="startup")
         relevant_warnings = [item for item in startup_warnings if item.key != "USE_LLM"]
         blockers = [item.key for item in startup_checks if not item.ok]
         checks.append(
-            self._build_readiness_check(
+            build_readiness_check(
                 key="startup_preflight",
                 label="Runtime preflight",
                 severity="required",
@@ -382,7 +421,12 @@ class ProductService:
             )
         )
 
-        checks.append(self._build_smoke_readiness_check(checked_at=checked_at))
+        checks.append(
+            build_smoke_readiness_check(
+                smoke_dir=self._get_smoke_artifact_dir(),
+                checked_at=checked_at,
+            )
+        )
 
         blocked_count = sum(1 for item in checks if item["status"] == "blocked")
         warning_count = sum(1 for item in checks if item["status"] == "warning")
@@ -452,10 +496,10 @@ class ProductService:
             ).all()
         )
 
-        task_items = [await self._build_task_attention_item(session, task) for task in tasks]
-        group_items = [await self._build_watch_group_attention_item(session, group) for group in groups]
-        task_items.sort(key=self._attention_sort_key)
-        group_items.sort(key=self._attention_sort_key)
+        task_items = [await build_task_attention_item(session, task) for task in tasks]
+        group_items = [await build_watch_group_attention_item(session, group) for group in groups]
+        task_items.sort(key=attention_sort_key)
+        group_items.sort(key=attention_sort_key)
         return {
             "generated_at": checked_at,
             "total_items": len(task_items) + len(group_items),
@@ -526,10 +570,10 @@ class ProductService:
                 )
             ).all()
         )
-        task_items = [await self._build_task_attention_item(session, task) for task in task_rows]
-        group_items = [await self._build_watch_group_attention_item(session, group) for group in group_rows]
-        task_items.sort(key=self._attention_sort_key)
-        group_items.sort(key=self._attention_sort_key)
+        task_items = [await build_task_attention_item(session, task) for task in task_rows]
+        group_items = [await build_watch_group_attention_item(session, group) for group in group_rows]
+        task_items.sort(key=attention_sort_key)
+        group_items.sort(key=attention_sort_key)
         ai_copilot = await self._build_recovery_ai_copilot(task_items=task_items, group_items=group_items)
         return {
             "generated_at": utcnow().isoformat(),
@@ -891,135 +935,12 @@ class ProductService:
         group = await session.get(WatchGroup, group_id)
         if group is None:
             raise ValueError("watch_group_not_found")
-
-        members = list(
-            (
-                await session.scalars(
-                    select(WatchGroupMember)
-                    .where(WatchGroupMember.watch_group_id == group.id)
-                    .order_by(desc(WatchGroupMember.created_at))
-                )
-            ).all()
-        )
-        runs = list(
-            (
-                await session.scalars(
-                    select(WatchGroupRun)
-                    .where(WatchGroupRun.watch_group_id == group.id)
-                    .order_by(desc(WatchGroupRun.created_at))
-                    .limit(20)
-                )
-            ).all()
-        )
-        deliveries = list(
-            (
-                await session.scalars(
-                    select(DeliveryEvent)
-                    .where(DeliveryEvent.watch_group_id == group.id)
-                    .order_by(desc(DeliveryEvent.created_at))
-                    .limit(20)
-                )
-            ).all()
-        )
-
-        latest_run = runs[0] if runs else None
-        latest_results = []
-        if latest_run is not None and latest_run.member_results_json:
-            latest_results = list(latest_run.member_results_json.get("results", []))
-        latest_result_map = {str(item.get("member_id")): item for item in latest_results}
-        member_map = {member.id: member for member in members}
-
-        winner_member = None
-        if latest_run is not None and latest_run.winner_member_id:
-            winner_member = next((item for item in members if item.id == latest_run.winner_member_id), None)
-        decision_explain = self._build_watch_group_decision_explain(
+        return await build_watch_group_detail(
+            session,
             group=group,
-            latest_run=latest_run,
-            latest_results=latest_results,
-            member_map=member_map,
+            ai_service=self.ai_service,
+            group_explain_enabled=bool(self.settings.AI_GROUP_EXPLAIN_ENABLED),
         )
-        ai_decision_explain = await self._build_watch_group_ai_decision_explain(
-            group=group,
-            decision_explain=decision_explain,
-        )
-
-        return {
-            "group": {
-                "id": group.id,
-                "title": group.title,
-                "status": group.status,
-                "zip_code": group.zip_code,
-                "cadence_minutes": group.cadence_minutes,
-                "threshold_type": group.threshold_type,
-                "threshold_value": group.threshold_value,
-                "cooldown_minutes": group.cooldown_minutes,
-                "recipient_email": group.recipient_email,
-                "notifications_enabled": group.notifications_enabled,
-                "next_run_at": group.next_run_at.isoformat() if group.next_run_at else None,
-                "last_run_at": group.last_run_at.isoformat() if group.last_run_at else None,
-                "last_success_at": group.last_success_at.isoformat() if group.last_success_at else None,
-                "last_error_code": group.last_error_code,
-                "last_error_message": group.last_error_message,
-                "health_status": group.health_status,
-                "consecutive_failures": group.consecutive_failures,
-                "backoff_until": group.backoff_until.isoformat() if group.backoff_until else None,
-                "last_failure_kind": group.last_failure_kind,
-                "manual_intervention_required": group.manual_intervention_required,
-                "member_count": len(members),
-                "current_winner_member_id": latest_run.winner_member_id if latest_run else None,
-                "current_winner_title": winner_member.title_snapshot if winner_member is not None else None,
-                "current_winner_effective_price": latest_run.winner_effective_price if latest_run else None,
-                "price_spread": latest_run.price_spread if latest_run else None,
-                "decision_reason": latest_run.decision_reason if latest_run else None,
-            },
-            "decision_explain": decision_explain,
-            "ai_decision_explain": ai_decision_explain,
-            "members": [
-                {
-                    "id": member.id,
-                    "watch_target_id": member.watch_target_id,
-                    "title_snapshot": member.title_snapshot,
-                    "candidate_key": member.candidate_key,
-                    "brand_hint": member.brand_hint,
-                    "size_hint": member.size_hint,
-                    "similarity_score": member.similarity_score,
-                    "is_current_winner": latest_run.winner_member_id == member.id if latest_run else False,
-                    "latest_result": latest_result_map.get(member.id),
-                }
-                for member in members
-            ],
-            "runs": [
-                {
-                    "id": item.id,
-                    "status": item.status,
-                    "started_at": item.started_at.isoformat() if item.started_at else None,
-                    "finished_at": item.finished_at.isoformat() if item.finished_at else None,
-                    "error_message": item.error_message,
-                    "winner_member_id": item.winner_member_id,
-                    "winner_effective_price": item.winner_effective_price,
-                    "runner_up_member_id": item.runner_up_member_id,
-                    "runner_up_effective_price": item.runner_up_effective_price,
-                    "price_spread": item.price_spread,
-                    "decision_reason": item.decision_reason,
-                    "member_results": list((item.member_results_json or {}).get("results", [])),
-                    "artifact_run_dir": item.artifact_run_dir,
-                }
-                for item in runs
-            ],
-            "deliveries": [
-                {
-                    "id": item.id,
-                    "provider": item.provider,
-                    "recipient": item.recipient,
-                    "status": item.status,
-                    "created_at": item.created_at.isoformat(),
-                    "sent_at": item.sent_at.isoformat() if item.sent_at else None,
-                    "delivered_at": item.delivered_at.isoformat() if item.delivered_at else None,
-                    "bounced_at": item.bounced_at.isoformat() if item.bounced_at else None,
-                }
-                for item in deliveries
-            ],
-        }
 
     async def update_watch_group(self, session: AsyncSession, group_id: str, **updates: Any) -> WatchGroup:
         group = await session.get(WatchGroup, group_id)
@@ -1500,8 +1421,16 @@ class ProductService:
             await session.flush()
 
             deliveries: list[DeliveryEvent] = []
-            if self._should_notify(task, previous_observation, observation, effective_price):
-                deliveries = await self._dispatch_notifications(session, task, run, observation, effective_price)
+            if should_notify_task(task, previous_observation, observation, effective_price):
+                deliveries = await dispatch_task_notifications(
+                    session,
+                    task=task,
+                    run=run,
+                    observation=observation,
+                    effective_price=effective_price,
+                    email_provider=self.email_provider,
+                    now_fn=utcnow,
+                )
             if any(item.status == DeliveryStatus.FAILED.value for item in deliveries):
                 task.health_status = HealthStatus.DEGRADED.value
                 task.last_failure_kind = FailureKind.DELIVERY_FAILED.value
@@ -1749,13 +1678,15 @@ class ProductService:
 
             self._apply_watch_group_success_state(group)
             deliveries: list[DeliveryEvent] = []
-            if self._should_notify_group(group, previous_run, winner):
-                deliveries = await self._dispatch_group_notifications(
+            if should_notify_group(group, previous_run, winner):
+                deliveries = await dispatch_group_notifications(
                     session,
-                    group,
-                    run,
-                    winner,
+                    group=group,
+                    run=run,
+                    winner=winner,
                     decision_reason=decision_reason,
+                    email_provider=self.email_provider,
+                    now_fn=utcnow,
                 )
             if any(item.status == DeliveryStatus.FAILED.value for item in deliveries):
                 group.health_status = HealthStatus.DEGRADED.value
@@ -1836,139 +1767,20 @@ class ProductService:
         return results
 
     async def _build_task_summary(self, session: AsyncSession, task: WatchTask) -> dict[str, Any]:
-        target = await session.get(WatchTarget, task.watch_target_id)
-        latest_observation = await session.scalar(
-            select(PriceObservation)
-            .where(PriceObservation.watch_task_id == task.id)
-            .order_by(desc(PriceObservation.observed_at))
-            .limit(1)
-        )
-        latest_effective = await session.scalar(
-            select(EffectivePriceSnapshot)
-            .where(EffectivePriceSnapshot.watch_task_id == task.id)
-            .order_by(desc(EffectivePriceSnapshot.computed_at))
-            .limit(1)
-        )
-        latest_run = await session.scalar(
-            select(TaskRun).where(TaskRun.watch_task_id == task.id).order_by(desc(TaskRun.created_at)).limit(1)
-        )
-        return {
-            "id": task.id,
-            "title": latest_observation.title_snapshot if latest_observation is not None else (target.product_url if target else "Pending first fetch"),
-            "normalized_url": target.normalized_url if target else None,
-            "store_key": target.store_key if target else None,
-            "status": task.status,
-            "zip_code": task.zip_code,
-            "cadence_minutes": task.cadence_minutes,
-            "next_run_at": task.next_run_at.isoformat() if task.next_run_at else None,
-            "last_listed_price": latest_observation.listed_price if latest_observation else None,
-            "last_effective_price": latest_effective.effective_price if latest_effective else None,
-            "last_run_status": latest_run.status if latest_run else None,
-            "health_status": task.health_status,
-            "backoff_until": task.backoff_until.isoformat() if task.backoff_until else None,
-            "manual_intervention_required": task.manual_intervention_required,
-        }
+        return await build_task_summary(session, task)
 
     async def _build_watch_group_summary(self, session: AsyncSession, group: WatchGroup) -> dict[str, Any]:
-        latest_run = await session.scalar(
-            select(WatchGroupRun)
-            .where(WatchGroupRun.watch_group_id == group.id)
-            .order_by(desc(WatchGroupRun.created_at))
-            .limit(1)
-        )
-        member_count = len(
-            list(
-                (
-                    await session.scalars(
-                        select(WatchGroupMember).where(
-                            WatchGroupMember.watch_group_id == group.id,
-                            WatchGroupMember.is_active.is_(True),
-                        )
-                    )
-                ).all()
-            )
-        )
-        winner_title = None
-        if latest_run is not None and latest_run.winner_member_id:
-            winner_member = await session.get(WatchGroupMember, latest_run.winner_member_id)
-            winner_title = winner_member.title_snapshot if winner_member is not None else None
-        return {
-            "id": group.id,
-            "title": group.title,
-            "status": group.status,
-            "health_status": group.health_status,
-            "zip_code": group.zip_code,
-            "cadence_minutes": group.cadence_minutes,
-            "next_run_at": group.next_run_at.isoformat() if group.next_run_at else None,
-            "last_run_at": group.last_run_at.isoformat() if group.last_run_at else None,
-            "last_run_status": latest_run.status if latest_run is not None else None,
-            "member_count": member_count,
-            "winner_title": winner_title,
-            "winner_effective_price": latest_run.winner_effective_price if latest_run is not None else None,
-            "price_spread": latest_run.price_spread if latest_run is not None else None,
-            "backoff_until": group.backoff_until.isoformat() if group.backoff_until else None,
-            "manual_intervention_required": group.manual_intervention_required,
-        }
+        return await build_watch_group_summary(session, group)
 
     async def _build_task_attention_item(self, session: AsyncSession, task: WatchTask) -> dict[str, Any]:
-        summary = await self._build_task_summary(session, task)
-        reason, recommended_action = self._build_attention_guidance(
-            kind="task",
-            health_status=task.health_status,
-            manual_intervention_required=task.manual_intervention_required,
-            last_failure_kind=task.last_failure_kind,
-            last_error_code=task.last_error_code,
-            last_error_message=task.last_error_message,
-        )
-        return {
-            "kind": "task",
-            "id": task.id,
-            "title": summary["title"],
-            "status": task.status,
-            "health_status": task.health_status,
-            "manual_intervention_required": task.manual_intervention_required,
-            "next_run_at": summary["next_run_at"],
-            "backoff_until": task.backoff_until.isoformat() if task.backoff_until else None,
-            "last_run_status": summary["last_run_status"],
-            "consecutive_failures": task.consecutive_failures,
-            "last_failure_kind": task.last_failure_kind,
-            "last_error_code": task.last_error_code,
-            "last_error_message": task.last_error_message,
-            "reason": reason,
-            "recommended_action": recommended_action,
-        }
+        return await build_task_attention_item(session, task)
 
     async def _build_watch_group_attention_item(
         self,
         session: AsyncSession,
         group: WatchGroup,
     ) -> dict[str, Any]:
-        summary = await self._build_watch_group_summary(session, group)
-        reason, recommended_action = self._build_attention_guidance(
-            kind="group",
-            health_status=group.health_status,
-            manual_intervention_required=group.manual_intervention_required,
-            last_failure_kind=group.last_failure_kind,
-            last_error_code=group.last_error_code,
-            last_error_message=group.last_error_message,
-        )
-        return {
-            "kind": "group",
-            "id": group.id,
-            "title": group.title,
-            "status": group.status,
-            "health_status": group.health_status,
-            "manual_intervention_required": group.manual_intervention_required,
-            "next_run_at": summary["next_run_at"],
-            "backoff_until": group.backoff_until.isoformat() if group.backoff_until else None,
-            "last_run_status": summary["last_run_status"],
-            "consecutive_failures": group.consecutive_failures,
-            "last_failure_kind": group.last_failure_kind,
-            "last_error_code": group.last_error_code,
-            "last_error_message": group.last_error_message,
-            "reason": reason,
-            "recommended_action": recommended_action,
-        }
+        return await build_watch_group_attention_item(session, group)
 
     async def _fetch_offer(self, product_url: str, store_key: str, *, zip_code: str) -> Offer | None:
         adapter_cls = STORE_REGISTRY.get(store_key)
@@ -2154,15 +1966,7 @@ class ProductService:
         observation: PriceObservation,
         effective_price: float,
     ) -> bool:
-        threshold_type = ThresholdType(task.threshold_type)
-        if threshold_type == ThresholdType.PRICE_BELOW:
-            return observation.listed_price <= task.threshold_value
-        if threshold_type == ThresholdType.EFFECTIVE_PRICE_BELOW:
-            return effective_price <= task.threshold_value
-        if previous_observation is None or previous_observation.listed_price <= 0:
-            return False
-        drop_pct = ((previous_observation.listed_price - observation.listed_price) / previous_observation.listed_price) * 100
-        return drop_pct >= task.threshold_value
+        return should_notify_task(task, previous_observation, observation, effective_price)
 
     def _should_notify_group(
         self,
@@ -2170,20 +1974,7 @@ class ProductService:
         previous_run: WatchGroupRun | None,
         winner: dict[str, Any],
     ) -> bool:
-        if not group.notifications_enabled:
-            return False
-
-        threshold_type = ThresholdType(group.threshold_type)
-        listed_price = float(winner["listed_price"])
-        effective_price = float(winner["effective_price"])
-        if threshold_type == ThresholdType.PRICE_BELOW:
-            return listed_price <= group.threshold_value
-        if threshold_type == ThresholdType.EFFECTIVE_PRICE_BELOW:
-            return effective_price <= group.threshold_value
-        if previous_run is None or previous_run.winner_effective_price is None or previous_run.winner_effective_price <= 0:
-            return False
-        drop_pct = ((previous_run.winner_effective_price - effective_price) / previous_run.winner_effective_price) * 100
-        return drop_pct >= group.threshold_value
+        return should_notify_group(group, previous_run, winner)
 
     async def _dispatch_notifications(
         self,
@@ -2193,65 +1984,15 @@ class ProductService:
         observation: PriceObservation,
         effective_price: float,
     ) -> list[DeliveryEvent]:
-        deliveries: list[DeliveryEvent] = []
-        rules = list(
-            (
-                await session.scalars(
-                    select(NotificationRule).where(NotificationRule.watch_task_id == task.id, NotificationRule.enabled.is_(True))
-                )
-            ).all()
+        return await dispatch_task_notifications(
+            session,
+            task=task,
+            run=run,
+            observation=observation,
+            effective_price=effective_price,
+            email_provider=self.email_provider,
+            now_fn=utcnow,
         )
-        for rule in rules:
-            latest_delivery = await session.scalar(
-                select(DeliveryEvent)
-                .where(DeliveryEvent.watch_task_id == task.id, DeliveryEvent.recipient == rule.recipient_email)
-                .order_by(desc(DeliveryEvent.created_at))
-                .limit(1)
-            )
-            if latest_delivery is not None and latest_delivery.created_at >= utcnow() - timedelta(minutes=rule.cooldown_minutes):
-                continue
-
-            payload = EmailDispatchPayload(
-                recipient=rule.recipient_email,
-                subject=f"DealWatch alert for task #{task.id}",
-                template_key=rule.template_key,
-                html_body=(
-                    f"<h1>DealWatch Alert</h1>"
-                    f"<p>{observation.title_snapshot}</p>"
-                    f"<p>Listed price: ${observation.listed_price:.2f}</p>"
-                    f"<p>Effective price: ${effective_price:.2f}</p>"
-                    f"<p>Source: {observation.source_url}</p>"
-                ),
-                metadata={"subject_date": utcnow().strftime("%Y-%m-%d")},
-            )
-            event = DeliveryEvent(
-                watch_task_id=task.id,
-                task_run_id=run.id,
-                provider="unknown",
-                channel="email",
-                recipient=rule.recipient_email,
-                template_key=rule.template_key,
-                status=DeliveryStatus.QUEUED.value,
-                created_at=utcnow(),
-            )
-            session.add(event)
-            await session.flush()
-            try:
-                result = await self.email_provider.send(payload) if self.email_provider is not None else None
-                if result is None:
-                    raise RuntimeError("email_provider_unavailable")
-                event.provider = result.provider
-                event.status = DeliveryStatus.SENT.value
-                event.provider_message_id = result.message_id
-                event.provider_payload_json = result.payload
-                event.sent_at = utcnow()
-            except Exception as exc:
-                event.status = DeliveryStatus.FAILED.value
-                event.provider = "smtp"
-                event.provider_payload_json = {"error": str(exc)}
-            await session.flush()
-            deliveries.append(event)
-        return deliveries
 
     async def _dispatch_group_notifications(
         self,
@@ -2262,61 +2003,15 @@ class ProductService:
         *,
         decision_reason: str,
     ) -> list[DeliveryEvent]:
-        if not group.notifications_enabled:
-            return []
-
-        latest_delivery = await session.scalar(
-            select(DeliveryEvent)
-            .where(DeliveryEvent.watch_group_id == group.id, DeliveryEvent.recipient == group.recipient_email)
-            .order_by(desc(DeliveryEvent.created_at))
-            .limit(1)
+        return await dispatch_group_notifications(
+            session,
+            group=group,
+            run=run,
+            winner=winner,
+            decision_reason=decision_reason,
+            email_provider=self.email_provider,
+            now_fn=utcnow,
         )
-        if latest_delivery is not None and latest_delivery.created_at >= utcnow() - timedelta(minutes=group.cooldown_minutes):
-            return []
-
-        payload = EmailDispatchPayload(
-            recipient=group.recipient_email,
-            subject=f"DealWatch group alert for group #{group.id}",
-            template_key="watch-group-threshold-hit",
-            html_body=(
-                f"<h1>DealWatch Group Alert</h1>"
-                f"<p>{winner['title_snapshot']}</p>"
-                f"<p>Store: {winner['store_key']}</p>"
-                f"<p>Listed price: ${float(winner['listed_price']):.2f}</p>"
-                f"<p>Effective price: ${float(winner['effective_price']):.2f}</p>"
-                f"<p>Decision reason: {decision_reason}</p>"
-            ),
-            metadata={"subject_date": utcnow().strftime("%Y-%m-%d")},
-        )
-        event = DeliveryEvent(
-            watch_task_id=None,
-            watch_group_id=group.id,
-            task_run_id=None,
-            watch_group_run_id=run.id,
-            provider="unknown",
-            channel="email",
-            recipient=group.recipient_email,
-            template_key="watch-group-threshold-hit",
-            status=DeliveryStatus.QUEUED.value,
-            created_at=utcnow(),
-        )
-        session.add(event)
-        await session.flush()
-        try:
-            result = await self.email_provider.send(payload) if self.email_provider is not None else None
-            if result is None:
-                raise RuntimeError("email_provider_unavailable")
-            event.provider = result.provider
-            event.status = DeliveryStatus.SENT.value
-            event.provider_message_id = result.message_id
-            event.provider_payload_json = result.payload
-            event.sent_at = utcnow()
-        except Exception as exc:
-            event.status = DeliveryStatus.FAILED.value
-            event.provider = "smtp"
-            event.provider_payload_json = {"error": str(exc)}
-        await session.flush()
-        return [event]
 
     def _prepare_task_run_artifact_dir(self, task: WatchTask, run: TaskRun) -> Path:
         artifact_dir = self.settings.RUNS_DIR / "watch-tasks" / task.id / run.id
@@ -2805,14 +2500,7 @@ class ProductService:
 
     @staticmethod
     def _validate_compare_preview_result(compare_result: dict[str, Any]) -> None:
-        if not isinstance(compare_result, dict):
-            raise ValueError("compare_result_invalid")
-        if not isinstance(compare_result.get("comparisons"), list):
-            raise ValueError("compare_result_invalid")
-        if not isinstance(compare_result.get("matches"), list):
-            raise ValueError("compare_result_invalid")
-        if "submitted_count" not in compare_result or "resolved_count" not in compare_result:
-            raise ValueError("compare_result_invalid")
+        validate_compare_preview_result_payload(compare_result)
 
     def _build_compare_evidence_truth(
         self,
@@ -2821,119 +2509,11 @@ class ProductService:
         zip_code: str,
         compare_result: dict[str, Any],
     ) -> dict[str, Any]:
-        comparisons = list(compare_result.get("comparisons", []))
-        matches = list(compare_result.get("matches", []))
-        successful = [item for item in comparisons if item.get("fetch_succeeded")]
-        group_ready = [
-            item
-            for item in successful
-            if bool((item.get("support_contract") or {}).get("can_create_watch_group"))
-        ]
-        unsupported = [item for item in comparisons if not item.get("supported", True)]
-        failed_fetch = [
-            item
-            for item in comparisons
-            if item.get("supported", True) and not item.get("fetch_succeeded", False)
-        ]
-        strongest_match_score = max((float(item.get("score") or 0.0) for item in matches), default=0.0)
-        if len(successful) <= 0:
-            recommended_next_step_hint = {
-                "action": "retry_compare",
-                "reason_code": "no_successful_candidates",
-                "summary": "No candidate resolved successfully yet, so rerun compare before saving anything durable.",
-                "successful_candidate_count": len(successful),
-                "strongest_match_score": strongest_match_score,
-            }
-        elif len(successful) == 1:
-            recommended_next_step_hint = {
-                "action": "create_watch_task",
-                "reason_code": "single_resolved_candidate",
-                "summary": "Only one candidate resolved successfully, so a single watch task is the safest next step.",
-                "successful_candidate_count": len(successful),
-                "strongest_match_score": strongest_match_score,
-            }
-        elif len(group_ready) == 1:
-            recommended_next_step_hint = {
-                "action": "create_watch_task",
-                "reason_code": "single_group_capable_candidate",
-                "summary": (
-                    "Multiple rows resolved, but only one row is currently eligible for a compare-aware watch group, "
-                    "so a single watch task is the safest durable next step."
-                ),
-                "successful_candidate_count": len(successful),
-                "strongest_match_score": strongest_match_score,
-            }
-        elif len(group_ready) >= 2 and strongest_match_score >= 80:
-            recommended_next_step_hint = {
-                "action": "create_watch_group",
-                "reason_code": "multi_candidate_strong_match",
-                "summary": "Multiple candidates resolved and the strongest match signal is strong, so keep them together as a watch group.",
-                "successful_candidate_count": len(successful),
-                "strongest_match_score": strongest_match_score,
-            }
-        elif len(group_ready) < 2:
-            recommended_next_step_hint = {
-                "action": "review_before_save",
-                "reason_code": "group_capability_gap",
-                "summary": (
-                    "Rows resolved successfully, but the current store-capability contract does not yet support a "
-                    "compare-aware watch group for enough of them."
-                ),
-                "successful_candidate_count": len(successful),
-                "strongest_match_score": strongest_match_score,
-            }
-        else:
-            recommended_next_step_hint = {
-                "action": "review_before_save",
-                "reason_code": "multi_candidate_weak_match",
-                "summary": "More than one candidate resolved, but the strongest match signal is weak enough that you should review before saving.",
-                "successful_candidate_count": len(successful),
-                "strongest_match_score": strongest_match_score,
-            }
-
-        risk_note_items: list[dict[str, Any]] = []
-        if unsupported:
-            risk_note_items.append(
-                {
-                    "code": "unsupported_inputs_present",
-                    "message": f"{len(unsupported)} URL(s) are unsupported.",
-                }
-            )
-        if failed_fetch:
-            risk_note_items.append(
-                {
-                    "code": "failed_fetch_candidates_present",
-                    "message": f"{len(failed_fetch)} candidate(s) failed to fetch.",
-                }
-            )
-        if len(successful) < 2:
-            risk_note_items.append(
-                {
-                    "code": "limited_successful_candidates",
-                    "message": "There are fewer than two successful candidates, so a compare-aware group may not be justified yet.",
-                }
-            )
-        if matches and strongest_match_score < 80:
-            risk_note_items.append(
-                {
-                    "code": "match_confidence_not_high",
-                    "message": "The strongest match score is still below the high-confidence range.",
-                }
-            )
-
-        return {
-            "submitted_inputs": list(submitted_urls),
-            "zip_code": zip_code,
-            "submitted_count": int(compare_result.get("submitted_count") or len(submitted_urls)),
-            "resolved_count": int(compare_result.get("resolved_count") or len(successful)),
-            "comparisons": comparisons,
-            "matches": matches,
-            "recommended_next_step_hint": recommended_next_step_hint,
-            "risk_notes": [item["message"] for item in risk_note_items],
-            "risk_note_items": risk_note_items,
-            "successful_candidate_count": len(successful),
-            "strongest_match_score": strongest_match_score,
-        }
+        return build_compare_evidence_truth_payload(
+            submitted_urls=submitted_urls,
+            zip_code=zip_code,
+            compare_result=compare_result,
+        )
 
     def _build_compare_support_contract(
         self,
@@ -2941,121 +2521,10 @@ class ProductService:
         store_key: str | None,
         intake_status: str,
     ) -> dict[str, Any]:
-        capability = STORE_CAPABILITY_REGISTRY.get(store_key) if store_key is not None else None
-        support_tier = capability.support_tier if capability is not None else "limited_unofficial"
-        support_channel = "official" if capability is not None else "limited"
-        missing_capabilities = []
-        if capability is not None:
-            missing_capabilities = [
-                capability_name
-                for capability_name, enabled in (
-                    ("compare_intake", capability.supports_compare_intake),
-                    ("watch_task", capability.supports_watch_task),
-                    ("watch_group", capability.supports_watch_group),
-                    ("recovery", capability.supports_recovery),
-                    ("cashback", capability.cashback_supported),
-                )
-                if not enabled
-            ]
-
-        summary = (
-            "This row is on the full official product path. Compare intake, watch creation, compare-aware groups, "
-            "recovery, and cashback-aware review are all available once live offer evidence is present."
+        return build_compare_support_contract_payload(
+            store_key=store_key,
+            intake_status=intake_status,
         )
-        next_step = "Review the compare evidence, then create either a single watch task or a compare-aware watch group."
-        can_create_watch_task = capability.supports_watch_task if capability is not None else False
-        can_create_watch_group = capability.supports_watch_group if capability is not None else False
-        cashback_supported = capability.cashback_supported if capability is not None else False
-        notifications_supported = can_create_watch_task or can_create_watch_group
-
-        if intake_status == "unsupported_store_host":
-            summary = (
-                "This host is not in the official DealWatch store registry yet. "
-                "The row can stay in compare review and repo-local evidence, but it cannot become live watch state."
-            )
-            next_step = "Keep it as compare evidence only, or submit a URL from an officially supported store."
-            can_create_watch_task = False
-            can_create_watch_group = False
-            cashback_supported = False
-            notifications_supported = False
-            missing_capabilities = ["official_store_registry", "watch_task", "watch_group", "recovery", "cashback"]
-        elif intake_status == "unsupported_store_path":
-            summary = (
-                "The store host is recognized, but this URL shape is not an officially supported product path yet. "
-                "DealWatch can keep it in compare review and local evidence, but not as live watch state."
-            )
-            next_step = "Submit a supported product-detail URL for this store, or keep this row as compare evidence only."
-            can_create_watch_task = False
-            can_create_watch_group = False
-            cashback_supported = False
-            notifications_supported = False
-        elif intake_status == "store_disabled":
-            summary = (
-                "This store is part of the official registry, but its runtime binding is currently disabled. "
-                "The row can stay in compare review and evidence, but live watch actions are paused."
-            )
-            next_step = "Re-enable the store binding before creating a watch task or watch group from this row."
-            can_create_watch_task = False
-            can_create_watch_group = False
-            cashback_supported = False
-            notifications_supported = False
-        elif intake_status == "offer_fetch_failed":
-            summary = (
-                "The store and URL path are supported, but this compare run did not fetch live offer evidence. "
-                "Until fetch succeeds, keep the row as review/evidence instead of durable watch state."
-            )
-            next_step = "Retry compare or inspect the store/runtime condition before saving live watch state."
-            can_create_watch_task = False
-            can_create_watch_group = False
-            cashback_supported = False
-            notifications_supported = False
-        elif support_tier == "official_full":
-            summary = (
-                "This row is on the full official store path. "
-                "Compare intake, single-watch, compare-aware watch group, recovery, and cashback all sit inside the current repo-local product path."
-            )
-            next_step = (
-                "If multiple strong rows survive compare, keep them together as a watch group. "
-                "If only one row survives cleanly, a single watch task is still the safest durable next step."
-            )
-        elif support_tier == "official_partial":
-            if can_create_watch_group:
-                summary = (
-                    "This row is on an officially supported but still partial store path. "
-                    "Compare intake, single-watch flow, and compare-aware watch groups are available, "
-                    "while recovery and cashback closure still remain intentionally limited."
-                )
-                next_step = (
-                    "Use the currently supported compare, single-watch, or compare-aware watch-group path, "
-                    "and keep recovery/cashback claims deferred until those capabilities are truly landed."
-                )
-            else:
-                summary = (
-                    "This row is on an officially supported but still partial store path. "
-                    "Compare intake and single-watch flow are available, while broader group/recovery closure is still limited."
-                )
-                next_step = "Use the currently supported compare or single-watch path, and do not overclaim missing store capabilities."
-        elif support_tier == "official_in_progress":
-            summary = (
-                "This store is in official onboarding progress, so the repo can describe the path but should not market it as full support yet."
-            )
-            next_step = "Keep the store parked until contract tests, runtime checks, and product-path coverage are ready."
-
-        return {
-            "support_channel": support_channel,
-            "store_support_tier": support_tier,
-            "support_reason_codes": list(capability.support_reason_codes) if capability is not None else [],
-            "next_step_codes": list(capability.next_step_codes) if capability is not None else [],
-            "intake_status": intake_status,
-            "summary": summary,
-            "next_step": next_step,
-            "can_save_compare_evidence": True,
-            "can_create_watch_task": can_create_watch_task and intake_status == "supported",
-            "can_create_watch_group": can_create_watch_group and intake_status == "supported",
-            "cashback_supported": cashback_supported and intake_status == "supported",
-            "notifications_supported": notifications_supported and intake_status == "supported",
-            "missing_capabilities": missing_capabilities,
-        }
 
     def _build_compare_evidence_payload(
         self,
@@ -3063,54 +2532,11 @@ class ProductService:
         package_id: str,
         compare_evidence: dict[str, Any],
     ) -> dict[str, Any]:
-        comparisons = list(compare_evidence.get("comparisons", []))
-        matches = list(compare_evidence.get("matches", []))
-        recommended_next_step_hint = dict(compare_evidence.get("recommended_next_step_hint") or {})
-        risk_note_items = list(compare_evidence.get("risk_note_items", []))
-        risk_notes = list(compare_evidence.get("risk_notes", []))
-
-        headline = str(recommended_next_step_hint.get("summary") or "Compare evidence package")
-        saved_at = utcnow().isoformat()
-        artifact_dir = self.settings.RUNS_DIR / "compare-evidence" / package_id
-        summary = {
-            "artifact_id": package_id,
-            "artifact_kind": "compare_evidence",
-            "storage_scope": "runtime_local_artifact",
-            "created_at": saved_at,
-            "saved_at": saved_at,
-            "headline": headline,
-            "recommended_next_step_hint": recommended_next_step_hint,
-            "submitted_inputs": list(compare_evidence.get("submitted_inputs", [])),
-            "submitted_count": int(compare_evidence.get("submitted_count") or 0),
-            "resolved_count": int(compare_evidence.get("resolved_count") or 0),
-            "successful_candidate_count": int(compare_evidence.get("successful_candidate_count") or 0),
-            "strongest_match_score": float(compare_evidence.get("strongest_match_score") or 0.0),
-            "risk_notes": risk_notes,
-            "risk_note_items": risk_note_items,
-            "artifact_path": str(artifact_dir / "compare_evidence.json"),
-            "html_path": str(artifact_dir / "compare_evidence.html"),
-            "detail_url": f"/api/compare/evidence/{package_id}",
-            "html_url": f"/api/compare/evidence-packages/{package_id}/html",
-        }
-        return {
-            "artifact_id": package_id,
-            "artifact_kind": "compare_evidence",
-            "storage_scope": "runtime_local_artifact",
-            "saved_at": saved_at,
-            "artifact_path": summary["artifact_path"],
-            "html_path": summary["html_path"],
-            "source_of_truth_note": "This evidence pack is a runtime/local artifact and does not become PostgreSQL product source of truth.",
-            "submitted_inputs": list(compare_evidence.get("submitted_inputs", [])),
-            "zip_code": compare_evidence.get("zip_code"),
-            "submitted_count": summary["submitted_count"],
-            "resolved_count": summary["resolved_count"],
-            "comparisons": comparisons,
-            "matches": matches,
-            "recommended_next_step_hint": recommended_next_step_hint,
-            "risk_notes": risk_notes,
-            "risk_note_items": risk_note_items,
-            "summary": summary,
-        }
+        return build_compare_evidence_payload_artifact(
+            package_id=package_id,
+            compare_evidence=compare_evidence,
+            runs_dir=self.settings.RUNS_DIR,
+        )
 
     def _build_compare_recommendation_shadow_payload(
         self,
@@ -3118,202 +2544,17 @@ class ProductService:
         package_id: str,
         compare_evidence: dict[str, Any],
     ) -> dict[str, Any]:
-        recommended_next_step_hint = dict(compare_evidence.get("recommended_next_step_hint") or {})
-        risk_note_items = list(compare_evidence.get("risk_note_items", []))
-        risk_notes = list(compare_evidence.get("risk_notes", []))
-        successful_candidate_count = int(compare_evidence.get("successful_candidate_count") or 0)
-        strongest_match_score = float(compare_evidence.get("strongest_match_score") or 0.0)
-        reason_code = str(recommended_next_step_hint.get("reason_code") or "compare_shadow_unknown")
-        action = str(recommended_next_step_hint.get("action") or "review_before_save")
-
-        verdict = "recheck_later"
-        basis = [
-            str(
-                recommended_next_step_hint.get("summary")
-                or "Deterministic compare evidence remains the primary review surface."
-            )
-        ]
-        uncertainty_notes = [
-            "Internal-only shadow artifact: deterministic compare evidence remains the source of truth."
-        ]
-        abstention = {
-            "active": False,
-            "code": None,
-            "reason": None,
-        }
-
-        evidence_strength = "strong_compare_wait"
-        if reason_code in {"no_successful_candidates", "single_resolved_candidate", "single_group_capable_candidate"}:
-            verdict = "insufficient_evidence"
-            abstention = {
-                "active": True,
-                "code": reason_code,
-                "reason": (
-                    "The compare step does not yet have enough cross-store evidence to make an honest purchase-timing call."
-                ),
-            }
-            basis.append(
-                "Cross-store compare context is still incomplete, so this shadow artifact abstains instead of forcing a recommendation."
-            )
-            evidence_strength = "insufficient_compare_context"
-        elif reason_code == "multi_candidate_strong_match":
-            verdict = "wait"
-            basis.append(
-                "Multiple candidates still look plausibly comparable, so keeping them under watch is safer than turning compare evidence into a buy-now claim."
-            )
-        else:
-            verdict = "recheck_later"
-            basis.append(
-                "The compare evidence still needs another review or rerun before an internal reviewer should trust a stronger recommendation."
-            )
-            evidence_strength = "needs_recheck"
-
-        if successful_candidate_count <= 0:
-            uncertainty_notes.append("No candidate resolved successfully in this compare run.")
-        elif successful_candidate_count < 2:
-            uncertainty_notes.append("Fewer than two successful candidates survived compare.")
-        if strongest_match_score < 80:
-            uncertainty_notes.append(
-                f"Strongest match score is only {strongest_match_score:.1f}, which is below the current high-confidence compare range."
-            )
-        uncertainty_notes.extend(risk_notes)
-        uncertainty_notes = list(dict.fromkeys(note for note in uncertainty_notes if note))
-
-        evidence_refs = [
-            {
-                "code": reason_code,
-                "label": "Deterministic next-step reason",
-                "anchor": "compare_evidence.recommended_next_step_hint.reason_code",
-            },
-            {
-                "code": action,
-                "label": "Deterministic next-step action",
-                "anchor": "compare_evidence.recommended_next_step_hint.action",
-            },
-            {
-                "code": f"successful_candidate_count:{successful_candidate_count}",
-                "label": "Successful candidate count",
-                "anchor": "compare_evidence.successful_candidate_count",
-            },
-            {
-                "code": "strongest_match_score",
-                "label": f"Strongest match score {strongest_match_score:.1f}",
-                "anchor": "compare_evidence.strongest_match_score",
-            },
-        ]
-        for item in risk_note_items[:3]:
-            evidence_refs.append(
-                {
-                    "code": str(item.get("code") or "compare_risk"),
-                    "label": str(item.get("message") or "Compare risk note"),
-                    "anchor": "compare_evidence.risk_note_items",
-                }
-            )
-
-        saved_at = utcnow().isoformat()
-        artifact_dir = self.settings.RUNS_DIR / "compare-evidence" / package_id
-        status = "abstained" if abstention["active"] else "issued"
-        review_seed_suggestion = "correct_abstention" if abstention["active"] else "correct_verdict"
-        return {
-            "artifact_id": package_id,
-            "artifact_kind": "recommendation_shadow",
-            "shadow_contract_version": "v1",
-            "storage_scope": "runtime_local_artifact",
-            "mode": "internal_only_shadow",
-            "visibility": "internal_only",
-            "surface_anchor": "compare_preview",
-            "saved_at": saved_at,
-            "artifact_path": str(artifact_dir / "recommendation_shadow.json"),
-            "html_path": str(artifact_dir / "recommendation_shadow.html"),
-            "review_use_cases": ["internal_review", "replay", "compare"],
-            "verdict_vocabulary": ["buy_now", "wait", "recheck_later", "insufficient_evidence"],
-            "status": status,
-            "deterministic_truth_anchor": {
-                "artifact_kind": "compare_evidence",
-                "artifact_path": str(artifact_dir / "compare_evidence.json"),
-                "html_path": str(artifact_dir / "compare_evidence.html"),
-                "note": (
-                    "This shadow artifact is advisory-only for internal review and must stay subordinate to deterministic compare evidence."
-                ),
-            },
-            "review": {
-                "state": "pending_internal_review",
-                "owner": None,
-                "reason_code": None,
-                "notes": None,
-                "observed_outcome": None,
-            },
-            "monitoring": {
-                "input_profile": "compare_preview_only",
-                "evidence_strength": evidence_strength,
-                "abstention_code": abstention["code"],
-                "review_state": "pending_internal_review",
-                "future_launch_blocked": True,
-                "review_seed_suggestion": review_seed_suggestion,
-            },
-            "shadow_recommendation": {
-                "verdict": verdict,
-                "basis": basis,
-                "uncertainty_notes": uncertainty_notes,
-                "abstention": abstention,
-                "evidence_refs": evidence_refs,
-            },
-        }
+        return build_compare_recommendation_shadow_payload_artifact(
+            package_id=package_id,
+            compare_evidence=compare_evidence,
+            runs_dir=self.settings.RUNS_DIR,
+        )
 
     async def _build_compare_ai_explain(self, compare_evidence: dict[str, Any]) -> dict[str, Any]:
-        matches = list(compare_evidence.get("matches", []))
-        strongest_match = matches[0] if matches else None
-        next_step = dict(compare_evidence.get("recommended_next_step_hint") or {})
-        evidence_refs = [
-            {
-                "code": str(next_step.get("reason_code") or "compare_next_step"),
-                "label": "Recommended next-step reason",
-                "anchor": "recommended_next_step_hint.reason_code",
-            },
-            {
-                "code": str(next_step.get("action") or "review_compare"),
-                "label": "Recommended next-step action",
-                "anchor": "recommended_next_step_hint.action",
-            },
-        ]
-        if strongest_match is not None:
-            evidence_refs.append(
-                {
-                    "code": "strongest_match_score",
-                    "label": (
-                        f"{strongest_match.get('left_store_key')} vs {strongest_match.get('right_store_key')}"
-                    ),
-                    "anchor": "matches[0].score",
-                }
-            )
-        for item in list(compare_evidence.get("risk_note_items", []))[:3]:
-            evidence_refs.append(
-                {
-                    "code": str(item.get("code") or "compare_risk"),
-                    "label": "Compare risk note",
-                    "anchor": "risk_note_items",
-                }
-            )
-
-        bullets = [
-            (
-                f"{int(compare_evidence.get('resolved_count') or 0)} of "
-                f"{int(compare_evidence.get('submitted_count') or 0)} candidates resolved successfully."
-            ),
-            str(next_step.get("summary") or "Review the deterministic compare evidence before deciding."),
-        ]
-        if strongest_match is not None:
-            bullets.append(
-                f"Strongest pair score is {float(strongest_match.get('score') or 0.0):.1f}."
-            )
-        return await self.ai_service.build(
-            enabled=bool(self.settings.AI_COMPARE_EXPLAIN_ENABLED),
-            label="AI Compare Explainer",
-            title="Should these candidates stay together?",
-            summary=str(next_step.get("summary") or "Compare finished without a durable AI explanation."),
-            bullets=bullets,
-            evidence_refs=evidence_refs,
-            caution_notes=list(compare_evidence.get("risk_notes", [])),
+        return await build_compare_ai_explain_payload(
+            ai_service=self.ai_service,
+            compare_explain_enabled=bool(self.settings.AI_COMPARE_EXPLAIN_ENABLED),
+            compare_evidence=compare_evidence,
         )
 
     async def _build_watch_group_ai_decision_explain(
@@ -3322,53 +2563,11 @@ class ProductService:
         group: WatchGroup,
         decision_explain: dict[str, Any],
     ) -> dict[str, Any]:
-        winner = decision_explain.get("winner") or {}
-        runner_up = decision_explain.get("runner_up") or {}
-        evidence_refs = [
-            {
-                "code": str((decision_explain.get("reason") or {}).get("code") or "group_decision_reason"),
-                "label": "Decision reason",
-                "anchor": "decision_explain.reason.code",
-            },
-            {
-                "code": str(winner.get("member_id") or "no_winner"),
-                "label": "Winner anchor",
-                "anchor": "decision_explain.winner.member_id",
-            },
-        ]
-        if runner_up.get("member_id"):
-            evidence_refs.append(
-                {
-                    "code": str(runner_up.get("member_id")),
-                    "label": "Runner-up anchor",
-                    "anchor": "decision_explain.runner_up.member_id",
-                }
-            )
-        for item in list(decision_explain.get("risk_note_items", []))[:3]:
-            evidence_refs.append(
-                {
-                    "code": str(item.get("code") or "group_risk"),
-                    "label": "Decision risk note",
-                    "anchor": "decision_explain.risk_note_items",
-                }
-            )
-
-        bullets = [
-            str(decision_explain.get("headline") or "No group decision is available yet."),
-            f"Current reliability is {decision_explain.get('reliability') or 'unknown'}.",
-        ]
-        if winner.get("title"):
-            bullets.append(f"Winner candidate: {winner['title']}.")
-        skip_reason = None if winner.get("member_id") else "No latest successful group winner exists yet."
-        return await self.ai_service.build(
-            enabled=bool(self.settings.AI_GROUP_EXPLAIN_ENABLED),
-            label="AI Watch Group Decision Explainer",
-            title=f"Why {group.title} currently prefers this winner",
-            summary=str(decision_explain.get("headline") or "No group decision is available yet."),
-            bullets=bullets,
-            evidence_refs=evidence_refs,
-            caution_notes=list(decision_explain.get("risk_notes", [])),
-            skip_reason=skip_reason,
+        return await build_watch_group_ai_decision_explain(
+            ai_service=self.ai_service,
+            group_explain_enabled=bool(self.settings.AI_GROUP_EXPLAIN_ENABLED),
+            group=group,
+            decision_explain=decision_explain,
         )
 
     async def _build_recovery_ai_copilot(
@@ -3419,132 +2618,10 @@ class ProductService:
         )
 
     def _render_compare_evidence_html(self, payload: dict[str, Any]) -> str:
-        summary = payload["summary"]
-        comparisons = payload.get("comparisons", [])
-        matches = payload.get("matches", [])
-        comparison_rows = "\n".join(
-            (
-                "<tr>"
-                f"<td>{html.escape(str(item.get('store_key') or 'unknown'))}</td>"
-                f"<td>{html.escape(str(item.get('submitted_url') or ''))}</td>"
-                f"<td>{html.escape(str(item.get('candidate_key') or ''))}</td>"
-                f"<td>{'yes' if item.get('fetch_succeeded') else 'no'}</td>"
-                f"<td>{html.escape(str((item.get('offer') or {}).get('title') or ''))}</td>"
-                f"<td>{html.escape(str(item.get('error_code') or ''))}</td>"
-                "</tr>"
-            )
-            for item in comparisons
-        )
-        match_rows = "\n".join(
-            (
-                "<tr>"
-                f"<td>{html.escape(str(item.get('left_store_key') or ''))}</td>"
-                f"<td>{html.escape(str(item.get('right_store_key') or ''))}</td>"
-                f"<td>{float(item.get('score') or 0.0):.1f}</td>"
-                f"<td>{html.escape(', '.join(item.get('why_like') or []))}</td>"
-                f"<td>{html.escape(', '.join(item.get('why_unlike') or []))}</td>"
-                "</tr>"
-            )
-            for item in matches
-        )
-        submitted_urls = "".join(
-            f"<li>{html.escape(str(item))}</li>"
-            for item in payload.get("submitted_inputs", [])
-        )
-        risk_notes = "".join(
-            f"<li>{html.escape(str(item))}</li>"
-            for item in summary.get("risk_notes", [])
-        )
-        return (
-            "<html><head><meta charset=\"utf-8\"/>"
-            "<style>"
-            "body{font-family:Arial,Helvetica,sans-serif;margin:24px;color:#1f2937;}"
-            "table{border-collapse:collapse;width:100%;margin-top:16px;}"
-            "th,td{border:1px solid #d1d5db;padding:8px;text-align:left;font-size:14px;vertical-align:top;}"
-            "th{background:#f3f4f6;}"
-            ".summary{background:#f8fafc;border:1px solid #e5e7eb;border-radius:16px;padding:16px;margin-bottom:20px;}"
-            ".eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#b45309;font-weight:700;}"
-            "</style></head><body>"
-            "<div class=\"summary\">"
-            "<div class=\"eyebrow\">Compare Evidence Artifact</div>"
-            f"<h1>{html.escape(summary['headline'])}</h1>"
-            f"<p>Saved at {html.escape(summary['saved_at'])}. Recommended next step: {html.escape(summary['recommended_next_step_hint']['action'])}.</p>"
-            f"<p>Submitted {summary['submitted_count']} URL(s), resolved {summary['resolved_count']} candidate(s), strongest match score {float(summary['strongest_match_score'] or 0.0):.1f}.</p>"
-            "</div>"
-            "<h2>Input</h2>"
-            f"<p>ZIP code: {html.escape(str(payload.get('zip_code') or ''))}</p>"
-            f"<ul>{submitted_urls}</ul>"
-            "<h2>Risk Notes</h2>"
-            f"<ul>{risk_notes or '<li>No additional risk notes.</li>'}</ul>"
-            "<h2>Candidate Results</h2>"
-            "<table><tr><th>Store</th><th>Submitted URL</th><th>Candidate Key</th><th>Fetched</th><th>Title</th><th>Error</th></tr>"
-            f"{comparison_rows}</table>"
-            "<h2>Match Signals</h2>"
-            "<table><tr><th>Left</th><th>Right</th><th>Score</th><th>Why Like</th><th>Why Unlike</th></tr>"
-            f"{match_rows}</table>"
-            "</body></html>"
-        )
+        return render_compare_evidence_html_payload(payload)
 
     def _render_compare_recommendation_shadow_html(self, payload: dict[str, Any]) -> str:
-        recommendation = payload["shadow_recommendation"]
-        review = payload.get("review") or {}
-        monitoring = payload.get("monitoring") or {}
-        evidence_refs = "".join(
-            (
-                "<tr>"
-                f"<td>{html.escape(str(item.get('code') or ''))}</td>"
-                f"<td>{html.escape(str(item.get('label') or ''))}</td>"
-                f"<td>{html.escape(str(item.get('anchor') or ''))}</td>"
-                "</tr>"
-            )
-            for item in recommendation.get("evidence_refs", [])
-        )
-        basis_items = "".join(
-            f"<li>{html.escape(str(item))}</li>"
-            for item in recommendation.get("basis", [])
-        )
-        uncertainty_items = "".join(
-            f"<li>{html.escape(str(item))}</li>"
-            for item in recommendation.get("uncertainty_notes", [])
-        )
-        abstention = recommendation.get("abstention") or {}
-        abstention_summary = "No abstention gate is active for this shadow verdict."
-        if abstention.get("active"):
-            abstention_summary = (
-                f"Abstention active: {html.escape(str(abstention.get('code') or 'shadow_abstention'))} - "
-                f"{html.escape(str(abstention.get('reason') or 'No abstention reason provided.'))}"
-            )
-        review_summary = (
-            f"Review state: {html.escape(str(review.get('state') or 'pending_internal_review'))}. "
-            f"Agreement bucket: {html.escape(str(monitoring.get('agreement_bucket') or 'pending'))}."
-        )
-        return (
-            "<html><head><meta charset=\"utf-8\"/>"
-            "<style>"
-            "body{font-family:Arial,Helvetica,sans-serif;margin:24px;color:#1f2937;}"
-            "table{border-collapse:collapse;width:100%;margin-top:16px;}"
-            "th,td{border:1px solid #d1d5db;padding:8px;text-align:left;font-size:14px;vertical-align:top;}"
-            "th{background:#f3f4f6;}"
-            ".summary{background:#fff7ed;border:1px solid #fdba74;border-radius:16px;padding:16px;margin-bottom:20px;}"
-            ".eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#b45309;font-weight:700;}"
-            "</style></head><body>"
-            "<div class=\"summary\">"
-            "<div class=\"eyebrow\">Internal Recommendation Shadow Artifact</div>"
-            f"<h1>{html.escape(str(recommendation['verdict']))}</h1>"
-            f"<p>Saved at {html.escape(str(payload['saved_at']))}. This is internal-only and does not change the public compare contract.</p>"
-            f"<p>{html.escape(str(payload['deterministic_truth_anchor']['note']))}</p>"
-            f"<p>{abstention_summary}</p>"
-            f"<p>{review_summary}</p>"
-            "</div>"
-            "<h2>Basis</h2>"
-            f"<ul>{basis_items}</ul>"
-            "<h2>Uncertainty</h2>"
-            f"<ul>{uncertainty_items}</ul>"
-            "<h2>Evidence Refs</h2>"
-            "<table><tr><th>Code</th><th>Label</th><th>Anchor</th></tr>"
-            f"{evidence_refs}</table>"
-            "</body></html>"
-        )
+        return render_compare_recommendation_shadow_html_payload(payload)
 
     def _render_recommendation_shadow_monitoring_summary_html(self, payload: dict[str, Any]) -> str:
         summary = payload["summary"]
@@ -3808,71 +2885,16 @@ class ProductService:
         *,
         checked_at: str,
     ) -> dict[str, Any]:
-        values = load_settings_values(self.settings)
-        postmark_token = values.get("POSTMARK_SERVER_TOKEN", "").strip()
-        smtp_host = values.get("SMTP_HOST", "").strip()
-        smtp_user = values.get("SMTP_USER", "").strip()
-        smtp_password = values.get("SMTP_PASSWORD", "").strip()
-        has_postmark = bool(postmark_token and not is_placeholder(postmark_token))
-        has_smtp = bool(
-            smtp_host
-            and smtp_user
-            and smtp_password
-            and not any(is_placeholder(item) for item in (smtp_host, smtp_user, smtp_password))
-        )
-        latest_delivery = await session.scalar(
-            select(DeliveryEvent).order_by(desc(DeliveryEvent.created_at)).limit(1)
-        )
-        provider_mode = "postmark" if has_postmark else ("smtp" if has_smtp else "none")
-        return self._build_readiness_check(
-            key="notifications",
-            label="Notification path",
-            severity="advisory",
-            status="ready" if provider_mode != "none" else "warning",
-            reason="notification_provider_configured" if provider_mode != "none" else "notification_provider_missing",
-            message=(
-                f"{provider_mode.upper()} delivery is configured."
-                if provider_mode != "none"
-                else "No real email delivery provider is configured yet."
-            ),
+        return await build_notification_readiness_check(
+            session,
+            settings=self.settings,
             checked_at=checked_at,
-            detail={
-                "provider_mode": provider_mode,
-                "latest_delivery_status": latest_delivery.status if latest_delivery is not None else None,
-                "latest_delivery_at": latest_delivery.created_at.isoformat() if latest_delivery is not None else None,
-            },
         )
 
     def _build_smoke_readiness_check(self, *, checked_at: str) -> dict[str, Any]:
-        smoke_dir = self._get_smoke_artifact_dir()
-        expected_files = ["api-smoke.log", "worker-smoke.log"]
-        smoke_logs = [path for path in smoke_dir.rglob("*.log")] if smoke_dir.exists() else []
-        latest_log = max(smoke_logs, key=lambda path: path.stat().st_mtime) if smoke_logs else None
-        found_names = {path.name for path in smoke_logs}
-        has_complete_pair = all(name in found_names for name in expected_files)
-        latest_log_at = (
-            datetime.fromtimestamp(latest_log.stat().st_mtime, tz=timezone.utc).isoformat()
-            if latest_log is not None
-            else None
-        )
-        return self._build_readiness_check(
-            key="smoke",
-            label="Repo-local smoke evidence",
-            severity="advisory",
-            status="ready" if has_complete_pair else "warning",
-            reason="smoke_evidence_complete" if has_complete_pair else "smoke_evidence_partial_or_missing",
-            message=(
-                "API and worker smoke artifacts are both present."
-                if has_complete_pair
-                else "Smoke evidence is missing or incomplete. Run ./scripts/smoke_product_hermetic.sh to capture a fresh end-to-end pair."
-            ),
+        return build_smoke_readiness_check(
+            smoke_dir=self._get_smoke_artifact_dir(),
             checked_at=checked_at,
-            detail={
-                "smoke_log_count": len(smoke_logs),
-                "latest_log_path": str(latest_log) if latest_log is not None else None,
-                "latest_log_at": latest_log_at,
-                "expected_files": expected_files,
-            },
         )
 
     def _get_smoke_artifact_dir(self) -> Path:
@@ -3890,32 +2912,19 @@ class ProductService:
         checked_at: str,
         detail: dict[str, Any],
     ) -> dict[str, Any]:
-        return {
-            "key": key,
-            "label": label,
-            "severity": severity,
-            "status": status,
-            "reason": reason,
-            "message": message,
-            "summary": message,
-            "checked_at": checked_at,
-            "detail": detail,
-            "metadata": detail,
-        }
+        return build_readiness_check(
+            key=key,
+            label=label,
+            severity=severity,
+            status=status,
+            reason=reason,
+            message=message,
+            checked_at=checked_at,
+            detail=detail,
+        )
 
     def _attention_sort_key(self, item: dict[str, Any]) -> tuple[Any, ...]:
-        priority = {
-            HealthStatus.BLOCKED.value: 0,
-            HealthStatus.NEEDS_ATTENTION.value: 1,
-            HealthStatus.DEGRADED.value: 2,
-            HealthStatus.HEALTHY.value: 3,
-        }
-        return (
-            0 if item["manual_intervention_required"] else 1,
-            priority.get(item["health_status"], 9),
-            item["backoff_until"] or "9999-12-31T23:59:59+00:00",
-            item["title"].lower(),
-        )
+        return attention_sort_key(item)
 
     async def _ensure_owner_preference(self, session: AsyncSession, owner: User) -> UserPreference:
         preference = await session.get(UserPreference, owner.id)
@@ -4028,13 +3037,7 @@ class ProductService:
         winner: dict[str, Any],
         runner_up: dict[str, Any] | None,
     ) -> str:
-        if previous_run is not None and previous_run.winner_member_id and previous_run.winner_member_id != winner["member_id"]:
-            return "winner_changed_to_lower_effective_price"
-        if runner_up is None:
-            return "single_successful_candidate"
-        if float(winner["effective_price"]) < float(winner["listed_price"]):
-            return "lowest_effective_price_with_cashback"
-        return "lowest_effective_price"
+        return build_group_decision_reason(previous_run, winner, runner_up)
 
     def _build_watch_group_decision_explain(
         self,
@@ -4044,264 +3047,12 @@ class ProductService:
         latest_results: list[dict[str, Any]],
         member_map: dict[str, WatchGroupMember],
     ) -> dict[str, Any]:
-        def _decision_summary(code: str | None) -> str | None:
-            summaries = {
-                "winner_changed_to_lower_effective_price": "A different candidate won because it now has the lower effective price.",
-                "single_successful_candidate": "Only one candidate finished successfully in the latest run.",
-                "lowest_effective_price_with_cashback": "The winner has the lowest effective price after cashback.",
-                "lowest_effective_price": "The winner has the lowest effective price among successful candidates.",
-            }
-            return summaries.get(str(code), code)
-
-        def _member_snapshot(member_id: str | None, result_map: dict[str, dict[str, Any]]) -> dict[str, Any] | None:
-            if not member_id:
-                return None
-            result = result_map.get(member_id)
-            member = member_map.get(member_id)
-            if member is None:
-                return None
-            title_snapshot = result.get("title_snapshot") if result else member.title_snapshot
-            return {
-                "member_id": member.id,
-                "title": title_snapshot,
-                "title_snapshot": title_snapshot,
-                "candidate_key": member.candidate_key,
-                "store_key": result.get("store_key") if result else None,
-                "listed_price": result.get("listed_price") if result else None,
-                "effective_price": result.get("effective_price") if result else None,
-                "cashback_amount": result.get("cashback_amount") if result else None,
-                "status": result.get("status") if result else None,
-            }
-
-        def _build_loss_reasons(winner: dict[str, Any] | None, runner_up: dict[str, Any] | None) -> list[dict[str, Any]]:
-            if winner is None or runner_up is None:
-                return []
-            winner_effective = float(winner.get("effective_price") or 0.0)
-            runner_effective = float(runner_up.get("effective_price") or 0.0)
-            winner_listed = float(winner.get("listed_price") or 0.0)
-            runner_listed = float(runner_up.get("listed_price") or 0.0)
-            if runner_effective > winner_effective:
-                delta = round(runner_effective - winner_effective, 2)
-                return [
-                    {
-                        "field": "effective_price",
-                        "winner_value": winner_effective,
-                        "runner_up_value": runner_effective,
-                        "delta": delta,
-                        "summary": f"Runner-up effective price is ${delta:.2f} higher.",
-                    }
-                ]
-            if runner_listed > winner_listed:
-                delta = round(runner_listed - winner_listed, 2)
-                return [
-                    {
-                        "field": "listed_price",
-                        "winner_value": winner_listed,
-                        "runner_up_value": runner_listed,
-                        "delta": delta,
-                        "summary": f"Runner-up listed price is ${delta:.2f} higher.",
-                    }
-                ]
-            return [
-                {
-                    "field": "store_key",
-                    "winner_value": str(winner.get("store_key") or ""),
-                    "runner_up_value": str(runner_up.get("store_key") or ""),
-                    "delta": None,
-                    "summary": "Effective and listed prices tied, so the stable store-key tie-breaker kept the winner first.",
-                }
-            ]
-
-        if latest_run is None:
-            return {
-                "headline": "No group decision yet.",
-                "decision_reason": None,
-                "reason": {"code": None, "summary": None},
-                "sort_basis": "effective_price_then_listed_price",
-                "winner": None,
-                "runner_up": None,
-                "comparison": None,
-                "spread": None,
-                "member_outcomes": [],
-                "candidate_outcomes": {
-                    "successful_count": 0,
-                    "blocked_count": 0,
-                    "failed_count": 0,
-                },
-                "reliability": "weak",
-                "risk_notes": ["Run the group once before trusting any current winner."],
-                "risk_note_items": [
-                    {
-                        "code": "no_latest_run",
-                        "message": "Run the group once before trusting any current winner.",
-                    }
-                ],
-            }
-
-        result_map = {str(item.get("member_id")): item for item in latest_results}
-        successful = [item for item in latest_results if item.get("status") == TaskRunStatus.SUCCEEDED.value]
-        blocked = [item for item in latest_results if item.get("status") == TaskRunStatus.BLOCKED.value]
-        failed = [item for item in latest_results if item.get("status") == TaskRunStatus.FAILED.value]
-        winner = _member_snapshot(latest_run.winner_member_id, result_map)
-        runner_up = _member_snapshot(latest_run.runner_up_member_id, result_map)
-        comparison = None
-        if winner is not None and runner_up is not None:
-            comparison = {
-                "price_spread": latest_run.price_spread,
-                "effective_price_delta": round(
-                    float(runner_up["effective_price"] or 0.0) - float(winner["effective_price"] or 0.0),
-                    2,
-                ),
-                "listed_price_delta": round(
-                    float(runner_up["listed_price"] or 0.0) - float(winner["listed_price"] or 0.0),
-                    2,
-                ),
-                "cashback_delta": round(
-                    float(winner["cashback_amount"] or 0.0) - float(runner_up["cashback_amount"] or 0.0),
-                    2,
-                ),
-            }
-
-        risk_note_items: list[dict[str, Any]] = []
-        if latest_run.status != TaskRunStatus.SUCCEEDED.value:
-            risk_note_items.append(
-                {
-                    "code": "latest_run_not_successful",
-                    "message": "The latest group run did not finish successfully.",
-                }
-            )
-        if len(successful) < 2:
-            risk_note_items.append(
-                {
-                    "code": "limited_successful_candidates",
-                    "message": "This decision is based on fewer than two successful candidates.",
-                }
-            )
-        if blocked:
-            risk_note_items.append(
-                {
-                    "code": "blocked_candidates_present",
-                    "message": "At least one candidate was blocked during the latest run.",
-                }
-            )
-        if failed:
-            risk_note_items.append(
-                {
-                    "code": "failed_candidates_present",
-                    "message": "At least one candidate failed during the latest run.",
-                }
-            )
-        if latest_run.price_spread is not None and float(latest_run.price_spread) <= 0.5:
-            risk_note_items.append(
-                {
-                    "code": "close_price_spread",
-                    "message": "The top two candidates are close on effective price, so small changes may flip the winner.",
-                }
-            )
-        if group.manual_intervention_required:
-            risk_note_items.append(
-                {
-                    "code": "operator_attention_required",
-                    "message": "Operator attention is currently required before trusting automation again.",
-                }
-            )
-        risk_notes = [item["message"] for item in risk_note_items]
-
-        if latest_run.status != TaskRunStatus.SUCCEEDED.value or group.manual_intervention_required:
-            reliability = "weak"
-        elif blocked or failed or len(successful) < 2 or group.health_status != HealthStatus.HEALTHY.value:
-            reliability = "caution"
-        else:
-            reliability = "strong"
-
-        if winner is None:
-            headline = "No current winner is available."
-        elif runner_up is None:
-            headline = f"{winner['title']} is the only successful candidate from the latest run."
-        else:
-            headline = (
-                f"{winner['title']} currently leads {runner_up['title']} by "
-                f"${float(latest_run.price_spread or 0.0):.2f} on effective price."
-            )
-
-        member_outcomes: list[dict[str, Any]] = []
-        seen_member_ids: set[str] = set()
-        for result in latest_results:
-            member_id = str(result.get("member_id"))
-            member = member_map.get(member_id)
-            seen_member_ids.add(member_id)
-            if member_id == latest_run.winner_member_id:
-                outcome = "winner"
-            elif member_id == latest_run.runner_up_member_id:
-                outcome = "runner_up"
-            elif result.get("status") == TaskRunStatus.SUCCEEDED.value:
-                outcome = "considered"
-            else:
-                outcome = str(result.get("status") or "unknown")
-            member_outcomes.append(
-                {
-                    "member_id": member_id,
-                    "title_snapshot": result.get("title_snapshot") or (member.title_snapshot if member is not None else None),
-                    "candidate_key": member.candidate_key if member is not None else result.get("candidate_key"),
-                    "store_key": result.get("store_key"),
-                    "status": result.get("status"),
-                    "outcome": outcome,
-                    "listed_price": result.get("listed_price"),
-                    "effective_price": result.get("effective_price"),
-                }
-            )
-        for member_id, member in member_map.items():
-            if member_id in seen_member_ids:
-                continue
-            member_outcomes.append(
-                {
-                    "member_id": member_id,
-                    "title_snapshot": member.title_snapshot,
-                    "candidate_key": member.candidate_key,
-                    "store_key": None,
-                    "status": "missing_latest_result",
-                    "outcome": "missing_latest_result",
-                    "listed_price": None,
-                    "effective_price": None,
-                }
-            )
-
-        return {
-            "headline": headline,
-            "decision_reason": latest_run.decision_reason,
-            "reason": {
-                "code": latest_run.decision_reason,
-                "summary": _decision_summary(latest_run.decision_reason),
-            },
-            "sort_basis": "effective_price_then_listed_price",
-            "winner": winner,
-            "runner_up": (
-                {
-                    **runner_up,
-                    "loss_reasons": _build_loss_reasons(winner, runner_up),
-                }
-                if runner_up is not None
-                else None
-            ),
-            "comparison": comparison,
-            "spread": (
-                {
-                    "amount": latest_run.price_spread,
-                    "currency": "USD",
-                }
-                if latest_run.price_spread is not None
-                else None
-            ),
-            "member_outcomes": member_outcomes,
-            "candidate_outcomes": {
-                "successful_count": len(successful),
-                "blocked_count": len(blocked),
-                "failed_count": len(failed),
-            },
-            "reliability": reliability,
-            "risk_notes": risk_notes,
-            "risk_note_items": risk_note_items,
-        }
+        return build_watch_group_decision_explain(
+            group=group,
+            latest_run=latest_run,
+            latest_results=latest_results,
+            member_map=member_map,
+        )
 
     def _apply_task_success_state(self, task: WatchTask) -> None:
         task.last_run_at = utcnow()
@@ -4386,11 +3137,7 @@ class ProductService:
             group.next_run_at = group.backoff_until
 
     def _build_backoff_until(self, failures: int, *, failure_kind: FailureKind) -> datetime:
-        if failure_kind == FailureKind.BLOCKED:
-            minutes = min(max(failures, 1) * 120, 1440)
-        else:
-            minutes = min(max(failures, 1) * 30, 360)
-        return utcnow() + timedelta(minutes=minutes)
+        return build_backoff_until(failures, failure_kind=failure_kind, now_fn=utcnow)
 
     @staticmethod
     def _build_attention_guidance(
@@ -4402,45 +3149,13 @@ class ProductService:
         last_error_code: str | None,
         last_error_message: str | None,
     ) -> tuple[str, str]:
-        if last_error_code == "store_disabled":
-            return (
-                "The store runtime switch is disabled for this monitor.",
-                "Open Settings, re-enable the store runtime switch, then rerun it manually.",
-            )
-        if last_error_code == "watch_group_no_successful_candidates":
-            return (
-                "The latest group run finished without any successful candidate.",
-                "Inspect member results, fix the failing candidate path, then rerun the group.",
-            )
-        if last_failure_kind == FailureKind.DELIVERY_FAILED.value:
-            return (
-                "Recent delivery attempts failed even though runtime execution continued.",
-                "Check notification settings and recent delivery events before rerunning.",
-            )
-        if last_error_code == "offer_not_parsed":
-            return (
-                "The latest fetch did not produce a parseable offer.",
-                "Inspect the latest run evidence, confirm the source page still parses, then rerun manually.",
-            )
-        if last_error_code == "unexpected_runtime_error":
-            return (
-                "The latest run ended in an unexpected runtime error.",
-                "Inspect the latest run details and artifact evidence before retrying.",
-            )
-        if manual_intervention_required:
-            return (
-                "Automation is paused until an operator reviews the latest failure.",
-                f"Inspect the {kind} detail view, address the blocker, then rerun manually.",
-            )
-        if health_status == HealthStatus.DEGRADED.value:
-            return (
-                "Recent failures pushed this monitor into a degraded state.",
-                "Review the last failure and only rerun once the likely cause is understood.",
-            )
-        fallback_reason = last_error_message or last_error_code or "Recent runtime state requires operator review."
-        return (
-            fallback_reason,
-            f"Inspect the {kind} detail view for the latest run history and decide whether to rerun now.",
+        return build_attention_guidance(
+            kind=kind,
+            health_status=health_status,
+            manual_intervention_required=manual_intervention_required,
+            last_failure_kind=last_failure_kind,
+            last_error_code=last_error_code,
+            last_error_message=last_error_message,
         )
 
     @staticmethod

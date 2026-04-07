@@ -5,6 +5,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 COMPARE_PAGE = ROOT / "frontend" / "src" / "pages" / "ComparePage.tsx"
+COMPARE_PAGE_COPY = ROOT / "frontend" / "src" / "pages" / "compare" / "copy.ts"
+COMPARE_PAGE_HELPERS = ROOT / "frontend" / "src" / "pages" / "compare" / "helpers.ts"
 NOTIFICATION_SETTINGS_PAGE = ROOT / "frontend" / "src" / "pages" / "NotificationSettingsPage.tsx"
 INDEX_PAGE = ROOT / "site" / "index.html"
 BUILDERS_PAGE = ROOT / "site" / "builders.html"
@@ -44,8 +46,15 @@ def _get_value(catalog: dict, key: str):
     return current
 
 
+def _read_compare_sources() -> str:
+    return "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in (COMPARE_PAGE, COMPARE_PAGE_COPY, COMPARE_PAGE_HELPERS)
+    )
+
+
 def test_compare_page_shared_catalog_keys_exist() -> None:
-    page = COMPARE_PAGE.read_text(encoding="utf-8")
+    page = _read_compare_sources()
     catalogs = _load_catalogs()
 
     static_keys = set(re.findall(r'"(compare\.[A-Za-z0-9_.]+)"', page))
@@ -175,6 +184,14 @@ def test_homepage_start_here_routes_are_bound_and_present() -> None:
     assert 'href="./compare-preview.html#sample-compare-demo"' in html
     assert 'href="./quick-start.html"' in html
     assert 'href="./builders.html"' in html
+    assert re.search(
+        r'<a class="button-secondary" href="./proof\.html" data-i18n="site\.index\.heroSecondaryCta">',
+        html,
+    )
+    assert re.search(
+        r'<a class="button-secondary" href="./quick-start\.html" data-i18n="site\.index\.heroBuilderCta">',
+        html,
+    )
 
 
 def test_quick_start_page_prioritizes_local_runtime_path() -> None:
@@ -189,6 +206,16 @@ def test_quick_start_page_prioritizes_local_runtime_path() -> None:
         r'<a class="button-secondary" href="./compare-preview\.html#sample-compare-demo" data-i18n="site\.quickStartPage\.heroSecondaryCta">',
         html,
     )
+
+
+def test_quick_start_page_exposes_first_success_expectation() -> None:
+    html = QUICK_START_PAGE.read_text(encoding="utf-8")
+
+    assert 'data-i18n="site.quickStartPage.successTitle"' in html
+    assert 'data-i18n="site.quickStartPage.successSummary"' in html
+    assert 'data-i18n="site.quickStartPage.successCardRouteTitle"' in html
+    assert 'data-i18n="site.quickStartPage.successCardEvidenceTitle"' in html
+    assert 'data-i18n="site.quickStartPage.successCardDecisionTitle"' in html
 
 
 def test_compare_preview_page_exposes_next_step_routes() -> None:
@@ -213,6 +240,18 @@ def test_compare_preview_page_exposes_next_step_routes() -> None:
     assert 'data-i18n="site.comparePreviewPage.footerQuickStartLink"' in html
     assert 'data-i18n="site.comparePreviewPage.footerProofLink"' in html
     assert 'data-i18n="site.comparePreviewPage.footerBuildersLink"' in html
+    next_steps = re.search(
+        r'<section class="section">\s*<div class="section-head">\s*<h2 data-i18n="site\.comparePreviewPage\.nextStepsTitle">.*?</h2>\s*<p data-i18n="site\.comparePreviewPage\.nextStepsSummary">.*?</p>\s*</div>\s*<div class="card-grid">(.*?)</div>\s*</section>',
+        html,
+        re.S,
+    )
+    assert next_steps, "compare preview next-step section missing"
+    block = next_steps.group(1)
+    proof_pos = block.index('data-i18n="site.comparePreviewPage.nextStepsProofTitle"')
+    quick_start_pos = block.index('data-i18n="site.comparePreviewPage.nextStepsQuickStartTitle"')
+    builders_pos = block.index('data-i18n="site.comparePreviewPage.nextStepsBuildersTitle"')
+    assert proof_pos < quick_start_pos < builders_pos
+
 
 
 def test_compare_preview_page_shared_catalog_keys_exist() -> None:

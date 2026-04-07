@@ -12,7 +12,7 @@ DealWatch is an AI-enhanced, compare-first grocery price intelligence product. I
 
 The AI layer is real, but intentionally narrow: DealWatch uses AI-assisted explanations for compare decisions, watch-group decisions, and recovery guidance while keeping deterministic product truth in charge. It is not a hosted SaaS, a generic chat bot, or an autonomous buying agent.
 
-[Start Here](#start-here) · [Compare Preview](https://xiaojiou176-open.github.io/dealwatch/compare-preview.html#sample-compare-demo) · [Quick Start](https://xiaojiou176-open.github.io/dealwatch/quick-start.html) · [Builders](https://xiaojiou176-open.github.io/dealwatch/builders.html) · [Proof](https://xiaojiou176-open.github.io/dealwatch/proof.html) · [Releases](https://github.com/xiaojiou176-open/dealwatch/releases/latest)
+[Start Here](#start-here) · [Compare Preview](https://xiaojiou176-open.github.io/dealwatch/compare-preview.html#sample-compare-demo) · [Proof](https://xiaojiou176-open.github.io/dealwatch/proof.html) · [Quick Start](https://xiaojiou176-open.github.io/dealwatch/quick-start.html) · [Builders](https://xiaojiou176-open.github.io/dealwatch/builders.html) · [Comparison](https://xiaojiou176-open.github.io/dealwatch/compare-vs-tracker.html) · [Releases](https://github.com/xiaojiou176-open/dealwatch/releases/latest)
 
 ![DealWatch control cabin brand bridge showing compare preview, artifact evidence, and notification surfaces](./assets/social/social-preview-1280x640.png)
 
@@ -22,11 +22,16 @@ The first public screen below is the actual Compare Preview evidence surface, us
 
 ## Start Here
 
+Recommended path for most visitors:
+
+- `Compare Preview` -> `Proof` -> `Quick Start`
+- `Builders` is the specialist route once the product story is already clear and you specifically need the read-only agent/client surface.
+
 Choose the first door that matches your real goal:
 
 - [`Compare Preview`](https://xiaojiou176-open.github.io/dealwatch/compare-preview.html#sample-compare-demo): start here when you want the fastest truthful product tour before you install anything.
-- [`Quick Start`](https://xiaojiou176-open.github.io/dealwatch/quick-start.html): use this path when you want to run the local runtime for your own grocery URLs.
-- [`Builders`](https://xiaojiou176-open.github.io/dealwatch/builders.html): use this path when you want the honest read-only MCP/API path first for Codex, Claude Code, OpenHands, OpenCode, OpenClaw, and similar builder clients, with repo-owned distribution assets available after the route is clear.
+- [`Quick Start`](https://xiaojiou176-open.github.io/dealwatch/quick-start.html): use this path when you are ready to turn the sample product tour into the local runtime for your own grocery URLs.
+- [`Builders`](https://xiaojiou176-open.github.io/dealwatch/builders.html): use this specialist path when you want the honest read-only MCP/API route for Codex, Claude Code, OpenHands, OpenCode, OpenClaw, and similar builder clients, with repo-owned distribution assets available after the route is clear.
 
 If you need the next most useful follow-up after that first door:
 
@@ -35,14 +40,21 @@ If you need the next most useful follow-up after that first door:
 
 ## Public Entry Points
 
+Most visitors should follow this order:
+
+- `Compare Preview` to understand the product shape
+- `Proof` to verify the claims and boundaries
+- `Quick Start` when the product story is clear and you want your own URLs
+- `Builders` only if your real job is wiring an agent/client against the read-only decision surface
+
 ### Three First-Run Doors
 
 - **Compare Preview**
   Start with the sample compare page when you want to see the compare-first intake and AI-assisted explanation story before any local setup.
 - **Quick Start**
-  Use the public quick-start page when you want to move from the sample compare preview into the local API, worker, and WebUI runtime.
+  Use the public quick-start page when you want to move from the sample compare preview and proof trail into the local API, worker, and WebUI runtime.
 - **Builders**
-  Use the public builders page when you want the shortest honest read-only MCP/API path for Codex, Claude Code, OpenHands, OpenCode, OpenClaw, and similar builder clients, with repo-owned distribution assets available after the route is clear.
+  Use the public builders page when you want the shortest honest read-only MCP/API path for Codex, Claude Code, OpenHands, OpenCode, OpenClaw, and similar builder clients after the product story is already clear, with repo-owned distribution assets available after the route is clear.
 
 ### Deeper References
 
