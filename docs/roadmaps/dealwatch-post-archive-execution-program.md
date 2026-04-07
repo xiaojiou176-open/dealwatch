@@ -14,6 +14,14 @@ Use this file when the question is:
 
 > "What should the next Worker do, in what order, and what must stay deferred?"
 
+This file is now a historical execution-program ledger, not the best first stop for today's
+fresh repo truth. Start current-state reading with:
+
+- `docs/roadmaps/dealwatch-decision-memo.md`
+- `docs/roadmaps/dealwatch-repo-side-closeout.md`
+- `docs/roadmaps/dealwatch-live-truth-closeout.md`
+- `README.md`
+
 ## Relationship To Other Docs
 
 | Document | Role |
@@ -50,6 +58,9 @@ In plain English:
 
 > this file still explains how the repo got here,
 > but the current knife is no longer only Prompt 8 recommendation breadth work.
+>
+> The "Current Focus" section below is current-at-the-time execution history, not a replacement for
+> today's fresh repo/live truth.
 
 ## Current Focus — Wave 3 Tail Sync Through Wave 6 Convergence
 

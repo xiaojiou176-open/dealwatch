@@ -4,7 +4,7 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Any, Callable
 
-from sqlalchemy import desc, select
+from sqlalchemy import desc, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from dealwatch.domain.enums import FailureKind, HealthStatus
@@ -203,6 +203,51 @@ def attention_sort_key(item: dict[str, Any]) -> tuple[Any, ...]:
         item["backoff_until"] or "9999-12-31T23:59:59+00:00",
         item["title"].lower(),
     )
+
+
+async def collect_attention_items(
+    session: AsyncSession,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    task_rows = list(
+        (
+            await session.scalars(
+                select(WatchTask)
+                .where(
+                    or_(
+                        WatchTask.manual_intervention_required.is_(True),
+                        WatchTask.health_status != HealthStatus.HEALTHY.value,
+                        WatchTask.backoff_until.is_not(None),
+                        WatchTask.last_error_code.is_not(None),
+                        WatchTask.last_failure_kind.is_not(None),
+                    )
+                )
+                .order_by(desc(WatchTask.updated_at))
+            )
+        ).all()
+    )
+    group_rows = list(
+        (
+            await session.scalars(
+                select(WatchGroup)
+                .where(
+                    or_(
+                        WatchGroup.manual_intervention_required.is_(True),
+                        WatchGroup.health_status != HealthStatus.HEALTHY.value,
+                        WatchGroup.backoff_until.is_not(None),
+                        WatchGroup.last_error_code.is_not(None),
+                        WatchGroup.last_failure_kind.is_not(None),
+                    )
+                )
+                .order_by(desc(WatchGroup.updated_at))
+            )
+        ).all()
+    )
+
+    task_items = [await build_task_attention_item(session, task) for task in task_rows]
+    group_items = [await build_watch_group_attention_item(session, group) for group in group_rows]
+    task_items.sort(key=attention_sort_key)
+    group_items.sort(key=attention_sort_key)
+    return task_items, group_items
 
 
 async def build_task_summary(session: AsyncSession, task: WatchTask) -> dict[str, Any]:

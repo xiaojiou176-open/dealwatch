@@ -79,6 +79,7 @@ from .runtime_attention import (
     build_notification_readiness_check,
     build_readiness_check,
     build_smoke_readiness_check,
+    collect_attention_items,
     build_task_attention_item,
     build_task_summary,
     build_watch_group_attention_item,
@@ -91,7 +92,11 @@ from .runtime_notifications import (
     should_notify_task,
 )
 from .runtime_watch_groups import (
+    apply_watch_group_success_run,
     build_group_decision_reason,
+    collect_watch_group_member_results,
+    classify_watch_group_no_success,
+    pick_watch_group_winner,
     build_watch_group_ai_decision_explain,
     build_watch_group_decision_explain,
     build_watch_group_detail,
@@ -461,45 +466,7 @@ class ProductService:
 
     async def get_attention_inbox(self, session: AsyncSession) -> dict[str, Any]:
         checked_at = utcnow().isoformat()
-        tasks = list(
-            (
-                await session.scalars(
-                    select(WatchTask)
-                    .where(
-                        or_(
-                            WatchTask.manual_intervention_required.is_(True),
-                            WatchTask.health_status != HealthStatus.HEALTHY.value,
-                            WatchTask.backoff_until.is_not(None),
-                            WatchTask.last_error_code.is_not(None),
-                            WatchTask.last_failure_kind.is_not(None),
-                        )
-                    )
-                    .order_by(desc(WatchTask.updated_at))
-                )
-            ).all()
-        )
-        groups = list(
-            (
-                await session.scalars(
-                    select(WatchGroup)
-                    .where(
-                        or_(
-                            WatchGroup.manual_intervention_required.is_(True),
-                            WatchGroup.health_status != HealthStatus.HEALTHY.value,
-                            WatchGroup.backoff_until.is_not(None),
-                            WatchGroup.last_error_code.is_not(None),
-                            WatchGroup.last_failure_kind.is_not(None),
-                        )
-                    )
-                    .order_by(desc(WatchGroup.updated_at))
-                )
-            ).all()
-        )
-
-        task_items = [await build_task_attention_item(session, task) for task in tasks]
-        group_items = [await build_watch_group_attention_item(session, group) for group in groups]
-        task_items.sort(key=attention_sort_key)
-        group_items.sort(key=attention_sort_key)
+        task_items, group_items = await collect_attention_items(session)
         return {
             "generated_at": checked_at,
             "total_items": len(task_items) + len(group_items),
@@ -536,44 +503,7 @@ class ProductService:
         }
 
     async def get_recovery_inbox(self, session: AsyncSession) -> dict[str, Any]:
-        task_rows = list(
-            (
-                await session.scalars(
-                    select(WatchTask)
-                    .where(
-                        or_(
-                            WatchTask.manual_intervention_required.is_(True),
-                            WatchTask.health_status != HealthStatus.HEALTHY.value,
-                            WatchTask.backoff_until.is_not(None),
-                            WatchTask.last_error_code.is_not(None),
-                            WatchTask.last_failure_kind.is_not(None),
-                        )
-                    )
-                    .order_by(desc(WatchTask.updated_at))
-                )
-            ).all()
-        )
-        group_rows = list(
-            (
-                await session.scalars(
-                    select(WatchGroup)
-                    .where(
-                        or_(
-                            WatchGroup.manual_intervention_required.is_(True),
-                            WatchGroup.health_status != HealthStatus.HEALTHY.value,
-                            WatchGroup.backoff_until.is_not(None),
-                            WatchGroup.last_error_code.is_not(None),
-                            WatchGroup.last_failure_kind.is_not(None),
-                        )
-                    )
-                    .order_by(desc(WatchGroup.updated_at))
-                )
-            ).all()
-        )
-        task_items = [await build_task_attention_item(session, task) for task in task_rows]
-        group_items = [await build_watch_group_attention_item(session, group) for group in group_rows]
-        task_items.sort(key=attention_sort_key)
-        group_items.sort(key=attention_sort_key)
+        task_items, group_items = await collect_attention_items(session)
         ai_copilot = await self._build_recovery_ai_copilot(task_items=task_items, group_items=group_items)
         return {
             "generated_at": utcnow().isoformat(),
@@ -1541,101 +1471,24 @@ class ProductService:
 
         try:
             self._prepare_watch_group_run_artifact_dir(group, run)
-            results: list[dict[str, Any]] = []
-            for member in members:
-                target = await session.get(WatchTarget, member.watch_target_id)
-                if target is None:
-                    results.append(
-                        {
-                            "member_id": member.id,
-                            "status": TaskRunStatus.FAILED.value,
-                            "error_code": "watch_target_not_found",
-                            "error_message": "watch_target_not_found",
-                        }
-                    )
-                    continue
-                if not await self._is_store_binding_enabled(session, target.store_key):
-                    results.append(
-                        {
-                            "member_id": member.id,
-                            "watch_target_id": target.id,
-                            "store_key": target.store_key,
-                            "title_snapshot": member.title_snapshot,
-                            "candidate_key": member.candidate_key,
-                            "status": TaskRunStatus.BLOCKED.value,
-                            "error_code": "store_disabled",
-                            "error_message": "store_disabled",
-                        }
-                    )
-                    continue
-
-                try:
-                    offer = await self._fetch_offer(target.product_url, target.store_key, zip_code=group.zip_code)
-                    if offer is None:
-                        raise ValueError("offer_not_parsed")
-                    cashback_quote = await self._fetch_cashback_quote_for_target(target.store_key, target.product_url)
-                    cashback_amount = 0.0
-                    if cashback_quote is not None:
-                        if cashback_quote["rate_type"] == "percent":
-                            cashback_amount = round(offer.price * float(cashback_quote["rate_value"]) / 100.0, 2)
-                        else:
-                            cashback_amount = float(cashback_quote["rate_value"])
-                    effective_price = max(offer.price - cashback_amount, 0.0)
-                    results.append(
-                        {
-                            "member_id": member.id,
-                            "watch_target_id": target.id,
-                            "store_key": target.store_key,
-                            "title_snapshot": offer.title,
-                            "candidate_key": member.candidate_key,
-                            "listed_price": offer.price,
-                            "effective_price": effective_price,
-                            "cashback_amount": cashback_amount,
-                            "source_url": offer.url,
-                            "observed_at": offer.fetch_at.isoformat(),
-                            "status": TaskRunStatus.SUCCEEDED.value,
-                            "cashback_quote": cashback_quote,
-                        }
-                    )
-                except SkipParse as exc:
-                    results.append(
-                        {
-                            "member_id": member.id,
-                            "watch_target_id": target.id,
-                            "store_key": target.store_key,
-                            "title_snapshot": member.title_snapshot,
-                            "candidate_key": member.candidate_key,
-                            "status": TaskRunStatus.BLOCKED.value,
-                            "error_code": exc.reason.value,
-                            "error_message": exc.reason.value,
-                        }
-                    )
-                except Exception as exc:
-                    self.logger.exception("Watch group member run failed.")
-                    error_code, error_message = normalize_unexpected_runtime_error(exc)
-                    results.append(
-                        {
-                            "member_id": member.id,
-                            "watch_target_id": target.id,
-                            "store_key": target.store_key,
-                            "title_snapshot": member.title_snapshot,
-                            "candidate_key": member.candidate_key,
-                            "status": TaskRunStatus.FAILED.value,
-                            "error_code": error_code,
-                            "error_message": error_message,
-                        }
-                    )
-
-            successful = [item for item in results if item["status"] == TaskRunStatus.SUCCEEDED.value]
+            results = await collect_watch_group_member_results(
+                session,
+                group=group,
+                members=members,
+                fetch_offer=lambda product_url, store_key, zip_code: self._fetch_offer(
+                    product_url,
+                    store_key,
+                    zip_code=zip_code,
+                ),
+                fetch_cashback_quote_for_target=self._fetch_cashback_quote_for_target,
+                is_store_binding_enabled=self._is_store_binding_enabled,
+                normalize_runtime_error=normalize_unexpected_runtime_error,
+                logger=self.logger,
+            )
+            successful, winner, runner_up = pick_watch_group_winner(results)
             if not successful:
                 run.member_results_json = {"results": results}
-                run.status = (
-                    TaskRunStatus.BLOCKED.value
-                    if any(item["status"] == TaskRunStatus.BLOCKED.value for item in results)
-                    else TaskRunStatus.FAILED.value
-                )
-                run.error_code = "watch_group_no_successful_candidates"
-                run.error_message = "watch_group_no_successful_candidates"
+                run.status, run.error_code, run.error_message = classify_watch_group_no_success(results)
                 run.finished_at = utcnow()
                 self._apply_watch_group_failure_state(
                     group,
@@ -1649,32 +1502,16 @@ class ProductService:
                 self._safe_write_watch_group_run_artifact(group=group, run=run, member_results=results, deliveries=[])
                 return run
 
-            successful.sort(
-                key=lambda item: (
-                    float(item["effective_price"]),
-                    float(item["listed_price"]),
-                    str(item["store_key"]),
-                )
-            )
-            winner = successful[0]
-            runner_up = successful[1] if len(successful) > 1 else None
+            assert winner is not None
             decision_reason = self._build_group_decision_reason(previous_run, winner, runner_up)
-
-            run.status = TaskRunStatus.SUCCEEDED.value
-            run.finished_at = utcnow()
-            run.member_results_json = {"results": results}
-            run.winner_member_id = str(winner["member_id"])
-            run.winner_effective_price = float(winner["effective_price"])
-            run.runner_up_member_id = str(runner_up["member_id"]) if runner_up is not None else None
-            run.runner_up_effective_price = (
-                float(runner_up["effective_price"]) if runner_up is not None else None
+            apply_watch_group_success_run(
+                run,
+                results=results,
+                winner=winner,
+                runner_up=runner_up,
+                decision_reason=decision_reason,
+                finished_at=utcnow(),
             )
-            run.price_spread = (
-                round(float(runner_up["effective_price"]) - float(winner["effective_price"]), 2)
-                if runner_up is not None
-                else None
-            )
-            run.decision_reason = decision_reason
 
             self._apply_watch_group_success_state(group)
             deliveries: list[DeliveryEvent] = []

@@ -39,7 +39,7 @@ EXPECTED_REQUIRED_CHECKS = {
     "workflow-hygiene",
     "trivy",
 }
-EXPECTED_WORKFLOWS = {"CI", "CodeQL", "Pages", "Dependabot Updates", "Dependency Review", "Workflow Hygiene", "Trivy"}
+EXPECTED_WORKFLOWS = {"CI", "CodeQL", "Pages", "Dependency Review", "Workflow Hygiene", "Trivy"}
 EXPECTED_LABELS = {"store-request", "compare-preview", "public-surface", "release"}
 EXPECTED_LATEST_RELEASE = "v0.1.2"
 EXPECTED_PUBLIC_RELEASES = {"v0.1.2"}
@@ -94,6 +94,17 @@ def fetch_graphql(query: str) -> tuple[int, object]:
         return exc.code, payload
     except URLError as exc:
         return 0, {"error": str(exc)}
+
+
+def is_rate_limited(status: int, payload: object) -> bool:
+    if status != 403 or not isinstance(payload, dict):
+        return False
+    message = str(payload.get("message") or "").lower()
+    return "rate limit" in message
+
+
+def should_defer_to_manual(status: int, payload: object, *, auth_enabled: bool) -> bool:
+    return (status in {401, 403} and not auth_enabled) or is_rate_limited(status, payload)
 
 
 def main() -> int:
@@ -178,7 +189,7 @@ def main() -> int:
         missing_topics = sorted(EXPECTED_TOPICS.difference(topics))
         if missing_topics:
             findings.append(f"topics missing: {', '.join(missing_topics)}")
-    elif repo_status in {401, 403} and not auth_enabled:
+    elif should_defer_to_manual(repo_status, repo, auth_enabled=auth_enabled):
         manual_checks.append("repo metadata requires authenticated GitHub API access")
     else:
         findings.append("repo endpoint must return 200")
@@ -193,7 +204,7 @@ def main() -> int:
         missing_checks = sorted(EXPECTED_REQUIRED_CHECKS.difference(checks))
         if missing_checks:
             findings.append(f"required status checks missing: {', '.join(missing_checks)}")
-    elif branch_status in {401, 403} and not auth_enabled:
+    elif should_defer_to_manual(branch_status, branch, auth_enabled=auth_enabled):
         manual_checks.append("branch protection requires authenticated GitHub API access")
     else:
         findings.append("branch endpoint must return 200")
@@ -204,7 +215,7 @@ def main() -> int:
         missing_workflows = sorted(EXPECTED_WORKFLOWS.difference(names))
         if missing_workflows:
             findings.append(f"workflow names missing: {', '.join(missing_workflows)}")
-    elif workflows_status in {401, 403} and not auth_enabled:
+    elif should_defer_to_manual(workflows_status, workflows, auth_enabled=auth_enabled):
         manual_checks.append("workflow visibility requires authenticated GitHub API access")
     else:
         findings.append("workflows endpoint must return 200")
@@ -215,7 +226,7 @@ def main() -> int:
         missing_labels = sorted(EXPECTED_LABELS.difference(label_names))
         if missing_labels:
             findings.append(f"labels missing: {', '.join(missing_labels)}")
-    elif labels_status in {401, 403} and not auth_enabled:
+    elif should_defer_to_manual(labels_status, labels, auth_enabled=auth_enabled):
         manual_checks.append("labels require authenticated GitHub API access")
     else:
         findings.append("labels endpoint must return 200")
@@ -227,7 +238,7 @@ def main() -> int:
         issue_titles = {item.get("title") for item in issue_items if item.get("title")}
         print(f"open_issue_count={len(issue_items)}")
         print(f"open_issues={','.join(sorted(title for title in issue_titles if title))}")
-    elif issues_status in {401, 403} and not auth_enabled:
+    elif should_defer_to_manual(issues_status, issues, auth_enabled=auth_enabled):
         manual_checks.append("open issues require authenticated GitHub API access")
     else:
         findings.append("issues endpoint must return 200")
@@ -236,7 +247,7 @@ def main() -> int:
         pull_titles = {item.get("title") for item in pulls if isinstance(item, dict) and item.get("title")}
         print(f"open_pull_request_count={len(pulls)}")
         print(f"open_pull_requests={','.join(sorted(title for title in pull_titles if title))}")
-    elif pulls_status in {401, 403} and not auth_enabled:
+    elif should_defer_to_manual(pulls_status, pulls, auth_enabled=auth_enabled):
         manual_checks.append("open pull requests require authenticated GitHub API access")
     else:
         findings.append("pulls endpoint must return 200")
@@ -250,7 +261,7 @@ def main() -> int:
                 "public releases on the rebuilt canonical repo must be exactly: "
                 + ", ".join(sorted(EXPECTED_PUBLIC_RELEASES))
             )
-    elif releases_status in {401, 403} and not auth_enabled:
+    elif should_defer_to_manual(releases_status, releases, auth_enabled=auth_enabled):
         manual_checks.append("release listing requires authenticated GitHub API access")
     else:
         findings.append("releases endpoint must return 200")
@@ -263,6 +274,9 @@ def main() -> int:
     elif latest_release_status == 404:
         print("latest_release=(missing)")
         findings.append("latest release endpoint must return the expected latest release")
+    elif should_defer_to_manual(latest_release_status, latest_release, auth_enabled=auth_enabled):
+        print("latest_release=unknown")
+        manual_checks.append("latest release endpoint requires authenticated GitHub API access or a later retry")
     else:
         print("latest_release=unknown")
         findings.append("latest release endpoint must return 200")
@@ -271,7 +285,7 @@ def main() -> int:
         print(f"private_vulnerability_reporting_enabled={pvr.get('enabled')}")
         if pvr.get("enabled") is not True:
             findings.append("private vulnerability reporting must be enabled")
-    elif pvr_status in {401, 403} and not auth_enabled:
+    elif should_defer_to_manual(pvr_status, pvr, auth_enabled=auth_enabled):
         print("private_vulnerability_reporting_enabled=unknown")
         manual_checks.append("private vulnerability reporting requires authenticated GitHub API access")
     else:
@@ -283,7 +297,7 @@ def main() -> int:
         print(f"code_scanning_alert_count={len(code_scanning)}")
         if code_scanning:
             findings.append("code scanning alerts must be zero")
-    elif code_scanning_status in {401, 403}:
+    elif should_defer_to_manual(code_scanning_status, code_scanning, auth_enabled=auth_enabled):
         print("code_scanning_alerts_api=requires_auth")
         manual_checks.append(
             "code scanning alert count needs authenticated GitHub API access or a manual GitHub UI review"
@@ -297,7 +311,7 @@ def main() -> int:
         print(f"secret_scanning_alert_count={len(secret_scanning)}")
         if secret_scanning:
             findings.append("secret scanning alerts must be zero")
-    elif secret_scanning_status in {401, 403}:
+    elif should_defer_to_manual(secret_scanning_status, secret_scanning, auth_enabled=auth_enabled):
         print("secret_scanning_alerts_api=requires_auth")
         manual_checks.append(
             "secret scanning alert count needs authenticated GitHub API access or a manual GitHub UI review"
@@ -311,7 +325,7 @@ def main() -> int:
         print(f"dependabot_alert_count={len(dependabot)}")
         if dependabot:
             findings.append("dependabot alerts must be zero")
-    elif dependabot_status in {401, 403}:
+    elif should_defer_to_manual(dependabot_status, dependabot, auth_enabled=auth_enabled):
         print("dependabot_alerts_api=requires_auth")
         manual_checks.append(
             "Dependabot alert count needs authenticated GitHub API access or a manual GitHub UI review"

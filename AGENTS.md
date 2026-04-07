@@ -42,6 +42,21 @@
 ./scripts/test.sh -q
 ```
 
+## CI Layering Contract
+
+- Repository tier: `Heavy`
+- Stack shape: `Dual-runtime`
+- Browser flag: `yes`
+- External-proof flag: `yes`
+- Required five layers:
+  - `pre-commit` = fast hygiene via `pre-commit run --all-files`
+  - `pre-push` = managed hook (`git diff --check`, `actionlint`, host/sensitive/artifact/root guards)
+  - `hosted` = required GitHub checks on `main`
+  - `nightly` = scheduled `CodeQL` plus nightly Dependabot maintenance intake
+  - `manual` = hermetic smoke, credentialed remote verification, browser debug lane, and other live/platform proofs
+- There is no separate `weekly` verification lane in the current contract. Any older weekly wording
+  should either be treated as historical or folded into `nightly` / `manual`.
+
 ## Host / Process Safety
 
 - Treat host-level process control as hazardous. DealWatch must never mass-match, mass-kill, or desktop-drive the shared machine just to recover repo state.

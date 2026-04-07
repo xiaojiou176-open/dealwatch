@@ -25,7 +25,8 @@ The first public screen below is the actual Compare Preview evidence surface, us
 Recommended path for most visitors:
 
 - `Compare Preview` -> `Proof` -> `Quick Start`
-- `Builders` is the specialist route once the product story is already clear and you specifically need the read-only agent/client surface.
+- `Builders` is the specialist route once the product story is already clear and you specifically
+  need the read-only agent/client surface. It is not the default first door.
 
 Choose the first door that matches your real goal:
 
@@ -541,8 +542,8 @@ If you want repo-native builder examples instead of only command references, con
   Runtime truth stays in the runtime contract, public proof stays on the proof page, and release truth stays in the GitHub Releases surface instead of being hand-copied into every public page.
 - **Repo-side closeout stays separate from live deployment truth**
   [`docs/roadmaps/dealwatch-repo-side-closeout.md`](./docs/roadmaps/dealwatch-repo-side-closeout.md) records what the current working tree proves today. It should not be read as proof that Render or any live environment is already re-verified end to end.
-- **Current closeout overlay stays separate from historical task boards**
-  [`docs/roadmaps/dealwatch-closeout-overlay-2026-04-06.md`](./docs/roadmaps/dealwatch-closeout-overlay-2026-04-06.md) is the dated SSOT for the current closeout hardening turn, including archive drift, repo-local truth, GitHub remote truth, and external blockers.
+- **Dated hard-cut overlay stays separate from current closeout ledgers**
+  [`docs/roadmaps/dealwatch-closeout-overlay-2026-04-06.md`](./docs/roadmaps/dealwatch-closeout-overlay-2026-04-06.md) is the dated hard-cut audit record. Keep using the repo-side and live-truth ledgers for current truth, and only open the dated overlay when you need the original April 6 snapshot.
 - **Post-archive strategy has its own contract**
   [`docs/roadmaps/dealwatch-decision-memo.md`](./docs/roadmaps/dealwatch-decision-memo.md) records the locked strategic boundaries after the archive deep-read, including local-first posture, read-only MCP boundary, systematic i18n requirement, and recommendation defer order.
 - **Live truth has its own closeout ledger**
@@ -594,7 +595,31 @@ If you want a lightweight reason to keep DealWatch on hand, leave a Star now so 
 - **Secret scanning is enforced in CI**
   Secret scanning is enforced in CI, and local scans remain recommended developer-side protection.
 - **Maintainer verification shortcuts**
-  `PYTHONPATH=src uv run python -m dealwatch maintenance --dry-run`, `./scripts/test.sh -q`, and `./scripts/smoke_product_hermetic.sh` are the compact runtime-hygiene and verification trio before deeper public-surface checks.
+  `PYTHONPATH=src uv run python -m dealwatch maintenance --dry-run`, `./scripts/test.sh -q`, and `pnpm -C frontend build` are the compact local baseline trio. Add `./scripts/smoke_product_hermetic.sh` plus the public-surface verifiers only when you need deeper manual confidence.
+
+## Verification Lanes
+
+DealWatch is now a **Heavy / Dual-runtime** repository with browser and external-proof surfaces.
+That means the repo keeps plenty of checks, but they do not all belong in the same default local
+path.
+
+- `pre-commit`
+  Run `pre-commit run --all-files` for the fast hygiene gate: host/process safety, sensitive
+  surface checks, and staged secret scanning.
+- `pre-push`
+  Let the managed hook enforce `git diff --check`, `actionlint`, and the repo-local guard rails
+  before the branch leaves your machine.
+- `hosted`
+  GitHub Actions owns the required checks on `main`: `governance`, `test`, `frontend`,
+  `product-smoke`, `CodeQL`, `secret-hygiene`, `Dependency Review`, `workflow-hygiene`, and
+  `trivy`.
+- `nightly`
+  Scheduled maintenance and security intake belong here: nightly Dependabot intake plus scheduled
+  `CodeQL`. Treat this layer as continuous background maintenance, not as the default local path.
+- `manual`
+  Use `./scripts/smoke_product_hermetic.sh`, `python3 scripts/verify_remote_github_state.py`,
+  `python3 scripts/verify_public_demo_interaction.py`, browser debug-lane probes, and any live
+  platform checks only when the task actually needs them.
 - **Security**
   Security reports must stay private. Start with [`SECURITY.md`](./SECURITY.md).
 - **Support**

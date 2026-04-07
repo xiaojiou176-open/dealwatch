@@ -1,12 +1,175 @@
 from __future__ import annotations
 
+from collections.abc import Awaitable, Callable
+from datetime import datetime
 from typing import Any
 
 from sqlalchemy import desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from dealwatch.domain.enums import HealthStatus, TaskRunStatus
-from dealwatch.persistence.models import DeliveryEvent, WatchGroup, WatchGroupMember, WatchGroupRun
+from dealwatch.stores.base_adapter import SkipParse
+from dealwatch.persistence.models import (
+    DeliveryEvent,
+    WatchGroup,
+    WatchGroupMember,
+    WatchGroupRun,
+    WatchTarget,
+)
+
+
+async def collect_watch_group_member_results(
+    session: AsyncSession,
+    *,
+    group: WatchGroup,
+    members: list[WatchGroupMember],
+    fetch_offer: Callable[[str, str, str], Awaitable[Any | None]],
+    fetch_cashback_quote_for_target: Callable[[str, str], Awaitable[dict[str, Any] | None]],
+    is_store_binding_enabled: Callable[[AsyncSession, str], Awaitable[bool]],
+    normalize_runtime_error: Callable[[Exception], tuple[str, str]],
+    logger: Any,
+) -> list[dict[str, Any]]:
+    results: list[dict[str, Any]] = []
+    for member in members:
+        target = await session.get(WatchTarget, member.watch_target_id)
+        if target is None:
+            results.append(
+                {
+                    "member_id": member.id,
+                    "status": TaskRunStatus.FAILED.value,
+                    "error_code": "watch_target_not_found",
+                    "error_message": "watch_target_not_found",
+                }
+            )
+            continue
+        if not await is_store_binding_enabled(session, target.store_key):
+            results.append(
+                {
+                    "member_id": member.id,
+                    "watch_target_id": target.id,
+                    "store_key": target.store_key,
+                    "title_snapshot": member.title_snapshot,
+                    "candidate_key": member.candidate_key,
+                    "status": TaskRunStatus.BLOCKED.value,
+                    "error_code": "store_disabled",
+                    "error_message": "store_disabled",
+                }
+            )
+            continue
+
+        try:
+            offer = await fetch_offer(target.product_url, target.store_key, group.zip_code)
+            if offer is None:
+                raise ValueError("offer_not_parsed")
+            cashback_quote = await fetch_cashback_quote_for_target(target.store_key, target.product_url)
+            cashback_amount = 0.0
+            if cashback_quote is not None:
+                if cashback_quote["rate_type"] == "percent":
+                    cashback_amount = round(offer.price * float(cashback_quote["rate_value"]) / 100.0, 2)
+                else:
+                    cashback_amount = float(cashback_quote["rate_value"])
+            effective_price = max(offer.price - cashback_amount, 0.0)
+            results.append(
+                {
+                    "member_id": member.id,
+                    "watch_target_id": target.id,
+                    "store_key": target.store_key,
+                    "title_snapshot": offer.title,
+                    "candidate_key": member.candidate_key,
+                    "listed_price": offer.price,
+                    "effective_price": effective_price,
+                    "cashback_amount": cashback_amount,
+                    "source_url": offer.url,
+                    "observed_at": offer.fetch_at.isoformat(),
+                    "status": TaskRunStatus.SUCCEEDED.value,
+                    "cashback_quote": cashback_quote,
+                }
+            )
+        except SkipParse as exc:
+            results.append(
+                {
+                    "member_id": member.id,
+                    "watch_target_id": target.id,
+                    "store_key": target.store_key,
+                    "title_snapshot": member.title_snapshot,
+                    "candidate_key": member.candidate_key,
+                    "status": TaskRunStatus.BLOCKED.value,
+                    "error_code": exc.reason.value,
+                    "error_message": exc.reason.value,
+                }
+            )
+        except Exception as exc:
+            logger.exception("Watch group member run failed.")
+            error_code, error_message = normalize_runtime_error(exc)
+            results.append(
+                {
+                    "member_id": member.id,
+                    "watch_target_id": target.id,
+                    "store_key": target.store_key,
+                    "title_snapshot": member.title_snapshot,
+                    "candidate_key": member.candidate_key,
+                    "status": TaskRunStatus.FAILED.value,
+                    "error_code": error_code,
+                    "error_message": error_message,
+                }
+            )
+    return results
+
+
+def pick_watch_group_winner(
+    results: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], dict[str, Any] | None, dict[str, Any] | None]:
+    successful = [item for item in results if item["status"] == TaskRunStatus.SUCCEEDED.value]
+    if not successful:
+        return successful, None, None
+    successful.sort(
+        key=lambda item: (
+            float(item["effective_price"]),
+            float(item["listed_price"]),
+            str(item["store_key"]),
+        )
+    )
+    winner = successful[0]
+    runner_up = successful[1] if len(successful) > 1 else None
+    return successful, winner, runner_up
+
+
+def classify_watch_group_no_success(
+    results: list[dict[str, Any]],
+) -> tuple[str, str, str]:
+    status = (
+        TaskRunStatus.BLOCKED.value
+        if any(item["status"] == TaskRunStatus.BLOCKED.value for item in results)
+        else TaskRunStatus.FAILED.value
+    )
+    error_code = "watch_group_no_successful_candidates"
+    return status, error_code, error_code
+
+
+def apply_watch_group_success_run(
+    run: WatchGroupRun,
+    *,
+    results: list[dict[str, Any]],
+    winner: dict[str, Any],
+    runner_up: dict[str, Any] | None,
+    decision_reason: str,
+    finished_at: datetime,
+) -> None:
+    run.status = TaskRunStatus.SUCCEEDED.value
+    run.finished_at = finished_at
+    run.member_results_json = {"results": results}
+    run.winner_member_id = str(winner["member_id"])
+    run.winner_effective_price = float(winner["effective_price"])
+    run.runner_up_member_id = str(runner_up["member_id"]) if runner_up is not None else None
+    run.runner_up_effective_price = (
+        float(runner_up["effective_price"]) if runner_up is not None else None
+    )
+    run.price_spread = (
+        round(float(runner_up["effective_price"]) - float(winner["effective_price"]), 2)
+        if runner_up is not None
+        else None
+    )
+    run.decision_reason = decision_reason
 
 
 def build_group_decision_reason(
