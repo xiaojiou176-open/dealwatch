@@ -22,7 +22,7 @@ Those are different jobs and should not share the same branch pile.
 
 ## Expected cadence
 
-- Dependabot is scheduled weekly in `America/Los_Angeles`.
+- Dependabot is scheduled as a nightly maintenance intake in `America/Los_Angeles`.
 - The goal is one grouped PR per ecosystem wave:
   - backend Python / `uv`
   - frontend npm

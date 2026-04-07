@@ -11,7 +11,18 @@ Use this file when you need the exact split between:
 - what GitHub remote truth says after cutover
 - what still remains on the external platform side
 
-## One-Line Summary
+## Historical Snapshot Notice
+
+> This file is a dated hard-cut audit record, not the current repo-side or live-truth verdict.
+>
+> Read [`dealwatch-repo-side-closeout.md`](./dealwatch-repo-side-closeout.md) for current repo-owned
+> truth and [`dealwatch-live-truth-closeout.md`](./dealwatch-live-truth-closeout.md) for current
+> reachable public/live truth.
+>
+> In particular, the `<= 8` commit snapshot and the old inactive-social-preview wording below were
+> true for the April 6 hard-cut turn, but they are no longer the latest current-truth call.
+
+## One-Line Summary (Historical Snapshot)
 
 > The old local mainline was captured during hard-cut truth anchoring, a new clean public canonical repo took over `xiaojiou176-open/dealwatch`, the public release surface was reduced to a single reissued `v0.1.2`, the temporary local rollback assets were deleted after verification, the PyPI `dealwatch` JSON API now returns `404`, and the remaining blockers are now external Render `404` plus an inactive GitHub social preview custom image.
 

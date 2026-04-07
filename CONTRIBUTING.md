@@ -42,31 +42,72 @@ pre-commit run --all-files
 
 ### Required Development
 
-Run these checks before you ask CI to judge the branch:
+DealWatch now uses a five-layer verification contract. Think of it like airport security:
+
+- `pre-commit` = the fast bag scan
+- `pre-push` = the gate before the plane leaves
+- `hosted` = the heavy scanners at the terminal
+- `nightly` = the overnight maintenance crew
+- `manual` = the extra inspection you only request when the trip actually needs it
+
+Use the lighter layers by default and pull in the heavier ones only when the task crosses that
+boundary.
+
+#### Pre-commit
+
+```bash
+nvm use
+corepack enable
+PYTHONPATH=src uv run python -m dealwatch maintenance --dry-run
+pre-commit run --all-files
+```
+
+#### Pre-push
+
+The managed hook runs automatically after `python3 scripts/install_git_hooks.py`, but this is the
+effective contract it enforces:
+
+```bash
+git diff --check
+actionlint .github/workflows/*.yml
+python3 scripts/verify_host_process_safety.py
+python3 scripts/verify_sensitive_surface.py
+python3 scripts/verify_tracked_artifacts.py
+python3 scripts/verify_ci_runner_contract.py
+python3 scripts/verify_root_allowlist.py
+```
+
+#### Local baseline before hosted CI
+
+Run this smaller default path before you ask GitHub Actions to judge the branch:
 
 ```bash
 nvm use
 corepack enable
 ./scripts/test.sh -q
-./scripts/smoke_product_hermetic.sh
-python3 scripts/verify_host_process_safety.py
-python3 scripts/verify_tracked_artifacts.py
-python3 scripts/verify_sensitive_surface.py
-python3 scripts/verify_english_boundary.py
+pnpm -C frontend build
 python3 scripts/verify_docs_contract.py
-python3 scripts/verify_feed_surface.py
-python3 scripts/verify_public_entrypoints.py
-python3 scripts/verify_public_surface.py
-python3 scripts/verify_runtime_diagnostics.py
-python3 scripts/verify_social_preview_asset.py
-python3 scripts/verify_social_preview_matrix.py
-python3 scripts/verify_site_surface.py
-python3 scripts/verify_schema_contract.py
-python3 scripts/verify_root_allowlist.py
-python3 scripts/verify_store_capability_registry.py
-actionlint .github/workflows/*.yml
+```
+
+That default path is intentionally lighter than the full hosted suite. Pull in the targeted local
+add-ons only when the branch actually touches that surface:
+
+- public/docs/front door: `python3 scripts/verify_public_surface.py`, `python3 scripts/verify_site_surface.py`, `python3 scripts/verify_public_entrypoints.py`, `python3 scripts/verify_feed_surface.py`
+- runtime/store contract: `python3 scripts/verify_runtime_diagnostics.py`, `python3 scripts/verify_schema_contract.py`, `python3 scripts/verify_store_capability_registry.py`
+- SEO/social preview: `python3 scripts/verify_social_preview_asset.py`, `python3 scripts/verify_social_preview_matrix.py`
+- boundary/governance text: `python3 scripts/verify_english_boundary.py`
+
+#### Manual deeper confidence
+
+Use these only when the task actually needs end-to-end runtime proof, public-surface interaction
+proof, or credentialed remote truth:
+
+```bash
+./scripts/smoke_product_hermetic.sh
+python3 scripts/print_remote_repo_settings_checklist.py
+python3 scripts/verify_remote_github_state.py
+GITHUB_TOKEN=... python3 scripts/verify_remote_github_state.py
 uvx --from zizmor==1.23.1 zizmor --persona regular --no-progress .github/workflows
-cd frontend && pnpm build
 ```
 
 If your branch touches runtime hygiene, cache cleanup, or repo-local rebuildables, also run:
@@ -122,6 +163,12 @@ These checks still matter, but they either live in the GitHub UI or remain blind
 
 The `governance` job also runs `python3 scripts/verify_feed_surface.py` so the public Atom feed keeps matching the same stable entrypoints the rest of the public surface promises.
 It now also runs `python3 scripts/verify_host_process_safety.py` so dangerous host-control primitives cannot silently re-enter the repo.
+
+### Nightly Maintenance Intake
+
+- Dependabot now runs as nightly maintenance intake in `America/Los_Angeles`.
+- Scheduled `CodeQL` stays in the same nightly class.
+- Treat both as background maintenance layers, not as blockers you must reproduce on every local branch before opening a pull request.
 
 ### Optional Exploratory Verification
 
