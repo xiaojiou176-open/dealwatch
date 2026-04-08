@@ -25,7 +25,7 @@
 - Repo-owned builder frontdoor: https://xiaojiou176-open.github.io/dealwatch/builders.html
 - Native bundle candidates for the plugin platforms that already support them: https://github.com/xiaojiou176-open/dealwatch/tree/main/plugins/dealwatch-builder-pack
 - Claude Code repo marketplace: https://github.com/xiaojiou176-open/dealwatch/blob/main/.claude-plugin/marketplace.json
-- Codex repo marketplace: https://github.com/xiaojiou176-open/dealwatch/blob/main/.agents/plugins/marketplace.json
+- Codex repo marketplace: https://github.com/xiaojiou176-open/dealwatch/blob/main/marketplace.json
 - Listing-prep distribution assets: https://xiaojiou176-open.github.io/dealwatch/assets/social/social-preview-1280x640.png , https://xiaojiou176-open.github.io/dealwatch/proof.html , https://xiaojiou176-open.github.io/dealwatch/data/builder-client-catalog.json
 - SEO crawl surfaces for the same frontdoor: https://xiaojiou176-open.github.io/dealwatch/llms.txt , https://xiaojiou176-open.github.io/dealwatch/sitemap.xml , https://xiaojiou176-open.github.io/dealwatch/feed.xml
 - API / MCP substrate contract: https://github.com/xiaojiou176-open/dealwatch/blob/main/docs/roadmaps/dealwatch-api-mcp-substrate-phase1.md

@@ -138,7 +138,7 @@
     "claude_code_bundle": "plugins/dealwatch-builder-pack/.claude-plugin/plugin.json",
     "codex_bundle": "plugins/dealwatch-builder-pack/.codex-plugin/plugin.json",
     "claude_marketplace": ".claude-plugin/marketplace.json",
-    "codex_marketplace": ".agents/plugins/marketplace.json"
+    "codex_marketplace": "marketplace.json"
   },
   "docs_urls": {
     "builder_pack": "https://github.com/xiaojiou176-open/dealwatch/blob/main/docs/integrations/README.md",
@@ -185,6 +185,6 @@
     "claude_code_bundle": "https://github.com/xiaojiou176-open/dealwatch/blob/main/plugins/dealwatch-builder-pack/.claude-plugin/plugin.json",
     "codex_bundle": "https://github.com/xiaojiou176-open/dealwatch/blob/main/plugins/dealwatch-builder-pack/.codex-plugin/plugin.json",
     "claude_marketplace": "https://github.com/xiaojiou176-open/dealwatch/blob/main/.claude-plugin/marketplace.json",
-    "codex_marketplace": "https://github.com/xiaojiou176-open/dealwatch/blob/main/.agents/plugins/marketplace.json"
+    "codex_marketplace": "https://github.com/xiaojiou176-open/dealwatch/blob/main/marketplace.json"
   }
 }

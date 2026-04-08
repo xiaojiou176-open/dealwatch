@@ -184,7 +184,7 @@ ships in-repo today, and what we still must **not** claim.
 | Client | Official public surface | Repo-owned artifact now | Honest status today |
 | --- | --- | --- | --- |
 | Claude Code | official marketplace + custom marketplaces | [`plugins/dealwatch-builder-pack/.claude-plugin/plugin.json`](../../plugins/dealwatch-builder-pack/.claude-plugin/plugin.json), [`.claude-plugin/marketplace.json`](../../.claude-plugin/marketplace.json) | marketplace-submission candidate, **not officially listed** |
-| Codex | Plugin Directory + repo/personal marketplace | [`plugins/dealwatch-builder-pack/.codex-plugin/plugin.json`](../../plugins/dealwatch-builder-pack/.codex-plugin/plugin.json), [`.agents/plugins/marketplace.json`](../../.agents/plugins/marketplace.json) | Plugin Directory candidate, **not officially listed** |
+| Codex | Plugin Directory + repo/personal marketplace | [`plugins/dealwatch-builder-pack/.codex-plugin/plugin.json`](../../plugins/dealwatch-builder-pack/.codex-plugin/plugin.json), [`../../marketplace.json`](../../marketplace.json) | Plugin Directory candidate, **not officially listed** |
 | OpenHands | global skill registry | [`./skills/openhands-readonly-builder-skill.md`](./skills/openhands-readonly-builder-skill.md) | skill-registry candidate, **not officially listed** |
 | OpenCode | ecosystem listing | [`./recipes/opencode.md`](./recipes/opencode.md), [`./examples/opencode.jsonc`](./examples/opencode.jsonc) | ecosystem-listing candidate, **not officially listed** |
 | OpenClaw | ClawHub public registry | [`./recipes/openclaw.md`](./recipes/openclaw.md), [`./skills/openclaw-readonly-builder-skill.md`](./skills/openclaw-readonly-builder-skill.md), compatible bundle assets under [`plugins/dealwatch-builder-pack/`](../../plugins/dealwatch-builder-pack/) | ClawHub candidate, **not officially listed** |
@@ -304,7 +304,7 @@ The honest current shape is still local-first:
 - one repo-owned client starter registry plus a builder starter pack read surface
 - one starter prompt file per named client
 - one shared skill card plus client-specific skill cards
-- one shared native bundle at [`../../plugins/dealwatch-builder-pack/`](../../plugins/dealwatch-builder-pack/) for Claude Code and Codex, plus repo marketplaces at [`../../.claude-plugin/marketplace.json`](../../.claude-plugin/marketplace.json) and [`../../.agents/plugins/marketplace.json`](../../.agents/plugins/marketplace.json)
+- one shared native bundle at [`../../plugins/dealwatch-builder-pack/`](../../plugins/dealwatch-builder-pack/) for Claude Code and Codex, plus repo marketplaces at [`../../.claude-plugin/marketplace.json`](../../.claude-plugin/marketplace.json) and [`../../marketplace.json`](../../marketplace.json)
 - one crawlable public frontdoor across `builders.html`, `llms.txt`, `feed.xml`, `sitemap.xml`, and the social preview asset
 
 Not every client has a native package today:

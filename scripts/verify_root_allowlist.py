@@ -174,7 +174,7 @@ def main() -> int:
             continue
         if name == ".agents":
             tracked = _tracked_under(".agents")
-            disallowed = [path for path in tracked if path != ".agents/plugins/marketplace.json"]
+            disallowed = [path for path in tracked if path != "marketplace.json"]
             if disallowed:
                 findings.append(
                     "Local-only root entry is tracked outside the allowed Codex marketplace file: "

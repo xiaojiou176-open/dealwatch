@@ -9,11 +9,31 @@ from urllib.request import Request, urlopen
 
 BASE = "https://api.github.com/repos/xiaojiou176-open/dealwatch"
 GRAPHQL_ENDPOINT = "https://api.github.com/graphql"
+ORG_SECURITY_CONFIGURATION_ENDPOINT = (
+    "https://api.github.com/orgs/xiaojiou176-open/code-security/configurations/240284"
+)
+ORG_SECURITY_REPOSITORIES_ENDPOINT = (
+    "https://api.github.com/orgs/xiaojiou176-open/code-security/configurations/240284/repositories?per_page=100"
+)
 EXPECTED_OWNER_LOGIN = "xiaojiou176-open"
 EXPECTED_OWNER_TYPE = "Organization"
 EXPECTED_HTML_URL = "https://github.com/xiaojiou176-open/dealwatch"
 EXPECTED_DESCRIPTION = "Open-source compare-first grocery price tracking with compare-aware watch groups, effective price, health, and alert history."
 EXPECTED_HOMEPAGE = "https://xiaojiou176-open.github.io/dealwatch/"
+EXPECTED_ORG_SECURITY_CONFIGURATION_ID = 240284
+EXPECTED_ORG_SECURITY_SETTINGS = {
+    "advanced_security": "enabled",
+    "dependency_graph": "enabled",
+    "dependabot_alerts": "enabled",
+    "dependabot_security_updates": "enabled",
+    "secret_scanning": "enabled",
+    "secret_scanning_push_protection": "enabled",
+    "secret_scanning_non_provider_patterns": "enabled",
+    "secret_scanning_validity_checks": "enabled",
+    "secret_scanning_extended_metadata": "enabled",
+    "secret_scanning_generic_secrets": "enabled",
+    "private_vulnerability_reporting": "enabled",
+}
 EXPECTED_TOPICS = {
     "apscheduler",
     "cashback",
@@ -127,9 +147,15 @@ def main() -> int:
     code_scanning_status, code_scanning = fetch_json(f"{BASE}/code-scanning/alerts?state=open&per_page=100")
     secret_scanning_status, secret_scanning = fetch_json(f"{BASE}/secret-scanning/alerts?state=open&per_page=100")
     dependabot_status, dependabot = fetch_json(f"{BASE}/dependabot/alerts?state=open&per_page=100")
+    org_security_status = 0
+    org_security_payload: object = {}
+    org_attachment_status = 0
+    org_attachment_payload: object = {}
     discussions_status = 0
     discussions_payload: object = {}
     if auth_enabled:
+        org_security_status, org_security_payload = fetch_json(ORG_SECURITY_CONFIGURATION_ENDPOINT)
+        org_attachment_status, org_attachment_payload = fetch_json(ORG_SECURITY_REPOSITORIES_ENDPOINT)
         discussions_status, discussions_payload = fetch_graphql(
             """
             query {
@@ -162,6 +188,8 @@ def main() -> int:
     print(f"secret_scanning_status={secret_scanning_status}")
     print(f"dependabot_status={dependabot_status}")
     if auth_enabled:
+        print(f"org_security_status={org_security_status}")
+        print(f"org_attachment_status={org_attachment_status}")
         print(f"discussions_graphql_status={discussions_status}")
     print("")
 
@@ -369,6 +397,39 @@ def main() -> int:
     else:
         print("dependabot_alerts_api=unknown")
         findings.append("Dependabot alerts API must be available or require auth")
+
+    if auth_enabled:
+        if org_security_status == 200 and isinstance(org_security_payload, dict):
+            print(
+                "org_security_configuration_id="
+                + str(org_security_payload.get("id"))
+            )
+            if org_security_payload.get("id") != EXPECTED_ORG_SECURITY_CONFIGURATION_ID:
+                findings.append(
+                    f"org security configuration must stay {EXPECTED_ORG_SECURITY_CONFIGURATION_ID}"
+                )
+            for key, expected in EXPECTED_ORG_SECURITY_SETTINGS.items():
+                current = org_security_payload.get(key)
+                print(f"{key}_org_status={current}")
+                if current != expected:
+                    findings.append(f"org security configuration drift: {key} must be {expected}")
+        else:
+            findings.append("org security configuration endpoint must return 200 with authenticated access")
+
+        if org_attachment_status == 200 and isinstance(org_attachment_payload, list):
+            attached_repo_names = sorted(
+                item.get("repository", {}).get("name", "")
+                for item in org_attachment_payload
+                if isinstance(item, dict)
+            )
+            print(
+                "org_security_attached_repos="
+                + ",".join(name for name in attached_repo_names if name)
+            )
+            if "dealwatch" not in attached_repo_names:
+                findings.append("dealwatch must stay attached to the enforced org security configuration")
+        else:
+            findings.append("org security attachment inventory must return 200 with authenticated access")
 
     if auth_enabled:
         if discussions_status == 200 and isinstance(discussions_payload, dict):
