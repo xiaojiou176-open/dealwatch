@@ -2,40 +2,28 @@
 
 This file is the shortest truthful distribution ledger for DealWatch.
 
-If you need the detailed builder onboarding pack, read [`INTEGRATIONS.md`](./INTEGRATIONS.md) and
-[`docs/integrations/README.md`](./docs/integrations/README.md).
+## Current repo-owned distribution reality
 
-## Current ready vs live matrix
-
-| Surface | Repo-owned status now | Honest public status |
+| Surface | Repo state now | Honest public claim |
 | --- | --- | --- |
-| GitHub repo | Ready and live | Canonical public repo is `xiaojiou176-open/dealwatch` |
-| GitHub Pages | Ready and live | Homepage / Proof / FAQ return HTTP `200` |
-| Release | Ready and live | Only `v0.1.2` is kept as the public release |
-| PyPI package metadata | Ready | Not published from this repo yet |
-| MCP Registry package metadata | Ready | Not published in the official MCP Registry yet |
-| Claude Code bundle | Ready | Marketplace-submission candidate, not officially listed |
-| Codex bundle | Ready | Plugin Directory candidate, not officially listed |
-| OpenHands skill card | Ready | Registry candidate, not officially listed |
-| OpenCode recipe/config bundle | Ready | Ecosystem-listing candidate, not officially listed |
-| OpenClaw recipe/config bundle | Ready | ClawHub candidate, not officially listed |
-| Chrome Web Store companion extension | Not ready in this repo yet | No publish-ready extension package exists yet |
+| GitHub repo | public canonical repo under `xiaojiou176-open/dealwatch` | live |
+| GitHub Pages | homepage, compare preview, proof, FAQ, builders, comparison, community | live |
+| GitHub release/tag | one canonical public release `v0.1.2` | live |
+| Python package metadata | `pyproject.toml` + `server.json` + publish verifier are aligned | ready, **not published** |
+| MCP Registry | registry-prep package metadata and server manifest exist | ready, **not published** |
+| Builder pack | starter prompts, skill cards, config exports, plugin bundle candidates | ready, **not officially listed** |
+| Chrome companion extension | `browser-extension/` package, icons, build script, listing notes | ready for store submission, **not published** |
 
-## Stop lines that still matter
+## What still remains manual / external
 
-- Ready does **not** mean published.
-- GitHub Pages does **not** mean hosted runtime.
-- Builder/plugin metadata does **not** mean official marketplace approval.
-- Chrome Web Store readiness should only be claimed after the repo actually contains:
-  - a manifest-based extension package
-  - store-ready icons/screenshots/listing copy
-  - privacy/support links
-  - a repeatable packaging lane
+- publish the Python package to PyPI
+- submit the MCP surface through the official MCP Registry flow
+- submit builder/listing artifacts through the relevant marketplace or registry UIs
+- upload the Chrome companion extension package through the Chrome Web Store dashboard
 
-## Most useful next reads
+## Read next
 
 - [`README.md`](./README.md)
 - [`INTEGRATIONS.md`](./INTEGRATIONS.md)
 - [`docs/integrations/README.md`](./docs/integrations/README.md)
-- [`docs/roadmaps/dealwatch-repo-side-closeout.md`](./docs/roadmaps/dealwatch-repo-side-closeout.md)
-- [`docs/roadmaps/dealwatch-live-truth-closeout.md`](./docs/roadmaps/dealwatch-live-truth-closeout.md)
+- [`browser-extension/README.md`](./browser-extension/README.md)
