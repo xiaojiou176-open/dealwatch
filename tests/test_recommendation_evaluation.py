@@ -678,6 +678,154 @@ def test_recommendation_evaluation_campaign_prefers_runtime_compare_evidence_ove
     assert payload["native_compare_origin_result"]["available_source_case_count"] == 1
 
 
+def test_recommendation_evaluation_campaign_skips_very_weak_runtime_compare_evidence(
+    tmp_path,
+) -> None:
+    workspace = tmp_path / "recommendation-campaign-native-weak-compare"
+    runtime_runs = tmp_path / "runtime-runs"
+
+    compare_artifact_dir = runtime_runs / "compare-evidence" / "artifact-1"
+    compare_artifact_dir.mkdir(parents=True, exist_ok=True)
+    (compare_artifact_dir / "compare_evidence.json").write_text(
+        json.dumps(
+            {
+                "artifact_id": "artifact-1",
+                "artifact_kind": "compare_evidence",
+                "saved_at": "2026-04-03T00:00:05+00:00",
+                "submitted_inputs": [
+                    "https://www.sayweee.com/zh/product/Asian-Honey-Pears-3ct/5869",
+                    "https://www.99ranch.com/product-details/1615424/8899/078895126389",
+                ],
+                "zip_code": "98004",
+                "submitted_count": 2,
+                "resolved_count": 2,
+                "comparisons": [
+                    {
+                        "submitted_url": "https://www.sayweee.com/zh/product/Asian-Honey-Pears-3ct/5869",
+                        "normalized_url": "https://www.sayweee.com/zh/product/Asian-Honey-Pears-3ct/5869",
+                        "store_key": "weee",
+                        "fetch_succeeded": True,
+                        "candidate_key": "asian honey pears 3ct | 3 ct",
+                    },
+                    {
+                        "submitted_url": "https://www.99ranch.com/product-details/1615424/8899/078895126389",
+                        "normalized_url": "https://www.99ranch.com/product-details/1615424/8899/078895126389",
+                        "store_key": "ranch99",
+                        "fetch_succeeded": True,
+                        "candidate_key": "lkk premium dark soy sauce | 16.9 fl oz",
+                    },
+                ],
+                "matches": [
+                    {
+                        "left_store_key": "weee",
+                        "right_store_key": "ranch99",
+                        "left_candidate_key": "asian honey pears 3ct | 3 ct",
+                        "right_candidate_key": "lkk premium dark soy sauce | 16.9 fl oz",
+                        "score": 7.2,
+                    }
+                ],
+                "recommended_next_step_hint": {
+                    "action": "review_before_save",
+                    "reason_code": "multi_candidate_weak_match",
+                    "summary": "More than one candidate resolved, but the strongest match signal is weak enough that you should review before saving.",
+                    "successful_candidate_count": 2,
+                    "strongest_match_score": 7.2,
+                },
+                "risk_notes": ["The strongest match score is still below the high-confidence range."],
+                "risk_note_items": [
+                    {
+                        "code": "match_confidence_not_high",
+                        "message": "The strongest match score is still below the high-confidence range.",
+                    }
+                ],
+                "summary": {
+                    "headline": "Runtime compare evidence weak mismatch",
+                    "saved_at": "2026-04-03T00:00:05+00:00",
+                    "successful_candidate_count": 2,
+                    "strongest_match_score": 7.2,
+                },
+            },
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+
+    summary_dir = runtime_runs / "watch-groups" / "group-1" / "run-1"
+    summary_dir.mkdir(parents=True, exist_ok=True)
+    (summary_dir / "group_run_summary.json").write_text(
+        json.dumps(
+            {
+                "group": {"id": "group-1", "title": "Runtime Pear Group", "zip_code": "98004"},
+                "run": {
+                    "id": "run-1",
+                    "status": "succeeded",
+                    "triggered_by": "manual",
+                    "started_at": "2026-04-03T00:00:00+00:00",
+                    "finished_at": "2026-04-03T00:00:05+00:00",
+                    "winner_member_id": "member-a",
+                    "runner_up_member_id": "member-b",
+                    "winner_effective_price": 3.86,
+                    "runner_up_effective_price": 4.13,
+                    "price_spread": 0.27,
+                    "decision_reason": "lowest_effective_price_with_cashback",
+                },
+                "member_results": [
+                    {
+                        "member_id": "member-a",
+                        "store_key": "weee",
+                        "title_snapshot": "Asian Honey Pears 3ct",
+                        "candidate_key": "asian honey pears 3ct | golden orchard | 3 ct",
+                        "listed_price": 4.2,
+                        "effective_price": 3.86,
+                        "source_url": "https://www.sayweee.com/zh/product/Asian-Honey-Pears-3ct/5869",
+                        "status": "succeeded",
+                    },
+                    {
+                        "member_id": "member-b",
+                        "store_key": "ranch99",
+                        "title_snapshot": "Asian Honey Pears 3 ct",
+                        "candidate_key": "asian honey pears 3 ct | golden orchard | 3 ct",
+                        "listed_price": 4.49,
+                        "effective_price": 4.13,
+                        "source_url": "https://www.99ranch.com/product-details/1615424/8899/078895126389",
+                        "status": "succeeded",
+                    },
+                ],
+            },
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/run_recommendation_evaluation_campaign.py",
+            "--workspace",
+            str(workspace),
+            "--reset-workspace",
+            "--harvest-native-compare-origin",
+            "--runtime-runs-dir",
+            str(runtime_runs),
+        ],
+        cwd=ROOT,
+        env=_script_env(),
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    payload = json.loads(result.stdout)
+    assert payload["native_compare_origin_result"]["source_case_kind"] == "runtime_group_summary_fallback"
+    assert payload["native_compare_origin_result"]["available_source_case_count"] == 1
+    assert payload["native_compare_origin_result"]["native_compare_origin_case_count"] == 1
+    assert payload["summary"]["source_diversity"]["native_compare_origin_source_case_kind"] == (
+        "runtime_group_summary_fallback"
+    )
+
+
 def test_recommendation_evaluation_campaign_harvests_native_compare_origin(tmp_path) -> None:
     workspace = tmp_path / "recommendation-campaign-native-origin"
     runtime_runs_dir = tmp_path / "runtime-runs"

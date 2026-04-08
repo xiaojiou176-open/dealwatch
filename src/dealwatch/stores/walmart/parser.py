@@ -24,6 +24,11 @@ _UNIT_RE: Final[re.Pattern[str]] = re.compile(
     r"(?P<qty>\d+(?:\.\d+)?)\s*(?P<unit>gal|gallon|lb|lbs|oz|fl\.?\s*oz|foz|g|kg|ml|l|ct|count|pk|pack)",
     re.IGNORECASE,
 )
+_BLOCKED_PAGE_MARKERS: Final[tuple[str, ...]] = (
+    "robot or human?",
+    "activate and hold the button to confirm that you're human",
+    "walmart.com/blocked?",
+)
 
 
 @dataclass(slots=True)
@@ -39,6 +44,11 @@ class WalmartParser:
     async def parse(self, page: Page) -> Offer | None:
         self.last_debug = {"url": page.url}
         html_text = await page.content()
+        block_reason = self._detect_blocked_page(page.url, html_text)
+        if block_reason is not None:
+            self.last_debug["page_blocked"] = block_reason
+            self.last_debug["json_ld"] = "skipped: block page"
+            return None
         product = self._extract_product_json_ld(html_text)
         if product is None:
             self.last_debug["json_ld"] = "missing product payload"
@@ -99,6 +109,14 @@ class WalmartParser:
                 stack.extend(current.values())
             elif isinstance(current, list):
                 stack.extend(current)
+        return None
+
+    @staticmethod
+    def _detect_blocked_page(url: str, html_text: str) -> str | None:
+        lowered = f"{url}\n{html_text}".lower()
+        matched_markers = sum(1 for marker in _BLOCKED_PAGE_MARKERS if marker in lowered)
+        if "walmart.com/blocked?" in lowered or matched_markers >= 2:
+            return "walmart_robot_or_human"
         return None
 
     @staticmethod

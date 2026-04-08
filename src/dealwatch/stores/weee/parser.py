@@ -18,9 +18,33 @@ from dealwatch.stores.base_adapter import SkipParse
 #########################################################
 _PRICE_RE: Final[re.Pattern[str]] = re.compile(r"[-+]?\d+(?:\.\d+)?")
 _PRODUCT_KEY_RE: Final[re.Pattern[str]] = re.compile(r"/zh/product/([^/?#]+)")
+_HTML_TITLE_RE: Final[re.Pattern[str]] = re.compile(
+    r"<title[^>]*>(?P<value>.*?)</title>",
+    re.IGNORECASE | re.DOTALL,
+)
+_OG_TITLE_RE: Final[re.Pattern[str]] = re.compile(
+    r'<meta[^>]+property="og:title"[^>]+content="(?P<value>[^"]+)"',
+    re.IGNORECASE,
+)
 _UNIT_RE: Final[re.Pattern[str]] = re.compile(
     r"(?P<qty>\d+(?:\.\d+)?)\s*(?P<unit>lb|lbs|oz|g|kg|ml|l|ct|count|pcs|pc|pack|pk|\u4e2a)",
     re.IGNORECASE,
+)
+_EMBEDDED_PRODUCT_ID_RE: Final[re.Pattern[str]] = re.compile(r'\\"id\\":(?P<value>\d+)')
+_EMBEDDED_PRODUCT_NAME_RE: Final[re.Pattern[str]] = re.compile(
+    r'\\"name\\":\\"(?P<value>(?:[^"\\]|\\\\.)+)'
+)
+_EMBEDDED_PRODUCT_PRICE_RE: Final[re.Pattern[str]] = re.compile(
+    r'\\"price\\":(?P<value>\d+(?:\.\d+)?)'
+)
+_EMBEDDED_PRODUCT_BASE_PRICE_RE: Final[re.Pattern[str]] = re.compile(
+    r'\\"base_price\\":(?P<value>\d+(?:\.\d+)?)'
+)
+_EMBEDDED_PRODUCT_UNIT_RE: Final[re.Pattern[str]] = re.compile(
+    r'\\"unit_info\\":\\"(?P<value>(?:[^"\\]|\\\\.)+)'
+)
+_EMBEDDED_PRODUCT_AVAILABLE_RE: Final[re.Pattern[str]] = re.compile(
+    r'\\"sold_status_available\\":(?P<value>true|false)'
 )
 
 _OUT_OF_STOCK_MARKERS: Final[tuple[str, ...]] = (
@@ -46,7 +70,8 @@ class WeeeParser:
     async def parse(self, page: Page) -> Optional[Offer]:
         url = page.url
         self.last_debug = {"url": url}
-        product_payload = await self._extract_product_payload(page, url)
+        html_text = await page.content()
+        product_payload = await self._extract_product_payload(page, url, html_text)
 
         title: str | None = None
         price: float | None = None
@@ -71,6 +96,8 @@ class WeeeParser:
             title = await self._extract_title_from_dom(page)
             if title:
                 self.last_debug["title_source"] = "dom:h1"
+        if title is None:
+            title = self._extract_title_from_html(html_text)
 
         if price is None:
             price, base_price = await self._extract_prices_from_dom(page)
@@ -119,6 +146,7 @@ class WeeeParser:
         self,
         page: Page,
         url: str,
+        html_text: str,
     ) -> dict | None:
         product = await self._extract_next_data_payload(page, url)
         if product is not None:
@@ -128,6 +156,11 @@ class WeeeParser:
         if json_ld_product is not None:
             self.last_debug["json_status"] = "jsonld.product"
             return json_ld_product
+
+        embedded_product = self._extract_embedded_product_payload(html_text)
+        if embedded_product is not None:
+            self.last_debug["json_status"] = "embedded.product"
+            return embedded_product
 
         return None
 
@@ -334,6 +367,24 @@ class WeeeParser:
             return None
         return text.strip()
 
+    def _extract_title_from_html(self, html_text: str) -> str | None:
+        for pattern, source in (
+            (_OG_TITLE_RE, "html:meta:og:title"),
+            (_HTML_TITLE_RE, "html:title"),
+        ):
+            match = pattern.search(html_text)
+            if match is None:
+                continue
+            text = self._clean_html_text(match.group("value"))
+            if not text:
+                continue
+            title = re.sub(r"^\s*[^|]+?\s+\|\s+", "", text).strip()
+            title = re.sub(r"\s*-\s*Weee!\s*$", "", title).strip()
+            if title:
+                self.last_debug["title_source"] = source
+                return title
+        return None
+
     def _extract_prices(
         self,
         product: dict,
@@ -374,6 +425,40 @@ class WeeeParser:
         base_price = self._parse_price(base_raw)
 
         return price, base_price, price_key, base_key
+
+    def _extract_embedded_product_payload(self, html_text: str) -> dict | None:
+        anchor = html_text.find('\\"product\\":{')
+        if anchor < 0:
+            return None
+
+        window = html_text[anchor : anchor + 12000]
+        product: dict[str, object] = {}
+
+        product_id = self._match_embedded_text(_EMBEDDED_PRODUCT_ID_RE, window)
+        if product_id:
+            product["id"] = product_id
+
+        name = self._match_embedded_text(_EMBEDDED_PRODUCT_NAME_RE, window)
+        if name:
+            product["name"] = name
+
+        price = self._match_embedded_number(_EMBEDDED_PRODUCT_PRICE_RE, window)
+        if price is not None:
+            product["price"] = price
+
+        base_price = self._match_embedded_number(_EMBEDDED_PRODUCT_BASE_PRICE_RE, window)
+        if base_price is not None:
+            product["base_price"] = base_price
+
+        unit_info = self._match_embedded_text(_EMBEDDED_PRODUCT_UNIT_RE, window)
+        if unit_info:
+            product["unit_info"] = unit_info
+
+        available = self._match_embedded_text(_EMBEDDED_PRODUCT_AVAILABLE_RE, window)
+        if available:
+            product["sold_status_available"] = available == "true"
+
+        return product or None
 
     async def _extract_prices_from_dom(
         self,
@@ -454,6 +539,31 @@ class WeeeParser:
             "quantity": quantity,
             "unit": unit,
         }
+
+    @staticmethod
+    def _match_embedded_text(pattern: re.Pattern[str], text: str) -> str | None:
+        match = pattern.search(text)
+        if match is None:
+            return None
+        value = match.group("value")
+        try:
+            return json.loads(f'"{value}"')
+        except json.JSONDecodeError:
+            return value.replace('\\"', '"').strip()
+
+    @staticmethod
+    def _match_embedded_number(pattern: re.Pattern[str], text: str) -> float | None:
+        match = pattern.search(text)
+        if match is None:
+            return None
+        return WeeeParser._parse_price(match.group("value"))
+
+    @staticmethod
+    def _clean_html_text(value: str | None) -> str | None:
+        if value is None:
+            return None
+        text = re.sub(r"\s+", " ", value).strip()
+        return text or None
 
     #########################################################
     # Generic Helpers

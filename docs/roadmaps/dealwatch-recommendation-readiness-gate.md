@@ -99,7 +99,8 @@ The current internal stop line has moved forward:
 - the v1 workspace no longer carries repo-local review debt for the current corpus (`11 reviewed`, `0 pending`)
 - the disagreement map is now deeper than a starter packet, but it still only spans two disagreement classes across the current narrow corpus
 - the native compare-origin breadth ceiling is now proven, and the corpus is still too concentrated to justify launch language
-- the canonical campaign report still reads `native_compare_origin_source_case_kind = runtime_group_summary_fallback`, which means the current machine still lacks a fresh second-family runtime compare-evidence package for native harvesting
+- the canonical campaign report now reads `native_compare_origin_source_case_kind = runtime_compare_evidence_package`, which means the machine has finally produced a fresh runtime compare-evidence package through the compare mainline
+- even after that forward step, the current honest native pool still collapses to one acceptable pattern once obviously mismatched weak-compare packages are filtered back out
 
 The recommendation lane only becomes "mostly real external blockers" after both of these are true:
 
@@ -127,21 +128,27 @@ It is no longer:
 
 It is now:
 
-- current native harvesting still falls back to `runtime_group_summary_fallback`
-- the native compare-origin pool is still `30 available -> 1 unique pattern -> top share 1.0`
+- current native harvesting now uses `runtime_compare_evidence_package`
+- the native compare-origin pool still lands at only `1` acceptable pattern in the fresh canonical rerun
 - the current corpus is still maintainer-scoped mixed internal evidence, not broader public-calibration evidence
 - future expansion to task/group/MCP/builder/static pages would still need more native compare-origin families, more stable disagreement buckets, and broader calibration evidence than the current compare-preview slice
 
 The next honest runtime candidate remains the Safeway + Target fairlife pair:
 
-- Target now has a fresh repo-side live parse proof (`Title = Fairlife Lactose-Free 2% Chocolate Milk - 52 fl oz`, `Price = 5.39`)
-- Safeway is still blocked by a live Incapsula/WAF response on the current Playwright path (`page_blocked = incapsula`, `json_ld = skipped: block page`)
+- that pair now genuinely produces a fresh runtime compare-evidence package
+- the fresh rerun therefore no longer fails on missing native compare-evidence ingestion or fallback source kind
+
+What still fails to expand breadth beyond that first accepted native family is now more specific:
+
+- the old `weee + ranch99` pears lane can fetch again on the Weee side after the repo-side parser fix, but the Ranch99 URL has drifted into a different product and is no longer an honest second family
+- `target + walmart` still collapses to one successful row because Walmart returns a blocked-page path
+- `safeway + target` eggs still collapses because Safeway continues to return an Incapsula block page on that product path
 
 So the repo-side question is no longer "did we wire the lane correctly?"
 
 It is now:
 
-> can the repo obtain a new real compare-evidence package for a second family without cheating, and without pretending one repeated pears family is broad recommendation maturity?
+> can the repo obtain a second acceptable native compare-evidence family without cheating, and without counting obvious weak mismatches or blocked-page half-runs as breadth?
 
 ## What is already true
 
