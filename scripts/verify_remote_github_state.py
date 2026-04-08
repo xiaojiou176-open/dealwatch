@@ -39,6 +39,11 @@ EXPECTED_REQUIRED_CHECKS = {
     "workflow-hygiene",
     "trivy",
 }
+EXPECTED_REQUIRED_APPROVING_REVIEW_COUNT = 1
+EXPECTED_REQUIRED_SIGNATURES_ENABLED = True
+EXPECTED_REQUIRED_LINEAR_HISTORY = True
+EXPECTED_ALLOW_FORCE_PUSHES = False
+EXPECTED_ALLOW_DELETIONS = False
 EXPECTED_WORKFLOWS = {"CI", "CodeQL", "Pages", "Dependency Review", "Workflow Hygiene", "Trivy"}
 EXPECTED_LABELS = {"store-request", "compare-preview", "public-surface", "release"}
 EXPECTED_LATEST_RELEASE = "v0.1.2"
@@ -111,6 +116,7 @@ def main() -> int:
     auth_enabled = bool(TOKEN)
     repo_status, repo = fetch_json(BASE)
     branch_status, branch = fetch_json(f"{BASE}/branches/main")
+    protection_status, protection_payload = fetch_json(f"{BASE}/branches/main/protection")
     workflows_status, workflows = fetch_json(f"{BASE}/actions/workflows")
     labels_status, labels = fetch_json(f"{BASE}/labels?per_page=100")
     issues_status, issues = fetch_json(f"{BASE}/issues?state=open&per_page=100")
@@ -144,6 +150,7 @@ def main() -> int:
     print(f"authenticated={'yes' if auth_enabled else 'no'}")
     print(f"repo_status={repo_status}")
     print(f"branch_status={branch_status}")
+    print(f"protection_status={protection_status}")
     print(f"workflows_status={workflows_status}")
     print(f"labels_status={labels_status}")
     print(f"issues_status={issues_status}")
@@ -194,20 +201,49 @@ def main() -> int:
     else:
         findings.append("repo endpoint must return 200")
 
-    if branch_status == 200 and isinstance(branch, dict):
+    if (
+        branch_status == 200
+        and isinstance(branch, dict)
+        and protection_status == 200
+        and isinstance(protection_payload, dict)
+    ):
         print(f"main_protected={branch.get('protected')}")
         protection = branch.get("protection") or {}
         checks = (protection.get("required_status_checks") or {}).get("contexts") or []
+        pr_reviews = protection_payload.get("required_pull_request_reviews") or {}
+        required_signatures = protection_payload.get("required_signatures") or {}
+        linear_history = protection_payload.get("required_linear_history") or {}
+        force_pushes = protection_payload.get("allow_force_pushes") or {}
+        deletions = protection_payload.get("allow_deletions") or {}
         print(f"required_status_checks={','.join(checks) if checks else '(none)'}")
+        print(f"required_approving_review_count={pr_reviews.get('required_approving_review_count')}")
+        print(f"required_signatures_enabled={required_signatures.get('enabled')}")
+        print(f"required_linear_history={linear_history.get('enabled')}")
+        print(f"allow_force_pushes={force_pushes.get('enabled')}")
+        print(f"allow_deletions={deletions.get('enabled')}")
         if branch.get("protected") is not True:
             findings.append("main must be protected")
         missing_checks = sorted(EXPECTED_REQUIRED_CHECKS.difference(checks))
         if missing_checks:
             findings.append(f"required status checks missing: {', '.join(missing_checks)}")
+        if pr_reviews.get("required_approving_review_count") != EXPECTED_REQUIRED_APPROVING_REVIEW_COUNT:
+            findings.append(
+                f"required approving review count must be {EXPECTED_REQUIRED_APPROVING_REVIEW_COUNT}"
+            )
+        if required_signatures.get("enabled") is not EXPECTED_REQUIRED_SIGNATURES_ENABLED:
+            findings.append("required_signatures must be enabled")
+        if linear_history.get("enabled") is not EXPECTED_REQUIRED_LINEAR_HISTORY:
+            findings.append("required_linear_history must stay enabled")
+        if force_pushes.get("enabled") is not EXPECTED_ALLOW_FORCE_PUSHES:
+            findings.append("allow_force_pushes must stay disabled")
+        if deletions.get("enabled") is not EXPECTED_ALLOW_DELETIONS:
+            findings.append("allow_deletions must stay disabled")
     elif should_defer_to_manual(branch_status, branch, auth_enabled=auth_enabled):
         manual_checks.append("branch protection requires authenticated GitHub API access")
+    elif should_defer_to_manual(protection_status, protection_payload, auth_enabled=auth_enabled):
+        manual_checks.append("branch protection policy details require authenticated GitHub API access")
     else:
-        findings.append("branch endpoint must return 200")
+        findings.append("branch protection endpoints must return 200")
 
     if workflows_status == 200 and isinstance(workflows, dict):
         names = [workflow.get("name", "") for workflow in workflows.get("workflows", [])]

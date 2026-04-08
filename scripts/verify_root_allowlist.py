@@ -23,6 +23,7 @@ ALLOWED_ROOT_ENTRIES = {
     ".env.production.example",
     ".git",
     ".gitallowed",
+    ".gitleaks.toml",
     ".github",
     ".gitignore",
     ".gitleaksignore",
@@ -47,7 +48,9 @@ ALLOWED_ROOT_ENTRIES = {
     "docker-compose.yml",
     "Dockerfile",
     "docs",
+    "DISTRIBUTION.md",
     "frontend",
+    "INTEGRATIONS.md",
     "LICENSE",
     "MANIFEST.in",
     "marketplace.json",
@@ -66,6 +69,7 @@ ALLOWED_ROOT_ENTRIES = {
     "tests",
     "uv.lock",
     "assets",
+    "browser-extension",
 }
 LOCAL_ONLY_PREFIXES = {
     ".agents",

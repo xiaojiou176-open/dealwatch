@@ -10,7 +10,12 @@ from verify_remote_github_state import (
     EXPECTED_HOMEPAGE,
     EXPECTED_LABELS,
     EXPECTED_LATEST_RELEASE,
+    EXPECTED_ALLOW_DELETIONS,
+    EXPECTED_ALLOW_FORCE_PUSHES,
+    EXPECTED_REQUIRED_APPROVING_REVIEW_COUNT,
     EXPECTED_REQUIRED_CHECKS,
+    EXPECTED_REQUIRED_LINEAR_HISTORY,
+    EXPECTED_REQUIRED_SIGNATURES_ENABLED,
     EXPECTED_TOPICS,
     EXPECTED_WORKFLOWS,
     TOKEN,
@@ -35,6 +40,7 @@ def format_status(ok: bool) -> str:
 def main() -> int:
     repo_status, repo = fetch_json(BASE)
     branch_status, branch = fetch_json(f"{BASE}/branches/main")
+    protection_status, protection_payload = fetch_json(f"{BASE}/branches/main/protection")
     workflows_status, workflows = fetch_json(f"{BASE}/actions/workflows")
     labels_status, labels = fetch_json(f"{BASE}/labels?per_page=100")
     issues_status, issues = fetch_json(f"{BASE}/issues?state=open&per_page=100")
@@ -79,6 +85,11 @@ def main() -> int:
     print("3. Branch protection contract")
     print("   - Default branch: main")
     print(f"   - Required checks: {format_csv(EXPECTED_REQUIRED_CHECKS)}")
+    print(f"   - Required approving reviews: {EXPECTED_REQUIRED_APPROVING_REVIEW_COUNT}")
+    print(f"   - Required signatures: {EXPECTED_REQUIRED_SIGNATURES_ENABLED}")
+    print(f"   - Required linear history: {EXPECTED_REQUIRED_LINEAR_HISTORY}")
+    print(f"   - Allow force pushes: {EXPECTED_ALLOW_FORCE_PUSHES}")
+    print(f"   - Allow deletions: {EXPECTED_ALLOW_DELETIONS}")
     print(f"   - Expected workflows: {format_csv(EXPECTED_WORKFLOWS)}")
     print(f"   - Expected labels: {format_csv(EXPECTED_LABELS)}")
     print("")
@@ -108,16 +119,39 @@ def main() -> int:
         print(f"   - Status: unavailable (repo_status={repo_status})")
     print("")
     print("6. Branch protection current")
-    if branch_status == 200 and isinstance(branch, dict):
+    if (
+        branch_status == 200
+        and isinstance(branch, dict)
+        and protection_status == 200
+        and isinstance(protection_payload, dict)
+    ):
         protection = branch.get("protection") or {}
         current_checks = set(((protection.get("required_status_checks") or {}).get("contexts") or []))
-        branch_ok = branch.get("protected") is True and current_checks == EXPECTED_REQUIRED_CHECKS
+        pr_reviews = protection_payload.get("required_pull_request_reviews") or {}
+        required_signatures = protection_payload.get("required_signatures") or {}
+        linear_history = protection_payload.get("required_linear_history") or {}
+        force_pushes = protection_payload.get("allow_force_pushes") or {}
+        deletions = protection_payload.get("allow_deletions") or {}
+        branch_ok = (
+            branch.get("protected") is True
+            and current_checks == EXPECTED_REQUIRED_CHECKS
+            and pr_reviews.get("required_approving_review_count") == EXPECTED_REQUIRED_APPROVING_REVIEW_COUNT
+            and required_signatures.get("enabled") is EXPECTED_REQUIRED_SIGNATURES_ENABLED
+            and linear_history.get("enabled") is EXPECTED_REQUIRED_LINEAR_HISTORY
+            and force_pushes.get("enabled") is EXPECTED_ALLOW_FORCE_PUSHES
+            and deletions.get("enabled") is EXPECTED_ALLOW_DELETIONS
+        )
         print(f"   - Status: {format_status(branch_ok)}")
         print(f"   - Main protected: {branch.get('protected')}")
         print(f"   - Required checks current: {format_csv(current_checks)}")
         print(f"   - Missing expected checks: {format_csv(EXPECTED_REQUIRED_CHECKS.difference(current_checks))}")
+        print(f"   - Required approving reviews current: {pr_reviews.get('required_approving_review_count')}")
+        print(f"   - Required signatures current: {required_signatures.get('enabled')}")
+        print(f"   - Required linear history current: {linear_history.get('enabled')}")
+        print(f"   - Allow force pushes current: {force_pushes.get('enabled')}")
+        print(f"   - Allow deletions current: {deletions.get('enabled')}")
     else:
-        print(f"   - Status: unavailable (branch_status={branch_status})")
+        print(f"   - Status: unavailable (branch_status={branch_status}, protection_status={protection_status})")
     print("")
     print("7. Workflow, label, and issue surface current")
     if workflows_status == 200 and isinstance(workflows, dict):

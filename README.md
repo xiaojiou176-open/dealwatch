@@ -65,14 +65,20 @@ Most visitors should follow this order:
   Follow the stable GitHub releases surface for the newest notes instead of relying on hand-copied version text inside docs pages.
 - **Decision Memo**
   Use [`docs/roadmaps/dealwatch-decision-memo.md`](./docs/roadmaps/dealwatch-decision-memo.md) when you need the post-archive strategic SSOT before turning copy, roadmap, or implementation questions back into open debate.
+- **Distribution**
+  Use [`DISTRIBUTION.md`](./DISTRIBUTION.md) when you want the shortest truthful ready-vs-live ledger for GitHub Pages, release, package metadata, builder bundles, and registry/listing-prep status.
+- **Integrations**
+  Use [`INTEGRATIONS.md`](./INTEGRATIONS.md) when you want the shortest truthful front desk for the builder pack, native bundle candidates, and current read-only consumption surfaces before diving into the full integration handbook.
 - **Builder Starter Pack**
   Use [`docs/integrations/README.md`](./docs/integrations/README.md) when you want repo-owned example payloads, local onboarding order, starter prompts, config recipes, a copyable builder skill card, and per-client guidance for Claude Code, Codex, OpenHands, OpenCode, OpenClaw, and similar builder workflows that should stay inside the current read-only / local-first boundary.
 - **Native Plugin Bundles**
   Use [`plugins/dealwatch-builder-pack/README.md`](./plugins/dealwatch-builder-pack/README.md), [`.claude-plugin/marketplace.json`](./.claude-plugin/marketplace.json), and [`.agents/plugins/marketplace.json`](./.agents/plugins/marketplace.json) when you want the repo-owned Claude Code and Codex package artifacts that now back the builder story. They are package candidates, not official listings.
+- **Chrome Companion**
+  Use [`browser-extension/README.md`](./browser-extension/README.md) when you want the repo-owned Chrome companion package, listing notes, and bundle build/verify scripts that leave only the Chrome Web Store dashboard submission step outside the repo.
 - **Builder Machine Frontdoor**
   Use [`site/llms.txt`](./site/llms.txt), [`site/data/builder-client-catalog.json`](./site/data/builder-client-catalog.json), [`site/data/builder-client-starters.json`](./site/data/builder-client-starters.json), [`site/data/builder-starter-pack.json`](./site/data/builder-starter-pack.json), and [`site/data/builder-client-configs.json`](./site/data/builder-client-configs.json) when an agent wants machine-readable public pointers before it starts the local runtime. Think of them as: `catalog = index`, `client starters = prompt/skill mirror`, `starter pack = contract map`, and `all-clients bundle = full payload`.
 - **Builder Distribution / SEO Surfaces**
-  Use [`site/builders.html`](./site/builders.html), [`site/llms.txt`](./site/llms.txt), [`site/sitemap.xml`](./site/sitemap.xml), [`site/feed.xml`](./site/feed.xml), and [`site/assets/social/social-preview-1280x640.png`](./site/assets/social/social-preview-1280x640.png) when you want the repo-owned builder pack, listing-prep distribution assets, and crawlable SEO surfaces without pretending a published listing or hosted control plane already exists.
+  Use [`site/builders.html`](./site/builders.html), [`site/llms.txt`](./site/llms.txt), [`site/sitemap.xml`](./site/sitemap.xml), [`site/feed.xml`](./site/feed.xml), and [`assets/social/social-preview-1280x640.png`](./assets/social/social-preview-1280x640.png) when you want the repo-owned builder pack, listing-prep distribution assets, and crawlable SEO surfaces without pretending a published listing or hosted control plane already exists.
 
 ## Builder Start Here
 
@@ -621,6 +627,10 @@ path.
   Use `./scripts/smoke_product_hermetic.sh`, `python3 scripts/verify_remote_github_state.py`,
   `python3 scripts/verify_public_demo_interaction.py`, browser debug-lane probes, and any live
   platform checks only when the task actually needs them.
+- `distribution`
+  Use `python3 scripts/verify_browser_extension_surface.py` and `python3 scripts/build_browser_extension_bundle.py`
+  when you are preparing the Chrome companion package for manual store upload without changing the
+  default local baseline.
 - **Security**
   Security reports must stay private. Start with [`SECURITY.md`](./SECURITY.md).
 - **Support**

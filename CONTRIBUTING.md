@@ -95,6 +95,7 @@ add-ons only when the branch actually touches that surface:
 - public/docs/front door: `python3 scripts/verify_public_surface.py`, `python3 scripts/verify_site_surface.py`, `python3 scripts/verify_public_entrypoints.py`, `python3 scripts/verify_feed_surface.py`
 - runtime/store contract: `python3 scripts/verify_runtime_diagnostics.py`, `python3 scripts/verify_schema_contract.py`, `python3 scripts/verify_store_capability_registry.py`
 - SEO/social preview: `python3 scripts/verify_social_preview_asset.py`, `python3 scripts/verify_social_preview_matrix.py`
+- distribution/browser extension: `python3 scripts/verify_browser_extension_surface.py`, `python3 scripts/build_browser_extension_bundle.py`
 - boundary/governance text: `python3 scripts/verify_english_boundary.py`
 
 #### Manual deeper confidence
@@ -212,6 +213,7 @@ trufflehog git --no-update file://"$PWD"
 Repository note:
 
 - `.gitleaksignore` is intentionally kept to suppress the known `server-main` false positive in `src/dealwatch/server.py`.
+- `.gitleaks.toml` now excludes gitignored local-only namespaces such as `.agents/`, `.codex/`, `.claude/`, and `.runtime-cache/` from filesystem-style scans so `gitleaks dir .` stays focused on the public/tracked surface instead of local developer noise.
 - Do not add new suppressions unless the finding is reproducibly false and the reason is documented in the pull request.
 
 ## DCO

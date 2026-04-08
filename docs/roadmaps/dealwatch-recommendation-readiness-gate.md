@@ -45,7 +45,7 @@ Current workspace truth for this gate is:
 - current repo-local snapshot: `13 total`, `11 included`, `5 issued`, `6 abstained`, `2 invalid_or_skipped`
 - current review queue: `11 reviewed`, `0 pending`
 - current disagreement buckets in this fully adjudicated v1 workspace are: `abstain_when_should_speak: 3`, `speak_when_should_abstain: 3`
-- the native compare-origin lane has an evidence-backed ceiling: `30` available histories collapse to `1` unique pattern / `1` unique store pair / `1` unique source-url pair family, with `29` repeated rows dropped and `top share = 1.0`
+- the current lane now ingests real runtime compare-evidence packages, keeps the compare-preview public slice honest, and leaves broader expansion blocked on whether additional native families clear the current quality bar strongly enough to count as real breadth
 
 ## Current decision
 
@@ -98,7 +98,7 @@ The current internal stop line has moved forward:
 
 - the v1 workspace no longer carries repo-local review debt for the current corpus (`11 reviewed`, `0 pending`)
 - the disagreement map is now deeper than a starter packet, but it still only spans two disagreement classes across the current narrow corpus
-- the native compare-origin breadth ceiling is now proven, and the corpus is still too concentrated to justify launch language
+- the compare-preview slice is shipped, but broader expansion still has too little credible native breadth to justify wider launch language
 - the canonical campaign report now reads `native_compare_origin_source_case_kind = runtime_compare_evidence_package`, which means the machine has finally produced a fresh runtime compare-evidence package through the compare mainline
 - even after that forward step, the current honest native pool still collapses to one acceptable pattern once obviously mismatched weak-compare packages are filtered back out
 
@@ -112,7 +112,7 @@ For the current v1 workspace, those two conditions now hold:
 - the repo-local review debt has been adjudicated to `11 reviewed`, `0 pending`
 - the next meaningful breadth increase still depends on new live compare-origin families beyond the repeated pears pair
 - the next best candidate pair is now narrowed to `safeway + target` fairlife, where a fresh Target self-test now succeeds again but Safeway still returns an Incapsula block page on the automated Playwright path
-- the current machine also has no live DealWatch-owned dedicated Chrome lane under `~/.cache/dealwatch/browser/chrome-user-data`, so this turn has no separate repo-owned session lane to claim as an alternate green path
+- the remaining broader-expansion blocker is no longer "missing dedicated lane" by itself; it is whether the live lane can keep producing additional **credible** native families beyond the already accepted compare-preview package
 
 That means the lane is now **mostly external-blocker-shaped for breadth growth**, while still remaining firmly blocked from any broader recommendation launch beyond Compare Preview v1.
 
@@ -129,7 +129,7 @@ It is no longer:
 It is now:
 
 - current native harvesting now uses `runtime_compare_evidence_package`
-- the native compare-origin pool still lands at only `1` acceptable pattern in the fresh canonical rerun
+- the next honest question is not "did the lane read a compare package at all?" but "did the next package clear the native quality floor strongly enough to count as a credible additional family?"
 - the current corpus is still maintainer-scoped mixed internal evidence, not broader public-calibration evidence
 - future expansion to task/group/MCP/builder/static pages would still need more native compare-origin families, more stable disagreement buckets, and broader calibration evidence than the current compare-preview slice
 

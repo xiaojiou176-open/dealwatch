@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>DealWatch Companion</title>
+    <link rel="stylesheet" href="./popup.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <p class="eyebrow">DealWatch Companion</p>
+      <h1>Open compare from the current page</h1>
+      <p class="summary">
+        This helper sends the current product page into the local-first DealWatch compare flow.
+      </p>
+
+      <section class="panel">
+        <p class="label">Current tab</p>
+        <p id="current-tab-host" class="host">Detecting current page...</p>
+        <p id="current-tab-url" class="url">Waiting for the active tab URL.</p>
+      </section>
+
+      <section class="panel">
+        <p class="label">Local runtime</p>
+        <p id="base-url" class="host">http://127.0.0.1:5173</p>
+      </section>
+
+      <div class="actions">
+        <button id="open-current" type="button">Open current page in Compare</button>
+        <button id="open-blank" type="button" class="secondary">Open Compare without prefill</button>
+      </div>
+
+      <div class="links">
+        <button id="open-options" type="button" class="link-button">Options</button>
+        <button id="open-docs" type="button" class="link-button">Open project docs</button>
+      </div>
+
+      <p id="status" class="status"></p>
+    </main>
+
+    <script type="module" src="./popup.js"></script>
+  </body>
+</html>

@@ -5,7 +5,7 @@
 > **Status:** active phase-1.1 reference for developers and agent-builders.
 > This is the formal builder-facing contract for the current DealWatch API / MCP substrate.
 > It describes what an external builder can consume **today** from a local-first runtime.
-> It does **not** claim hosted maturity, SDK packaging, multi-tenant auth, write-side MCP, or public recommendation support.
+> It does **not** claim hosted maturity, SDK packaging, multi-tenant auth, write-side MCP, or builder-facing recommendation parity beyond the shipped local Compare Preview advisory slice.
 
 ## What this document is for
 

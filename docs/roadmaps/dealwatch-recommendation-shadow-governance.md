@@ -48,7 +48,7 @@ The current governed snapshot in that workspace is:
 - `5 issued`, `6 abstained`, `2 invalid_or_skipped`
 - `11 reviewed`, `0 pending`
 - disagreement buckets are now deeper than a starter packet: `abstain_when_should_speak: 3`, `speak_when_should_abstain: 3`
-- the native compare-origin lane is already at `single_pattern_runtime_ceiling`: `30` available rows collapse to `1` unique pattern / `1` store pair / `1` source-url pair family, so `29` repeated rows are dropped instead of being miscounted as breadth
+- the native compare-origin lane now reads real runtime compare-evidence packages, but broader expansion still depends on additional **credible** native families that clear the current quality bar instead of padding the corpus with weak or repeated pairs
 
 Seeded, runtime-derived, and harvested native compare-origin evidence remain **internal experiment truth only**. None of them upgrades recommendation into public product maturity.
 

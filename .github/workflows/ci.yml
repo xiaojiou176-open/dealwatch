@@ -60,6 +60,7 @@ jobs:
           python scripts/verify_runtime_diagnostics.py
           python scripts/verify_social_preview_asset.py
           python scripts/verify_social_preview_matrix.py
+          python scripts/verify_browser_extension_surface.py
           python scripts/verify_site_surface.py
           python scripts/verify_schema_contract.py
           python scripts/verify_root_allowlist.py

@@ -1,0 +1,22 @@
+title = "DealWatch local-only path allowlist"
+
+[[allowlists]]
+description = "Ignore gitignored local-only namespaces during filesystem-style scans"
+paths = [
+  '''(^|/)\.agents(/|$)''',
+  '''(^|/)\.agent(/|$)''',
+  '''(^|/)\.codex(/|$)''',
+  '''(^|/)\.claude(/|$)''',
+  '''(^|/)\.serena(/|$)''',
+  '''(^|/)\.runtime-cache(/|$)''',
+  '''(^|/)\.legacy-runtime(/|$)''',
+  '''(^|/)\.pnpm-store(/|$)''',
+  '''(^|/)\.cache(/|$)''',
+  '''(^|/)logs?(/|$)''',
+  '''(^|/)log(/|$)''',
+  '''(^|/)tmp(/|$)''',
+  '''(^|/)dist(/|$)''',
+  '''(^|/)build(/|$)''',
+  '''(^|/)playwright-report(/|$)''',
+  '''(^|/)test-results(/|$)''',
+]
