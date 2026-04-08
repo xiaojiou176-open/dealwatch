@@ -32,7 +32,7 @@ _UNIT_RE: Final[re.Pattern[str]] = re.compile(
 )
 _EMBEDDED_PRODUCT_ID_RE: Final[re.Pattern[str]] = re.compile(r'\\"id\\":(?P<value>\d+)')
 _EMBEDDED_PRODUCT_NAME_RE: Final[re.Pattern[str]] = re.compile(
-    r'\\"name\\":\\"(?P<value>(?:[^"\\\\]|\\\\.)+)'
+    r'\\"name\\":\\"(?P<value>(?:[^"\\]|\\\\.)+)'
 )
 _EMBEDDED_PRODUCT_PRICE_RE: Final[re.Pattern[str]] = re.compile(
     r'\\"price\\":(?P<value>\d+(?:\.\d+)?)'
@@ -41,7 +41,7 @@ _EMBEDDED_PRODUCT_BASE_PRICE_RE: Final[re.Pattern[str]] = re.compile(
     r'\\"base_price\\":(?P<value>\d+(?:\.\d+)?)'
 )
 _EMBEDDED_PRODUCT_UNIT_RE: Final[re.Pattern[str]] = re.compile(
-    r'\\"unit_info\\":\\"(?P<value>(?:[^"\\\\]|\\\\.)+)'
+    r'\\"unit_info\\":\\"(?P<value>(?:[^"\\]|\\\\.)+)'
 )
 _EMBEDDED_PRODUCT_AVAILABLE_RE: Final[re.Pattern[str]] = re.compile(
     r'\\"sold_status_available\\":(?P<value>true|false)'
