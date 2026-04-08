@@ -81,7 +81,7 @@ The current breadth-hardening snapshot therefore shows:
 | `native unique pattern count` | `1` | proves the apparent native growth is still one repeated pattern, not broader product coverage |
 | `native top repeated pattern share` | `1.0` | the concentration risk is effectively total: the same pattern owns the full current native pool |
 | `native dropped repeat count` | `29` | Prompt 8 now refuses to treat repeated copies of the same smoke-test pair as if they added recommendation breadth |
-| `native source case kind` | `runtime_group_summary_fallback` | the current machine still lacks fresh native compare-evidence packages for a broader second family, so native harvesting still falls back to reconstructed watch-group summaries |
+| `native source case kind` | `runtime_compare_evidence_package` | the current machine now has a fresh native compare-evidence package from the compare mainline instead of relying on watch-group fallback |
 
 Historical note:
 
@@ -239,8 +239,9 @@ The repo is still not proving public purchase timing behavior across:
 There is now one cleaner repo-side next move before we call this purely external:
 
 - use the shipped local Compare Preview advisory flow to create more real runtime compare-evidence packages for new cross-store families
+- count only those packages whose compare signal is still plausible enough to defend as a real product family
 
-If that path still does not produce a second native family, then the blocker becomes even more clearly a live-history/data-supply problem instead of an ingestion-gap problem.
+If that path still does not produce a second acceptable native family, then the blocker becomes even more clearly a live-history/data-supply problem instead of an ingestion-gap problem.
 
 ### 4. Public silence still matters
 
@@ -264,7 +265,9 @@ What remains is also now explicit:
 - the current v1 workspace no longer carries repo-local review debt (`11 reviewed`, `0 pending`)
 - disagreement evidence is deeper than before, but it still only covers two disagreement classes across a concentrated corpus
 - seeded, runtime-derived, and harvested native compare-origin artifacts are still internal experiment truth, not public product maturity
-- the canonical report still shows `native_compare_origin_source_case_kind = runtime_group_summary_fallback`, so the native lane is still missing a fresh runtime compare-evidence package for a second family
+- the canonical report now shows `native_compare_origin_source_case_kind = runtime_compare_evidence_package`, so the native lane is no longer blocked on compare-evidence fallback
+- the fresh live package currently accepted into the native lane is the `safeway + target` fairlife compare pair
+- a newly repaired `weee` parser can now fetch the Weee side of the old pears lane again, but the paired Ranch99 URL has drifted into a soy-sauce product and therefore should not be counted as an honest second family
 
 This lane becomes "mostly real external blockers" only after both of these are true:
 
@@ -277,22 +280,17 @@ For the current v1 workspace, those two conditions now hold. The honest next blo
 
 The current repo-side next move is no longer abstract.
 
-The most credible next family remains:
+The first fresh accepted native family is now:
 
 - Safeway fairlife
 - Target fairlife
 
-That pair now tells a more precise story:
-
-- Target had a real repo-side live bug, and that path is now fixed locally
-- Safeway is still returning an Incapsula/WAF block page on the current Playwright path, so the repo cannot honestly pretend it already has a second native family
-
-That means the remaining blocker is now narrower and more external than before:
+That changes the blocker shape again:
 
 - not compare-evidence ingestion
 - not review continuity
-- not Compare Preview advisory v1 launch
-- but the lack of a new real runtime compare-evidence package for a second family
+- not fallback source kind
+- but the lack of a second acceptable native family beyond the newly landed fairlife pair
 
 This is why the remaining blocker now belongs to broader expansion only.
 
@@ -364,7 +362,7 @@ The next broader-launch discussion only becomes worth opening once Prompt 8 evid
 
 - replay is driven by a broader repo-local evidence corpus, not mainly by seeded samples, runtime-summary reconstruction, and one repeated native pair
 - the native compare-origin pool shows more than the current `1` unique pattern / `1` unique store pair / `1` unique source-url pair family ceiling
-- fresh runtime compare-evidence packages exist for a new cross-store family instead of leaving `runtime_group_summary_fallback` as the only native source kind for further breadth growth
+- fresh runtime compare-evidence packages exist for more than one acceptable cross-store family instead of leaving the native lane anchored to one accepted pair plus blocked or mismatched attempts
 - reviewed artifacts grow on top of that broader corpus instead of only re-grading repeated copies of the same smoke-test pair
 - disagreement buckets keep showing stable patterns outside the current `false_positive`, `speak_when_should_abstain`, and `abstain_when_should_speak` starter modes
 - deeper disagreement packets keep accumulating over time instead of appearing only in a single review sweep

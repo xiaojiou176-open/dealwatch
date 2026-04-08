@@ -30,9 +30,13 @@ class _FakeLocator:
 
 
 class _FakePage:
-    def __init__(self, url: str, selectors: dict[str, str | None]) -> None:
+    def __init__(self, url: str, selectors: dict[str, str | None], html_text: str = "") -> None:
         self.url = url
         self._selectors = selectors
+        self._html_text = html_text
+
+    async def content(self) -> str:
+        return self._html_text
 
     def locator(self, selector: str):
         if selector in self._selectors:
@@ -108,6 +112,39 @@ async def test_weee_parser_json_ld_fallback() -> None:
     assert offer.product_key == "5869"
     assert offer.price == 6.79
     assert offer.title == "Asian Honey Pears 3ct"
+
+
+@pytest.mark.asyncio
+async def test_weee_parser_embedded_product_fallback() -> None:
+    html = """
+    <html>
+      <head>
+        <title>冰糖润心秋月梨 3颗装 2.5-2.75 磅 - Weee! </title>
+        <meta property="og:title" content="xiao176jiou | 冰糖润心秋月梨 3颗装 2.5-2.75 磅" />
+      </head>
+      <body>
+        <script>
+          window.__flight = "{\\"product\\":{\\"id\\":5869,\\"name\\":\\"冰糖润心秋月梨 3颗装 2.5-2.75 磅\\",\\"sub_name\\":\\"肉质细腻 汁多味甜 清香爽口\\",\\"sold_status_available\\":true,\\"price\\":6.99,\\"base_price\\":9.99,\\"unit_info\\":\\"2.5-2.75 磅\\"}}";
+        </script>
+      </body>
+    </html>
+    """
+    page = _FakePage(
+        "https://www.sayweee.com/zh/product/Asian-Honey-Pears-3ct/5869",
+        {},
+        html_text=html,
+    )
+    parser = WeeeParser(store_id="weee", context=PriceContext(region="00000"))
+
+    offer = await parser.parse(page)
+
+    assert offer is not None
+    assert offer.product_key == "5869"
+    assert offer.title == "冰糖润心秋月梨 3颗装 2.5-2.75 磅"
+    assert offer.price == 6.99
+    assert offer.original_price == 9.99
+    assert offer.unit_price_info["raw"] == "冰糖润心秋月梨 3颗装 2.5-2.75 磅"
+    assert parser.last_debug["json_status"] == "embedded.product"
 
 
 @pytest.mark.asyncio
@@ -206,15 +243,15 @@ async def test_weee_parser_extract_payload_branches() -> None:
     parser = WeeeParser(store_id="weee", context=PriceContext(region="00000"))
 
     missing = _FakePage("https://example.com", {})
-    payload = await parser._extract_product_payload(missing, missing.url)
+    payload = await parser._extract_product_payload(missing, missing.url, await missing.content())
     assert payload is None
 
     empty = _FakePage("https://example.com", {"script#__NEXT_DATA__": ""})
-    payload = await parser._extract_product_payload(empty, empty.url)
+    payload = await parser._extract_product_payload(empty, empty.url, await empty.content())
     assert payload is None
 
     invalid = _FakePage("https://example.com", {"script#__NEXT_DATA__": "{bad"})
-    payload = await parser._extract_product_payload(invalid, invalid.url)
+    payload = await parser._extract_product_payload(invalid, invalid.url, await invalid.content())
     assert payload is None
 
     fallback_product = {
@@ -230,7 +267,7 @@ async def test_weee_parser_extract_payload_branches() -> None:
         "https://example.com",
         {"script#__NEXT_DATA__": json.dumps(fallback_product)},
     )
-    payload = await parser._extract_product_payload(page, page.url)
+    payload = await parser._extract_product_payload(page, page.url, await page.content())
     assert payload is not None
 
     deep_product = {
@@ -246,14 +283,18 @@ async def test_weee_parser_extract_payload_branches() -> None:
         "https://example.com",
         {"script#__NEXT_DATA__": json.dumps(deep_product)},
     )
-    payload = await parser._extract_product_payload(deep_page, deep_page.url)
+    payload = await parser._extract_product_payload(deep_page, deep_page.url, await deep_page.content())
     assert payload is not None
 
     deep_search = _FakePage(
         "https://example.com",
         {"script#__NEXT_DATA__": json.dumps({"data": [{"title": "T", "price": 3.0}]})},
     )
-    payload = await parser._extract_product_payload(deep_search, deep_search.url)
+    payload = await parser._extract_product_payload(
+        deep_search,
+        deep_search.url,
+        await deep_search.content(),
+    )
     assert payload is not None
 
 

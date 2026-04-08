@@ -30,6 +30,7 @@ _DEFAULT_WATCH_GROUP_SOURCE_DIR = DEFAULT_RUNTIME_RUNS_DIR / "watch-groups"
 _DEFAULT_WATCH_TASK_SOURCE_DIR = DEFAULT_RUNTIME_RUNS_DIR / "watch-tasks"
 _DEFAULT_RUNTIME_GROUP_PER_PATTERN_LIMIT = 3
 _DEFAULT_NATIVE_COMPARE_ORIGIN_REPEAT_BUDGET = 0
+_MIN_NATIVE_COMPARE_ORIGIN_MATCH_SCORE = 20.0
 
 
 @dataclass(frozen=True)
@@ -640,6 +641,13 @@ def _latest_runtime_compare_evidence_cases(
         }
         matches = [dict(item) for item in (payload.get("matches") or [])]
         top_match = matches[0] if matches else None
+        strongest_match_score = float(
+            (payload.get("summary") or {}).get("strongest_match_score")
+            or payload.get("strongest_match_score")
+            or (top_match.get("score") if top_match else 0.0)
+        )
+        if strongest_match_score < _MIN_NATIVE_COMPARE_ORIGIN_MATCH_SCORE:
+            continue
 
         top_candidates: list[dict[str, Any]] = []
         if top_match is not None:
@@ -681,11 +689,7 @@ def _latest_runtime_compare_evidence_cases(
                 or payload.get("successful_candidate_count")
                 or len(successful)
             ),
-            "strongest_match_score": float(
-                (payload.get("summary") or {}).get("strongest_match_score")
-                or payload.get("strongest_match_score")
-                or (top_match.get("score") if top_match else 0.0)
-            ),
+            "strongest_match_score": strongest_match_score,
         }
         compare_label = str(((payload.get("summary") or {}).get("headline")) or "runtime compare evidence")
         cases.append(

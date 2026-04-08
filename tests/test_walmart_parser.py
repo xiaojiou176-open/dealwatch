@@ -116,3 +116,23 @@ async def test_walmart_parser_missing_price_sets_debug_reason() -> None:
 
     assert offer is None
     assert parser.last_debug["price_missing"] == "missing json_ld offer price"
+
+
+@pytest.mark.asyncio
+async def test_walmart_parser_marks_robot_block_page() -> None:
+    html = """
+    <html>
+      <head><title>Robot or human?</title></head>
+      <body>
+        <div>Activate and hold the button to confirm that you're human. Thank You!</div>
+      </body>
+    </html>
+    """
+    page = _FakePage("https://www.walmart.com/blocked?url=L2lwLzQzOTg0MzQz&g=b", html)
+    parser = WalmartParser(store_id="walmart", context=PriceContext(region="98102"))
+
+    offer = await parser.parse(page)
+
+    assert offer is None
+    assert parser.last_debug["page_blocked"] == "walmart_robot_or_human"
+    assert parser.last_debug["json_ld"] == "skipped: block page"
