@@ -6,7 +6,7 @@ In plain English:
 
 - prompt starters tell an agent what to do first in one session
 - skill cards tell an agent what rules to keep following across the session
-- neither one is a published marketplace listing, hosted integration, or SDK promise
+- neither one alone proves every host registry is live, and neither one upgrades DealWatch into a hosted integration or SDK promise
 
 Current skill cards:
 
@@ -21,7 +21,7 @@ Use this directory when you want:
 
 - one shared builder rule card that works across clients
 - one client-specific wrapper when Claude Code, Codex, OpenHands, OpenCode, or OpenClaw needs a narrower rule set
-- repo-owned skill cards without pretending there is already a published marketplace listing
+- repo-owned skill cards plus the tracked ClawHub publication / OpenHands submission receipts without pretending every host already has a live listing
 - a companion to the recipe ledger in `../config-recipes.md` when you need client-specific wiring guidance plus session-long rules
 
-The short version is: these skill cards are part of the repo-owned plugin-ready pack, not proof that a marketplace listing is already live.
+The short version is: these skill cards are part of the repo-owned plugin-ready pack. Some host receipts now exist, but the cards themselves are still guidance artifacts, not blanket proof that every marketplace or registry is already live.

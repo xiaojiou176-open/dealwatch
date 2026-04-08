@@ -20,6 +20,8 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- Bumped the public Python package and MCP registry package version to `1.0.1`
+  after PyPI rejected filename reuse for the deleted `1.0.0` artifact lane.
 - Frontend TypeScript config now tolerates the TypeScript 6 `baseUrl` deprecation warning so maintenance dependency PRs can stay mergeable without lowering the repo's CI bar.
 - Gitleaks filesystem scans now ignore gitignored local-only namespaces through `.gitleaks.toml`, while history/public-surface scans stay enforced.
 - The public quick-start story now leads with a one-command Compose path before the longer manual multi-process setup.

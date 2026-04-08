@@ -79,9 +79,9 @@ Concrete wrapper examples that are currently safe to mirror live under:
 
 These recipes do **not** mean:
 
-- DealWatch now ships a published marketplace listing
+- every builder host already has a live first-party listing
 - every client wrapper schema is frozen forever
 - write-side MCP is ready
 - DealWatch runs on Claude Code, Codex, OpenHands, OpenCode, or OpenClaw
 
-The honest reading is smaller: the repo owns a plugin-ready pack plus marketplace-ready listing assets, but the store listing itself is still not published.
+The honest reading is smaller: DealWatch now has a mixed state. PyPI, the Official MCP Registry, and the ClawHub skill are live; the OpenHands/extensions and MCP.so submissions are filed; Claude Code, Codex, OpenCode, and the Chrome Web Store still remain repo-owned or pending rather than first-party live listings.

@@ -147,14 +147,14 @@
         "Do not assume hosted multi-tenant auth exists.",
         "Do not expose recommendation as a builder feature."
       ],
-      "plugin_status": "Repo-owned OpenHands skill-pack candidate. The official public surface is the global skill registry; not officially listed.",
+      "plugin_status": "Repo-owned OpenHands skill pack with a live submission receipt. OpenHands/extensions PR #152 is open; treat the listing as review-pending until it merges.",
       "distribution_surface_kind": "official_skill_registry",
       "official_public_surface": {
         "label": "OpenHands global skill registry",
         "url": "https://docs.openhands.dev/overview/skills/public"
       },
-      "distribution_candidate": "skill_registry_candidate",
-      "listing_status": "not_officially_listed",
+      "distribution_candidate": "skill_registry_submission_pending",
+      "listing_status": "submission_open",
       "repo_distribution_artifacts": [
         "docs/integrations/skills/openhands-readonly-builder-skill.md",
         "docs/integrations/prompts/openhands-starter.md",
@@ -259,14 +259,14 @@
         "Do not assume write-side MCP or operator automation is ready.",
         "Do not treat local-first proof surfaces as hosted control plane guarantees."
       ],
-      "plugin_status": "Repo-owned OpenClaw registry candidate. The official public surface is ClawHub; not officially listed.",
+      "plugin_status": "Repo-owned OpenClaw skill is live on ClawHub as dealwatch-readonly-builder. The official public surface is ClawHub, but the runtime story still stays local-first and read-only.",
       "distribution_surface_kind": "clawhub_public_registry",
       "official_public_surface": {
         "label": "OpenClaw ClawHub registry",
         "url": "https://docs.openclaw.ai/tools/clawhub"
       },
-      "distribution_candidate": "registry_candidate",
-      "listing_status": "not_officially_listed",
+      "distribution_candidate": "clawhub_live",
+      "listing_status": "live_on_clawhub",
       "repo_distribution_artifacts": [
         "docs/integrations/prompts/openclaw-starter.md",
         "docs/integrations/skills/openclaw-readonly-builder-skill.md",

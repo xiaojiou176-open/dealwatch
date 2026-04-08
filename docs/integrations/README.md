@@ -154,9 +154,9 @@ The stable part is:
 | --- | --- | --- | --- |
 | Claude Code | register the local stdio MCP command, then read the substrate doc | `get_runtime_readiness` -> `get_builder_starter_pack` -> `compare_preview` -> `list_watch_tasks` or `list_watch_groups` | no write-side MCP, no hosted remote control plane |
 | Codex | point Codex at the local runtime plus the streamable-HTTP MCP contract | `get_runtime_readiness` -> `get_builder_starter_pack` -> `compare_preview` -> one detail read | no SDK, no multi-tenant auth story |
-| OpenHands | keep the client in observation mode first | runtime readiness -> builder starter pack -> compare preview -> recovery or store cockpit reads | skill-registry candidate only, no plugin marketplace claim |
+| OpenHands | keep the client in observation mode first even though the skill submission is already filed | runtime readiness -> builder starter pack -> compare preview -> recovery or store cockpit reads | OpenHands/extensions submission is open; do not call it merged until the host accepts it |
 | OpenCode | treat DealWatch as a local product truth source, not as a hosted platform service | MCP discovery -> builder starter pack -> compare preview -> watch or group detail | ecosystem-listing candidate only, no first-party store claim |
-| OpenClaw | treat DealWatch as a local compare-first truth backend or workflow shell dependency, not as a runtime base | `get_runtime_readiness` -> `get_builder_starter_pack` -> `compare_preview` -> watch or group reads -> recovery or store cockpit reads | ClawHub candidate only, no registry listing claim yet |
+| OpenClaw | treat DealWatch as a local compare-first truth backend or workflow shell dependency, not as a runtime base | `get_runtime_readiness` -> `get_builder_starter_pack` -> `compare_preview` -> watch or group reads -> recovery or store cockpit reads | the ClawHub skill is live, but the safe first flow still starts from the same local read-only runtime |
 
 Use the recipe ledger when you need the next level of honesty:
 
@@ -185,9 +185,10 @@ ships in-repo today, and what we still must **not** claim.
 | --- | --- | --- | --- |
 | Claude Code | official marketplace + custom marketplaces | [`plugins/dealwatch-builder-pack/.claude-plugin/plugin.json`](../../plugins/dealwatch-builder-pack/.claude-plugin/plugin.json), [`.claude-plugin/marketplace.json`](../../.claude-plugin/marketplace.json) | marketplace-submission candidate, **not officially listed** |
 | Codex | Plugin Directory + repo/personal marketplace | [`plugins/dealwatch-builder-pack/.codex-plugin/plugin.json`](../../plugins/dealwatch-builder-pack/.codex-plugin/plugin.json), [`../../marketplace.json`](../../marketplace.json) | Plugin Directory candidate, **not officially listed** |
-| OpenHands | global skill registry | [`./skills/openhands-readonly-builder-skill.md`](./skills/openhands-readonly-builder-skill.md) | skill-registry candidate, **not officially listed** |
+<<<<<<< HEAD
+| OpenHands | global skill registry | [`./skills/openhands-readonly-builder-skill.md`](./skills/openhands-readonly-builder-skill.md) | submission filed in [`OpenHands/extensions#152`](https://github.com/OpenHands/extensions/pull/152), **not merged yet** |
 | OpenCode | ecosystem listing | [`./recipes/opencode.md`](./recipes/opencode.md), [`./examples/opencode.jsonc`](./examples/opencode.jsonc) | ecosystem-listing candidate, **not officially listed** |
-| OpenClaw | ClawHub public registry | [`./recipes/openclaw.md`](./recipes/openclaw.md), [`./skills/openclaw-readonly-builder-skill.md`](./skills/openclaw-readonly-builder-skill.md), compatible bundle assets under [`plugins/dealwatch-builder-pack/`](../../plugins/dealwatch-builder-pack/) | ClawHub candidate, **not officially listed** |
+| OpenClaw | ClawHub public registry | [`./recipes/openclaw.md`](./recipes/openclaw.md), [`./skills/openclaw-readonly-builder-skill.md`](./skills/openclaw-readonly-builder-skill.md), compatible bundle assets under [`plugins/dealwatch-builder-pack/`](../../plugins/dealwatch-builder-pack/) | live on ClawHub as `dealwatch-readonly-builder` |
 
 ## Official MCP Registry reality
 
@@ -205,20 +206,19 @@ The protocol itself now also has an official public registry surface:
   - CI now also guards that package surface through `scripts/verify_package_publish_surface.py` plus an sdist/wheel build in the main `test` lane
   - the builder docs and bundle assets already describe the local-first launch path
 - honest status today:
-  - registry-prep capable
-  - **not published in the official MCP Registry**
-  - no public package or remote registry entry has been pushed from this repo yet
+  - public package is live on PyPI as `dealwatch==1.0.1`
+  - the Official MCP Registry entry is live as `io.github.xiaojiou176-open/dealwatch`
+  - the repo still stays local-first and read-only even though the registry layer is now published
 
 In plain English:
 
-DealWatch already has the product side of the MCP story, but the registry side still needs an external publish surface.
+DealWatch now has both halves of the MCP story: the product side and the registry/package side are both public.
 
-That means the remaining stop line is not “write more local docs.”
+That means the remaining stop line is no longer “publish the first package.”
 It is:
 
-- publish a public package or remote server artifact the MCP Registry can point at
-- use the official registry submission flow
-- complete any namespace / release / owner verification required by that publish surface
+- wait for directory-style host reviews such as OpenHands/extensions and MCP.so
+- decide which additional first-party host surfaces deserve a live listing beyond the current local-first boundary
 
 ## File map
 
@@ -310,11 +310,11 @@ The honest current shape is still local-first:
 Not every client has a native package today:
 
 - Claude Code and Codex now have repo-owned native bundle artifacts
-- OpenHands remains a skill-registry candidate
+- OpenHands now has a submission receipt in `OpenHands/extensions#152`, but it is still review-pending
 - OpenCode remains an ecosystem-listing candidate
-- OpenClaw remains a ClawHub / registry candidate backed by compatible bundle assets and repo-native docs
+- OpenClaw now has a live ClawHub skill backed by the same compatible bundle assets and repo-native docs
 
-Those artifacts live in the repo as builder material, not in a marketplace as already published listings.
+Those artifacts still live in the repo as builder material first, but they no longer all stop at “candidate” status.
 
 That is enough to make plugin packaging, listing-prep copy, and SEO frontdoor work real without pretending a published listing or hosted plugin ecosystem already exists.
 

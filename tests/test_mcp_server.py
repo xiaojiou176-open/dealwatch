@@ -194,7 +194,7 @@ def test_mcp_client_starters_include_openclaw_without_plugin_claim() -> None:
     assert starters["openclaw"]["config_wrapper_status"] == "official_wrapper_documented"
     assert "ClawHub" in starters["openclaw"]["plugin_status"]
     assert starters["openclaw"]["distribution_surface_kind"] == "clawhub_public_registry"
-    assert starters["openclaw"]["listing_status"] == "not_officially_listed"
+    assert starters["openclaw"]["listing_status"] == "live_on_clawhub"
 
 
 def test_mcp_client_starters_keep_platform_specific_distribution_wording() -> None:
@@ -205,13 +205,17 @@ def test_mcp_client_starters_keep_platform_specific_distribution_wording() -> No
     assert starters["codex"]["distribution_surface_kind"] == "official_plugin_directory_and_repo_marketplace"
     assert "Plugin Directory candidate" in starters["codex"]["plugin_status"]
     assert starters["openhands"]["distribution_surface_kind"] == "official_skill_registry"
-    assert "skill registry" in starters["openhands"]["plugin_status"]
+    assert "skill registry" in starters["openhands"]["official_public_surface_label"].lower()
+    assert "review-pending" in starters["openhands"]["plugin_status"]
     assert starters["opencode"]["distribution_surface_kind"] == "official_ecosystem_listing"
     assert "ecosystem list" in starters["opencode"]["plugin_status"]
     assert starters["openclaw"]["distribution_surface_kind"] == "clawhub_public_registry"
     assert "ClawHub" in starters["openclaw"]["plugin_status"]
-    for item in starters.values():
-        assert item["listing_status"] == "not_officially_listed"
+    assert starters["claude-code"]["listing_status"] == "not_officially_listed"
+    assert starters["codex"]["listing_status"] == "not_officially_listed"
+    assert starters["openhands"]["listing_status"] == "submission_open"
+    assert starters["opencode"]["listing_status"] == "not_officially_listed"
+    assert starters["openclaw"]["listing_status"] == "live_on_clawhub"
 
 
 def test_mcp_client_starters_include_recipe_paths_and_wrapper_status() -> None:

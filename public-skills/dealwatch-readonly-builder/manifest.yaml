@@ -1,0 +1,38 @@
+schema_version: 1
+name: dealwatch-readonly-builder
+display_name: DealWatch Read-only Builder
+version: 1.0.0
+summary: >
+  Local-first builder skill for DealWatch that keeps the compare-first workflow
+  inside the current read-only product boundary.
+homepage: https://github.com/xiaojiou176-open/dealwatch
+repository: https://github.com/xiaojiou176-open/dealwatch
+license: MIT
+authors:
+  - name: DealWatch
+entrypoints:
+  skill_markdown: SKILL.md
+compatibility:
+  openhands:
+    mode: skill directory
+    published_listing: false
+  clawhub:
+    mode: skill publish
+    published_listing: false
+capabilities:
+  - route builders into the safe-first DealWatch path
+  - keep runtime and compare guidance read-only
+  - preserve honest local-first boundary wording
+boundaries:
+  hosted_operator: false
+  write_capable_mcp: false
+  oauth_login: false
+  official_listing_live: false
+distribution_notes:
+  current_claim: skill package is ready for registry submission, but no external registry listing should be claimed until it is confirmed live
+verification:
+  repo_commands:
+    - python3 scripts/verify_public_surface.py
+    - python3 scripts/verify_docs_contract.py
+    - python3 scripts/verify_browser_extension_surface.py
+    - GITHUB_TOKEN="$(gh auth token)" python3 scripts/verify_remote_github_state.py

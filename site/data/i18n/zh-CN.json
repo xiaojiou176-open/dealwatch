@@ -1521,7 +1521,7 @@
       "distributionPluginCta": "打开 builder pack 文档",
       "distributionSkillCta": "打开 builder skill pack",
       "distributionMarketplaceTitle": "Native bundle candidates",
-      "distributionMarketplaceSummary": "Claude Code 和 Codex 现在也有了共享 builder pack 里的 repo-owned native bundle artifact。OpenHands 仍然是 skill-registry candidate，OpenCode 是 ecosystem-listing candidate，OpenClaw 是 ClawHub candidate。",
+      "distributionMarketplaceSummary": "Claude Code 和 Codex 现在也有了共享 builder pack 里的 repo-owned native bundle artifact。OpenHands 已经有 OpenHands/extensions 提交回执，OpenCode 仍然是 ecosystem-listing candidate，而 OpenClaw 现在已经有 live 的 ClawHub skill。",
       "distributionSocialCta": "打开共享 bundle",
       "distributionProofCta": "打开 distribution matrix",
       "distributionCatalogCta": "打开 client catalog",

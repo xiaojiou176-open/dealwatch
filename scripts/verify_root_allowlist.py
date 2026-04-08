@@ -35,6 +35,7 @@ ALLOWED_ROOT_ENTRIES = {
     ".ruff_cache",
     ".venv",
     "plugins",
+    "public-skills",
     "THIRD_PARTY.md",
     "CLAUDE.md",
     "AGENTS.md",

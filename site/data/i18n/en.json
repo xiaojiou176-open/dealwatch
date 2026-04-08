@@ -1518,7 +1518,7 @@
       "distributionPluginCta": "Open the builder pack docs",
       "distributionSkillCta": "Open the builder skill pack",
       "distributionMarketplaceTitle": "Native bundle candidates",
-      "distributionMarketplaceSummary": "Claude Code and Codex now also have repo-owned native bundle artifacts in the shared builder pack. OpenHands remains a skill-registry candidate, OpenCode an ecosystem-listing candidate, and OpenClaw a ClawHub candidate.",
+      "distributionMarketplaceSummary": "Claude Code and Codex now also have repo-owned native bundle artifacts in the shared builder pack. OpenHands has a submitted OpenHands/extensions receipt, OpenCode remains an ecosystem-listing candidate, and OpenClaw now has a live ClawHub skill.",
       "distributionSocialCta": "Open the shared bundle",
       "distributionProofCta": "Open the distribution matrix",
       "distributionCatalogCta": "Open the client catalog",

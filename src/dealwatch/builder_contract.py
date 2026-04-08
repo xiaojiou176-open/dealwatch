@@ -118,16 +118,16 @@ _CLIENT_STARTER_SPECS: list[dict[str, Any]] = [
         "distribution_surface_kind": "official_skill_registry",
         "official_public_surface_label": "OpenHands global skill registry",
         "official_public_surface_url": "https://docs.openhands.dev/overview/skills/public",
-        "distribution_candidate": "skill_registry_candidate",
-        "listing_status": "not_officially_listed",
+        "distribution_candidate": "skill_registry_submission_pending",
+        "listing_status": "submission_open",
         "repo_distribution_artifacts": [
             "docs/integrations/skills/openhands-readonly-builder-skill.md",
             "docs/integrations/prompts/openhands-starter.md",
             "docs/integrations/recipes/openhands.md",
         ],
         "plugin_status": (
-            "Repo-owned OpenHands skill-pack candidate. "
-            "The official public surface is the global skill registry; not officially listed."
+            "Repo-owned OpenHands skill pack with a live submission receipt. "
+            "OpenHands/extensions PR #152 is open; treat the listing as review-pending until it merges."
         ),
         "boundary_reminders": [
             "Do not assume destructive automation is safe.",
@@ -200,8 +200,8 @@ _CLIENT_STARTER_SPECS: list[dict[str, Any]] = [
         "distribution_surface_kind": "clawhub_public_registry",
         "official_public_surface_label": "OpenClaw ClawHub registry",
         "official_public_surface_url": "https://docs.openclaw.ai/tools/clawhub",
-        "distribution_candidate": "registry_candidate",
-        "listing_status": "not_officially_listed",
+        "distribution_candidate": "clawhub_live",
+        "listing_status": "live_on_clawhub",
         "repo_distribution_artifacts": [
             "docs/integrations/prompts/openclaw-starter.md",
             "docs/integrations/skills/openclaw-readonly-builder-skill.md",
@@ -210,8 +210,8 @@ _CLIENT_STARTER_SPECS: list[dict[str, Any]] = [
             "plugins/dealwatch-builder-pack/.codex-plugin/plugin.json",
         ],
         "plugin_status": (
-            "Repo-owned OpenClaw registry candidate. "
-            "The official public surface is ClawHub; not officially listed."
+            "Repo-owned OpenClaw skill is live on ClawHub as dealwatch-readonly-builder. "
+            "The official public surface is ClawHub, but the runtime story still stays local-first and read-only."
         ),
         "boundary_reminders": [
             "Do not treat DealWatch as an OpenClaw runtime base.",

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dealwatch"
-version = "1.0.0"
+version = "1.0.1"
 description = "DealWatch product backend and worker runtime"
 readme = "README.md"
 license = "MIT"
