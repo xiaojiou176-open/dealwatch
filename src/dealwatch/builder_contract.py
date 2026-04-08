@@ -49,7 +49,7 @@ _CLIENT_STARTER_SPECS: list[dict[str, Any]] = [
         "boundary_reminders": [
             "Do not assume write-side MCP exists.",
             "Do not present DealWatch as a hosted SaaS.",
-            "Do not claim recommendation is already shipped.",
+            "Do not claim recommendation is available through builder or MCP surfaces.",
         ],
     },
     {

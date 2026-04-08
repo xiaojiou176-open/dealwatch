@@ -20,7 +20,7 @@ Use this document when the question is:
 
 > **Status:** active internal-only monitoring contract for the inherited Prompt 8 recommendation lane, refreshed during total closeout `Prompt 1`.
 > Numbering truth: current total closeout program `Prompt 1 — Recommendation Final Repo-Side Closeout` is refreshing the inherited Prompt 8 continuation wave after the earlier Prompt 7 evaluation campaign and still before historical execution-program `Prompt 9`.
-> This is monitoring for maintainers, not a user feature and not a public launch signal.
+> This is monitoring for maintainers, not a user feature and not a signal that broader recommendation launch is ready.
 
 ## Current implementation seam
 

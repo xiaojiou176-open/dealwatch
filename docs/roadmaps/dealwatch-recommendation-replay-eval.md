@@ -21,7 +21,7 @@ Use this document when the question is:
 > **Status:** active internal-only replay / evaluation contract for the inherited Prompt 8 recommendation lane, refreshed during total closeout `Prompt 1`.  
 > Numbering note: current total closeout program `Prompt 1 — Recommendation Final Repo-Side Closeout` is refreshing the inherited Prompt 8 continuation stage after the earlier Prompt 7 evaluation campaign. These are linked stages, not competing truth sources.
 
-This file is an internal experiment contract, not a user-facing launch brief.
+This file is an internal experiment contract, not a brief for anything beyond the shipped Compare Preview advisory slice.
 
 ## Boundary
 
@@ -35,9 +35,9 @@ It authorizes:
 
 It does **not** authorize:
 
-- a public recommendation API field
-- a user-visible recommendation card
-- a launch claim in README / proof / FAQ
+- recommendation fields outside compare preview / compare evidence review
+- user-visible recommendation outside the shipped Compare Preview advisory slice
+- a launch claim in README / proof / FAQ that implies broader recommendation parity
 - write-side MCP or operator automation expansion
 
 ## Current repo truth

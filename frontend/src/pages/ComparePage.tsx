@@ -419,6 +419,7 @@ export function ComparePage() {
       {decisionBoard && result ? (
         <CompareDecisionSection
           compareAIExplain={compareAIExplain}
+          recommendation={result.recommendation}
           compareText={compareText}
           copyCurrentEvidenceSummary={() => handleCopyEvidenceSummary(currentSharePayload)}
           createRuntimeEvidencePackage={handleCreateRuntimeEvidencePackage}

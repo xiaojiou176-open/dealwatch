@@ -6,23 +6,23 @@ This document turns recommendation from a vague deferred idea into a governed in
 
 In plain English:
 
-- DealWatch still does **not** ship user-visible purchase timing advice today
+- DealWatch now ships one narrow user-visible compare-preview recommendation surface
 - the repo can, however, start producing recommendation-shaped internal artifacts
 - those artifacts must stay bounded, reviewable, abstention-aware, and clearly subordinate to deterministic product truth
 
 Use this document when the question is:
 
-> "What recommendation inputs are allowed, when must the system abstain, what does a shadow artifact look like, and what evidence would be required before any user-visible launch is reconsidered?"
+> "What recommendation inputs are allowed, when must the system abstain, what does a shadow artifact look like, and what evidence would be required before any broader recommendation launch is reconsidered?"
 
 ## Status
 
-> **Status:** active governance contract for the current recommendation shadow phase.  
+> **Status:** active governance contract for the current recommendation shadow phase and the shipped Compare Preview public advisory bridge.
 > Current prompt mapping: current total closeout program `Prompt 1 — Recommendation Final Repo-Side Closeout` is auditing and refreshing the inherited Prompt 8 recommendation evidence lane after repo-local Prompt 7, while historical execution-program `Prompt 8 — Recommendation governance + shadow mode` remains the inherited baseline stage.
 
 This file is a governance and shadow-phase contract.
 
-Recommendation is still **not user-ready**.
-It does **not** claim that DealWatch has launched a public `Buy now / Wait / Re-check later` surface.
+Recommendation is still **not broadly user-ready**.
+It does claim that DealWatch now has a narrow local Compare Preview advisory surface, while broader `Buy now / Wait / Re-check later` expansion remains gated.
 
 ## Companion continuation artifacts
 
@@ -79,7 +79,7 @@ Without that rulebook, recommendation would drift into theater:
 These are non-negotiable in the current shadow phase:
 
 - `DealWatch` remains the only live product name
-- recommendation remains **not user-visible**
+- recommendation remains narrowly scoped to Compare Preview when user-visible
 - recommendation remains **advisory-only**
 - deterministic product truth remains authoritative
 - AI output remains a secondary readable layer, not a primary evidence source
@@ -105,9 +105,9 @@ The current shadow phase is intentionally narrow.
 
 ### Explicitly out of scope now
 
-- user-visible recommendation cards
-- public API recommendation fields
-- public README / proof claims that recommendation is already shipped
+- user-visible recommendation outside the Compare Preview + compare evidence review slice
+- recommendation fields outside compare preview / compare evidence review
+- public README / proof claims that recommendation is broadly or autonomously shipped
 - automatic purchase execution
 - write-side MCP
 - SDK or hosted-platform packaging
@@ -169,6 +169,8 @@ Important rule:
 
 > This is shadow vocabulary, not a public product contract.
 
+The shipped Compare Preview public advisory bridge uses the same conservative subset, but not the full shadow vocabulary.
+
 In the current Compare Preview-first shadow anchor, the reachable safe subset is intentionally conservative:
 
 - `wait`
@@ -209,11 +211,11 @@ Minimum abstention triggers:
 
 ### Silence
 
-Recommendation must remain silent on these surfaces in the current phase:
+Recommendation must remain silent on these surfaces in the current phase beyond the shipped Compare Preview bridge:
 
-- user-visible WebUI pages
+- user-visible WebUI pages outside Compare Preview / compare evidence review
 - public GitHub Pages surfaces
-- public API response contracts
+- public API response contracts outside compare preview / compare evidence review
 - MCP tool outputs
 - README / proof / FAQ launch language
 
@@ -311,9 +313,9 @@ Minimum monitoring tags:
 - `review_state`
 - `future_launch_blocked` (must remain true in this phase)
 
-## Promotion gate to future user-visible consideration
+## Promotion gate to future broader consideration
 
-Recommendation remains blocked from user-visible launch until the repo can prove all of the following:
+Recommendation remains blocked from broader launch until the repo can prove all of the following:
 
 1. recommendation-specific evaluation exists
    - replay or benchmark

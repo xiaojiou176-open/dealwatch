@@ -21,7 +21,7 @@ Use this document when the question is:
 > **Status:** active internal-only adjudication / feedback contract for the inherited Prompt 8 recommendation lane, refreshed during total closeout `Prompt 1`.  
 > Numbering note: current total closeout program `Prompt 1 — Recommendation Final Repo-Side Closeout` is refreshing the inherited Prompt 8 continuation stage after the earlier Prompt 7 evaluation campaign. These are linked stages, not competing truth sources.
 
-This file does not authorize a public recommendation workflow.
+This file does not authorize a broader public recommendation workflow beyond the shipped Compare Preview advisory slice.
 
 ## Current workspace truth
 
@@ -48,7 +48,7 @@ It does **not** exist to:
 
 - let end users vote on recommendation quality
 - create a public moderation system
-- expose a recommendation feedback UI
+- expose a recommendation feedback UI outside the local Compare Preview scope
 - turn AI self-correction into a source of truth
 
 ## Current repo truth

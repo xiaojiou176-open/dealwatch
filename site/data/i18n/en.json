@@ -123,6 +123,18 @@
         "skipped": "AI-assisted explanation was skipped for this compare run. The deterministic summary and pair evidence still tell the full story.",
         "unavailable": "AI-assisted explanation unavailable. Showing deterministic summary and evidence only."
       }
+    },
+    "recommendation": {
+      "eyebrow": "Recommendation",
+      "basisTitle": "Basis",
+      "uncertaintyTitle": "Uncertainty",
+      "evidenceRefsTitle": "Evidence refs",
+      "whyAbstained": "Why this recommendation abstained",
+      "verdict": {
+        "wait": "Keep watching",
+        "recheck_later": "Re-check later",
+        "insufficient_evidence": "Not enough evidence yet"
+      }
     }
   },
   "saved": {
@@ -1092,7 +1104,7 @@
       "sampleNot1": "Not a live public compare API",
       "sampleNot2": "Not a write path that creates watch tasks or watch groups",
       "sampleNot3": "Not a promise that your own URLs will work until you run the local stack",
-      "sampleNot4": "Not a shopping chatbot or an automatic buy / wait recommendation flow",
+      "sampleNot4": "Not a shopping chatbot, and not the live local recommendation card. The shipped recommendation surface stays inside the local runtime Compare Preview flow.",
       "demoSubmittedUrls": "submitted URLs in this public fixture",
       "demoResolvedOffers": "resolved candidate offers",
       "demoTopMatchScore": "top match score for the two-store pear pair",
@@ -1181,7 +1193,7 @@
         "about": [
           "AI-assisted compare explanation",
           "Read-only MCP/API builder access",
-          "Recommendation boundary",
+          "Compare Preview recommendation boundary",
           "Repo-side proof surfaces"
         ],
         "isPartOf": {
@@ -1199,7 +1211,7 @@
       "statusMcpTitle": "Read-only MCP boundary",
       "statusMcpSummary": "Claude Code, Codex, OpenHands, OpenCode, OpenClaw, and similar agent clients can consume this surface today, including the builder starter pack and per-client starter assets, but the exposed MCP/API layer stays intentionally read-only. Maintenance, cleanup, legacy bridge commands, run-now mutations, and maintainer-only browser debug commands stay outside the public tool surface.",
       "statusRecommendationTitle": "Recommendation boundary",
-      "statusRecommendationSummary": "DealWatch can explain compare and recovery state today, but buy / wait recommendation is still not a shipped product fact.",
+      "statusRecommendationSummary": "The local Compare Preview runtime now ships a deterministic-first recommendation card, but broader or autonomous buy / wait coverage is still not a shipped product fact.",
       "evidenceMapTitle": "Evidence map",
       "evidenceMapSummary": "Think of this as a map legend, not a scoreboard. It shows where each public claim should point when you want fresh proof without hard-coding counts into the page.",
       "mapTitle": "Evidence map",
@@ -1231,7 +1243,7 @@
       "evidenceMapRowMcpWhere": "`list-tools`, `client-starters`, `serve --transport stdio`, `GET /api/runtime/builder-starter-pack`, and the repo-native builder starter pack plus skill cards under `docs/integrations/`",
       "evidenceMapRowMcpWhy": "Makes it clear that agent access exists today, but only as a safe observation window.",
       "evidenceMapRowRecommendationTitle": "Recommendation boundary",
-      "evidenceMapRowRecommendationWhere": "README and this proof page explicitly keep buy / wait recommendation outside the current shipped surface",
+      "evidenceMapRowRecommendationWhere": "The local runtime Compare Preview plus compare evidence review now carry the shipped recommendation slice, while README and this proof page keep the broader boundary explicit.",
       "evidenceMapRowRecommendationWhy": "Prevents SEO or AI messaging from overstating what the runtime can decide for the user.",
       "evidenceMapRowGuardsTitle": "Public proof guards",
       "evidenceMapRowGuardsWhere": "Verifier entrypoints listed below plus the branch-protection, workflow, and label surfaces they compare against current GitHub API facts",
@@ -1261,7 +1273,7 @@
       "claimRowMcpProof": "`python -m dealwatch.mcp list-tools --json`, `python -m dealwatch.mcp client-starters --json`, `python -m dealwatch.mcp serve --transport stdio`, `GET /api/runtime/builder-starter-pack`, the registered read-only tool list in `src/dealwatch/mcp/server.py`, and the repo-native builder starter pack plus skill cards under `docs/integrations/`",
       "claimRowMcpWhy": "Shows that agent access exists without turning the product into a write-capable automation surface.",
       "claimRowRecommendationTitle": "Recommendation is still deferred",
-      "claimRowRecommendationProof": "Current AI surfaces explain compare, group, and recovery evidence; roadmap items still treat buy / wait recommendation as a later bet rather than a live runtime capability.",
+      "claimRowRecommendationProof": "The local Compare Preview runtime now ships a conservative recommendation card grounded in deterministic compare evidence, while broader task/group/MCP expansion still stays gated.",
       "claimRowRecommendationWhy": "Keeps the public story honest by separating explanation from automatic decision-making.",
       "claimRowPublicTitle": "The public site is maintained",
       "claimRowPublicProof": "GitHub Pages, README entrypoints, releases, discussions, and remote verification scripts",
@@ -1294,7 +1306,7 @@
       "boundaryRowInterpretationHuman": "Human or AI-written interpretations of those signals are still advisory. Repository checks do not automatically certify their semantic correctness.",
       "boundaryRowRecommendationTitle": "Recommendation boundary",
       "boundaryRowRecommendationRepo": "The repo can prove AI compare explanation, watch-group explanation, recovery guidance, and read-only MCP safe access are implemented today.",
-      "boundaryRowRecommendationHuman": "The repo does not prove a shipped autonomous buy / wait recommendation flow today. Treat recommendation as roadmap, not current runtime truth.",
+      "boundaryRowRecommendationHuman": "The repo now proves a shipped Compare Preview recommendation slice. It still does not prove broader autonomous buy / wait coverage across task, group, MCP, or static public pages.",
       "visualTitle": "Visual proof",
       "visualSummary": "The screenshots exist because the UI and routes are already wired, not because the repo needed decoration. The strongest proof path is the same three-step story the product actually follows.",
       "visualCompareAlt": "Compare Preview screen showing supported URLs, normalized results, and match scores",
@@ -1345,9 +1357,9 @@
       "questionAiTitle": "What does the AI layer actually do?",
       "questionAiAnswer": "DealWatch uses AI-assisted explanations for compare decisions, watch-group decisions, and recovery guidance. AI helps explain the evidence; it does not replace deterministic product truth.",
       "q8Title": "Does DealWatch already make buy or wait recommendations?",
-      "q8Answer": "No. The current product explains compare evidence, price movement, and runtime risk, but it does not yet claim to decide purchase timing for the user.",
+      "q8Answer": "Yes, but only inside the local runtime Compare Preview flow. It stays deterministic-first and conservative: it can say wait, re-check later, or abstain, but it still does not claim autonomous buy-now or builder/MCP recommendation support.",
       "questionRecommendationTitle": "Does DealWatch already make buy or wait recommendations?",
-      "questionRecommendationAnswer": "No. The current product explains compare evidence, price movement, and runtime risk, but it does not yet claim to decide purchase timing for the user.",
+      "questionRecommendationAnswer": "Yes, but only inside the local runtime Compare Preview flow. It stays deterministic-first and conservative: it can say wait, re-check later, or abstain, but it still does not claim autonomous buy-now or builder/MCP recommendation support.",
       "q9Title": "Can agents call DealWatch safely?",
       "q9Answer": "Yes. DealWatch now exposes a thin read-only MCP surface plus stable read-oriented API entry points that Claude Code, Codex, OpenHands, OpenCode, OpenClaw, and similar agent clients can consume, and the repo ships builder starter assets under `docs/integrations/`, including per-client prompt starters, skill cards, `client-starters --json`, and the builder starter pack read surface. Write-side operator actions and maintainer-only browser debug commands still stay outside the default public tool surface.",
       "questionMcpTitle": "Can agents call DealWatch safely?",
@@ -1417,7 +1429,7 @@
             "name": "Does DealWatch already make buy or wait recommendations?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "No. The current product explains compare evidence, price movement, and runtime risk, but it does not yet claim to decide purchase timing for the user."
+              "text": "Yes, but only inside the local runtime Compare Preview flow. It stays deterministic-first and conservative: it can say wait, re-check later, or abstain, but it still does not claim autonomous buy-now or builder/MCP recommendation support."
             }
           },
           {
@@ -1541,7 +1553,7 @@
       "boundaryWriteTitle": "No write-side MCP promise",
       "boundaryWriteSummary": "The current builder surface is read-only-first. Maintenance, cleanup, owner bootstrap, and maintainer-only browser debug commands stay outside the builder promise.",
       "boundaryRecommendationTitle": "No recommendation overclaim",
-      "boundaryRecommendationSummary": "DealWatch explains compare and recovery evidence today, but it does not yet claim autonomous buy / wait recommendation support.",
+      "boundaryRecommendationSummary": "DealWatch now ships a local Compare Preview recommendation slice, but builder surfaces still do not expose autonomous or builder-facing buy / wait recommendation support.",
       "footerPrompt": "Need the repo-owned docs next?",
       "footerCta": "Open the config recipe ledger",
       "schema": {
@@ -1606,9 +1618,9 @@
       "fitGoodTitle": "Good fit",
       "fitGoodSummary": "People or small teams who want a local-first tool to compare grocery product URLs, explain why one option looks better, and then track either the best single candidate or a compare-aware group with price, health, and alert history.",
       "notFitTitle": "Not a fit",
-      "notFitSummary": "Users looking for a hosted SaaS, a shopping chatbot, autonomous buy/wait recommendations, broad all-retailer coverage on day one, or zero local setup.",
+      "notFitSummary": "Users looking for a hosted SaaS, a shopping chatbot, autonomous buy/wait coverage across every surface, broad all-retailer coverage on day one, or zero local setup.",
       "fitNotTitle": "Not a fit",
-      "fitNotSummary": "Users looking for a hosted SaaS, a shopping chatbot, autonomous buy/wait recommendations, broad all-retailer coverage on day one, or zero local setup.",
+      "fitNotSummary": "Users looking for a hosted SaaS, a shopping chatbot, autonomous buy/wait coverage across every surface, broad all-retailer coverage on day one, or zero local setup.",
       "nextTitle": "What comes next",
       "nextSummary": "The next major growth steps are already visible in the public roadmap.",
       "next1Title": "More live stores",
@@ -1625,8 +1637,8 @@
       "nextDocsSummary": "Grow guided setup, FAQs, and product walkthroughs without pretending the project is a hosted platform.",
       "next4Title": "Decision support before recommendation",
       "next4Summary": "Strengthen explainability, monitoring, and recovery guidance before crossing the boundary into buy / wait recommendation.",
-      "nextDecisionTitle": "Decision support before recommendation",
-      "nextDecisionSummary": "Strengthen explainability, monitoring, and recovery guidance before crossing the boundary into buy / wait recommendation.",
+      "nextDecisionTitle": "Recommendation now starts at compare",
+      "nextDecisionSummary": "The first compare-stage recommendation surface is now live in local Compare Preview. Broader buy / wait expansion still depends on stronger calibration, monitoring, and coverage.",
       "nextVisualAlt": "Task detail screen showing price history, effective price, cashback, and delivery events",
       "footerPrompt": "Still deciding whether it fits?",
       "footerLink": "Read the FAQ",

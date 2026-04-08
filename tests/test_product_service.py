@@ -1091,14 +1091,20 @@ async def test_product_service_create_and_read_compare_evidence_package(monkeypa
     shadow_payload = json.loads(shadow_path.read_text(encoding="utf-8"))
 
     assert created["artifact_kind"] == "compare_evidence"
+    assert created["recommendation"]["contract_version"] == "compare_preview_public_v1"
+    assert created["recommendation"]["verdict"] == "wait"
+    assert created["recommendation"]["buy_now_blocked"] is True
     assert created["recommended_next_step_hint"]["action"] == "create_watch_group"
     assert "shadow_recommendation" not in created
     assert listed["packages"][0]["artifact_id"] == created["artifact_id"]
+    assert listed["packages"][0]["recommendation"]["verdict"] == "wait"
     assert "shadow_recommendation" not in listed["packages"][0]
     assert detail["summary"]["artifact_id"] == created["artifact_id"]
     assert detail["submitted_count"] == 2
+    assert detail["recommendation"]["verdict"] == "wait"
     assert "shadow_recommendation" not in detail
     assert "Compare Evidence Artifact" in html_payload
+    assert "Keep watching this basket" in html_payload
     assert shadow_path.is_file()
     assert shadow_html_path.is_file()
     assert shadow_payload["artifact_kind"] == "recommendation_shadow"
@@ -1169,6 +1175,8 @@ async def test_product_service_compare_evidence_package_writes_abstaining_shadow
     )
 
     assert created["recommended_next_step_hint"]["reason_code"] == "single_resolved_candidate"
+    assert created["recommendation"]["verdict"] == "insufficient_evidence"
+    assert created["recommendation"]["abstention"]["active"] is True
     assert shadow_payload["status"] == "abstained"
     assert shadow_payload["monitoring"]["abstention_code"] == "single_resolved_candidate"
     assert shadow_payload["monitoring"]["review_seed_suggestion"] == "correct_abstention"
@@ -1260,6 +1268,7 @@ async def test_product_service_create_compare_evidence_package_ignores_caller_co
 
     assert created["recommended_next_step_hint"]["action"] == "create_watch_group"
     assert created["recommended_next_step_hint"]["reason_code"] == "multi_candidate_strong_match"
+    assert created["recommendation"]["verdict"] == "wait"
     assert shadow_payload["shadow_recommendation"]["verdict"] == "wait"
     assert shadow_payload["shadow_recommendation"]["abstention"]["active"] is False
 
@@ -1694,6 +1703,7 @@ async def test_product_service_creates_lists_and_reads_compare_evidence_artifact
 
     assert created["storage_scope"] == "runtime_local_artifact"
     assert created["artifact_kind"] == "compare_evidence"
+    assert created["recommendation"]["verdict"] == "wait"
     assert created["recommended_next_step_hint"]["action"] == "create_watch_group"
     assert created["recommended_next_step_hint"]["reason_code"] == "multi_candidate_strong_match"
     assert "shadow_recommendation" not in created
@@ -1708,12 +1718,14 @@ async def test_product_service_creates_lists_and_reads_compare_evidence_artifact
 
     assert recent[0]["artifact_id"] == created["artifact_id"]
     assert recent[0]["resolved_count"] == 2
+    assert recent[0]["recommendation"]["verdict"] == "wait"
     assert recent[0]["recommended_next_step_hint"]["action"] == "create_watch_group"
     assert "shadow_recommendation" not in recent[0]
     assert detail["artifact_id"] == created["artifact_id"]
     assert detail["submitted_inputs"] == created["submitted_inputs"]
     assert detail["comparisons"][0]["submitted_url"] == "https://www.sayweee.com/zh/product/Asian-Honey-Pears-3ct/5869"
     assert detail["matches"][0]["score"] > 80
+    assert detail["recommendation"]["verdict"] == "wait"
     assert "shadow_recommendation" not in detail
 
 

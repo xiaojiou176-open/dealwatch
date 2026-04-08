@@ -1,6 +1,7 @@
 import type {
   AIAssistEnvelope,
   AIAssistStatus,
+  CompareRecommendation,
   CompareEvidencePackageArtifact,
   CreateCompareEvidencePackageInput,
   ComparePreviewInput,
@@ -508,6 +509,33 @@ type ApiComparePreviewResponse = {
   resolved_count: number;
   comparisons: ApiComparePreviewComparison[];
   matches: ApiComparePreviewMatch[];
+  recommendation?: {
+    contract_version: string;
+    surface: string;
+    scope: string;
+    visibility: string;
+    status: "issued" | "abstained";
+    verdict: "wait" | "recheck_later" | "insufficient_evidence";
+    verdict_vocabulary?: string[];
+    headline: string;
+    summary: string;
+    basis?: string[];
+    uncertainty_notes?: string[];
+    abstention?: {
+      active: boolean;
+      code?: string | null;
+      reason?: string | null;
+    };
+    evidence_refs?: Array<{
+      code: string;
+      label: string;
+      anchor: string;
+    }>;
+    deterministic_primary_note: string;
+    feedback_boundary: string;
+    override_boundary: string;
+    buy_now_blocked: boolean;
+  };
   recommended_next_step_hint?: {
     action: string;
     reason_code: string;
@@ -866,6 +894,9 @@ function mapComparePreview(payload: ApiComparePreviewResponse): ComparePreviewRe
       whyLike: item.why_like ?? [],
       whyUnlike: item.why_unlike ?? [],
     })),
+    recommendation: mapCompareRecommendation(
+      (payload.recommendation as Record<string, unknown> | undefined) ?? {},
+    ),
     recommendedNextStepHint: payload.recommended_next_step_hint
       ? {
           action: payload.recommended_next_step_hint.action,
@@ -885,6 +916,52 @@ function mapComparePreview(payload: ApiComparePreviewResponse): ComparePreviewRe
       "compare_ai_explain",
       "compareAiExplain",
     ]),
+  };
+}
+
+function mapCompareRecommendation(payload: Record<string, unknown>): CompareRecommendation {
+  const abstention = (payload.abstention as Record<string, unknown> | undefined) ?? {};
+  const evidenceRefs = Array.isArray(payload.evidence_refs) ? payload.evidence_refs : [];
+  const verdict =
+    readStringField(payload, ["verdict"]) ?? "insufficient_evidence";
+  return {
+    contractVersion: readStringField(payload, ["contract_version"]) ?? "compare_preview_public_v1",
+    surface: readStringField(payload, ["surface"]) ?? "compare_preview",
+    scope: readStringField(payload, ["scope"]) ?? "local_runtime_compare_flow",
+    visibility: readStringField(payload, ["visibility"]) ?? "user_visible",
+    status: (readStringField(payload, ["status"]) as CompareRecommendation["status"] | null) ?? "abstained",
+    verdict: verdict as CompareRecommendation["verdict"],
+    verdictVocabulary: Array.isArray(payload.verdict_vocabulary)
+      ? payload.verdict_vocabulary.filter((item): item is string => typeof item === "string")
+      : ["wait", "recheck_later", "insufficient_evidence"],
+    headline: readStringField(payload, ["headline"]) ?? "Not enough evidence yet",
+    summary: readStringField(payload, ["summary"]) ?? "Recommendation unavailable.",
+    basis: Array.isArray(payload.basis) ? payload.basis.filter((item): item is string => typeof item === "string") : [],
+    uncertaintyNotes: Array.isArray(payload.uncertainty_notes)
+      ? payload.uncertainty_notes.filter((item): item is string => typeof item === "string")
+      : [],
+    abstention: {
+      active: Boolean(abstention.active),
+      code: readStringField(abstention, ["code"]),
+      reason: readStringField(abstention, ["reason"]),
+    },
+    evidenceRefs: evidenceRefs
+      .filter((item): item is Record<string, unknown> => !!item && typeof item === "object")
+      .map((item) => ({
+        code: readStringField(item, ["code"]) ?? "compare_signal",
+        label: readStringField(item, ["label"]) ?? "Compare signal",
+        anchor: readStringField(item, ["anchor"]) ?? "compare_evidence",
+      })),
+    deterministicPrimaryNote:
+      readStringField(payload, ["deterministic_primary_note"]) ??
+      "Deterministic compare evidence stays primary.",
+    feedbackBoundary:
+      readStringField(payload, ["feedback_boundary"]) ??
+      "End-user feedback is not yet a persisted product surface.",
+    overrideBoundary:
+      readStringField(payload, ["override_boundary"]) ??
+      "Users keep the final action choice.",
+    buyNowBlocked: readBooleanField(payload, ["buy_now_blocked"]) ?? true,
   };
 }
 
@@ -971,6 +1048,16 @@ function readStringField(payload: Record<string, unknown>, keys: string[]): stri
   for (const key of keys) {
     const value = payload[key];
     if (typeof value === "string" && value.trim()) {
+      return value;
+    }
+  }
+  return null;
+}
+
+function readBooleanField(payload: Record<string, unknown>, keys: string[]): boolean | null {
+  for (const key of keys) {
+    const value = payload[key];
+    if (typeof value === "boolean") {
       return value;
     }
   }

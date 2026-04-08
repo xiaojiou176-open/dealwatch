@@ -10,7 +10,7 @@
 
 DealWatch is an AI-enhanced, compare-first grocery price intelligence product. It compares grocery product URLs across stores, turns the right candidate into a watch task or compare-aware watch group, and tracks listed price, cashback-adjusted price, health, and alerts from one control cabin.
 
-The AI layer is real, but intentionally narrow: DealWatch uses AI-assisted explanations for compare decisions, watch-group decisions, and recovery guidance while keeping deterministic product truth in charge. It is not a hosted SaaS, a generic chat bot, or an autonomous buying agent.
+The AI layer is real, but intentionally narrow: DealWatch uses AI-assisted explanations for compare decisions, watch-group decisions, and recovery guidance while keeping deterministic product truth in charge. The local runtime Compare Preview flow now also carries a deterministic-first recommendation card, but it stays compare-scoped, abstention-aware, and intentionally does not issue `buy_now`. It is not a hosted SaaS, a generic chat bot, or an autonomous buying agent.
 
 [Start Here](#start-here) · [Compare Preview](https://xiaojiou176-open.github.io/dealwatch/compare-preview.html#sample-compare-demo) · [Proof](https://xiaojiou176-open.github.io/dealwatch/proof.html) · [Quick Start](https://xiaojiou176-open.github.io/dealwatch/quick-start.html) · [Builders](https://xiaojiou176-open.github.io/dealwatch/builders.html) · [Comparison](https://xiaojiou176-open.github.io/dealwatch/compare-vs-tracker.html) · [Releases](https://github.com/xiaojiou176-open/dealwatch/releases/latest)
 
@@ -146,7 +146,7 @@ What AI does **not** do yet:
 
 - it does not replace the compare or winner-selection logic
 - it does not automatically repair the runtime
-- it does not yet make `Buy / Wait` recommendation calls for the user
+- it does not yet claim autonomous `Buy / Wait` coverage beyond the local Compare Preview advisory slice
 
 ## Core Wins
 
@@ -155,6 +155,7 @@ What AI does **not** do yet:
 - **Keep regional context on the task**: the watch task keeps the ZIP code you chose during intake, so later runs stay tied to the same market context.
 - **Carry compare evidence forward**: the selected compare fingerprint is preserved with the task instead of disappearing after the handoff form.
 - **Save compare evidence before you commit**: compare results can now be turned into local runtime evidence packages so you can review or share the proof without pretending there is a hosted public compare service.
+- **Ship recommendation where the evidence is still visible**: the local Compare Preview runtime now exposes a deterministic-first recommendation card with abstention, basis, uncertainty, and evidence refs while keeping `buy_now`, task/group parity, and builder/MCP expansion outside the current contract.
 - **Explain decisions without turning into a chatbot**: optional AI explainers summarize compare decisions, watch-group decisions, and recovery guidance, but deterministic product truth still stays authoritative.
 - **Grow stores without guessing the contract**: the settings surface now doubles as a store onboarding cockpit so maintainers can read capability truth, runtime enablement, and onboarding commands in one place.
 - **Expose product truth to agents safely**: a thin read-only MCP server plus stable read-oriented API surfaces can now expose compare, watch, runtime, notification, and store cockpit truth to Claude Code, Codex, OpenHands, OpenCode, OpenClaw, and similar agent clients without opening maintenance or legacy danger paths.
@@ -530,7 +531,7 @@ If you want repo-native builder examples instead of only command references, con
 - **Good fit**
   People or small teams who want a local-first way to compare grocery product URLs before tracking them, care about effective price instead of only sticker price, and want one product-shaped loop instead of separate scripts.
 - **Not a fit**
-  Users expecting a hosted SaaS, a generic chat bot, autonomous buy/wait recommendations, broad merchant coverage on day one, or zero local setup.
+  Users expecting a hosted SaaS, a generic chat bot, autonomous buy/wait coverage across every surface on day one, broad merchant coverage on day one, or zero local setup.
 
 ## Proof, Not Claims
 

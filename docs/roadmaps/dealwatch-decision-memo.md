@@ -48,7 +48,7 @@ What was still missing was a single document that says:
 | i18n boundary | If bilingual product surfaces are built, they must use systematic i18n | No more scattered bilingual literals across pages or components |
 | Platform boundary | Stable API contract, stable read-only MCP contract, and public developer docs come before any SDK promise | We want real integration surfaces, not platform theater |
 | MCP boundary | Read-only MCP remains the active safety line | Agent access is allowed as an observation window, not as a destructive remote control |
-| Recommendation boundary | Recommendation stays governance-first, shadow-first, and not user-visible | Evidence review and explanation are shipped; buy/wait advice is not |
+| Recommendation boundary | Recommendation stays governance-first, compare-first, and deterministic-first. The local runtime Compare Preview advisory v1 is allowed; broader autonomous buy/wait expansion remains gated. | Evidence review and explanation are shipped, the first compare-stage recommendation surface is now explicit, and broader recommendation claims still need tighter calibration evidence |
 | Store growth order | Safeway / grocery-tier expansion is next after formalization groundwork is stable | The repo should deepen the strongest product lane before broadening into riskier retailer scope |
 
 ## Explicit Non-Goals
@@ -59,7 +59,7 @@ These are intentionally **not** reopened by this memo:
 - reposition DealWatch as a hosted SaaS
 - promote Render back to a default guarantee
 - ship write-side MCP
-- ship user-visible buy / wait recommendation
+- ship broader or autonomous buy / wait recommendation beyond the local Compare Preview advisory v1
 - promise a formal SDK product
 - turn the browser extension idea into the primary product surface
 
@@ -102,8 +102,8 @@ The next implementation program should follow this order:
    - document stable surfaces and ownership boundaries
 5. **Prompt 6-7: execute Safeway growth in milestones**
    - C1 first, then C2/C3
-6. **Prompt 8: recommendation governance + shadow**
-   - still not user-visible
+6. **Prompt 8: recommendation governance + compare-preview bridge**
+   - keep shadow governance intact while defining the narrow local Compare Preview advisory surface
 7. **Prompt 9: final closeout + execution plan v2**
 
 ## What still remains open
@@ -115,7 +115,7 @@ These items are still execution work, not strategic uncertainty:
 - migrating product-facing copy into that substrate
 - deciding how far the first API/MCP documentation pass goes
 - implementing and validating Safeway milestones
-- building recommendation shadow-mode governance without shipping a public recommendation surface
+- growing recommendation calibration and boundary docs beyond the shipped local Compare Preview advisory v1
 
 ## Revisit Triggers
 

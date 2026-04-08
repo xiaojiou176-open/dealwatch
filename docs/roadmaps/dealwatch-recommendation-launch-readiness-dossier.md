@@ -4,7 +4,7 @@
 
 This dossier records the first formal Prompt 7 answer to the question:
 
-> "Why is DealWatch recommendation still not ready for public launch, and what evidence would have to improve before a future launch discussion is honest?"
+> "Why is DealWatch recommendation still not ready for broader public launch, and what evidence would have to improve before a future expansion discussion is honest?"
 
 In plain English:
 
@@ -19,11 +19,11 @@ It is **not**:
 
 - a launch proposal
 - a marketing page
-- a claim that recommendation is now public
+- a claim that every recommendation surface is now public
 
 ## Status
 
-> **Status:** active internal-only dossier for the inherited Prompt 8 recommendation lane, refreshed during total closeout `Prompt 1`.  
+> **Status:** active internal-only dossier for the inherited Prompt 8 recommendation lane, refreshed during total closeout `Prompt 1`, and now interpreted as the evidence bar for broader expansion beyond the shipped Compare Preview advisory v1.
 > Prompt mapping truth: current total closeout program `Prompt 1 — Recommendation Final Repo-Side Closeout` is refreshing the inherited Prompt 8 continuation wave after the earlier Prompt 7 evaluation campaign, and that evidence lane still sits before historical execution-program `Prompt 9 — Final closeout + execution plan v2`.
 > These labels describe one sequence, not competing truth sources.
 
@@ -229,14 +229,14 @@ The repo is still not proving public purchase timing behavior across:
 
 ### 4. Public silence still matters
 
-Prompt 8 strengthens the internal lane only.
+Prompt 8 strengthens the internal lane that still governs everything beyond the shipped Compare Preview advisory slice.
 
 It does **not** authorize:
 
-- a recommendation UI card
-- a public recommendation API field
+- a task/group recommendation UI card
+- recommendation API fields outside compare preview / compare evidence review
 - a recommendation MCP tool
-- README / proof / FAQ wording that implies recommendation is shipped
+- README / proof / FAQ wording that implies broader recommendation parity is shipped
 
 ## Current stop line
 
@@ -259,11 +259,17 @@ For the current v1 workspace, those two conditions now hold. The honest next blo
 
 ## Current Launch Verdict
 
-### User-visible launch
+### Compare Preview public advisory v1
+
+**Verdict: SHIPPED**
+
+Recommendation now exists as a narrow local Compare Preview advisory surface, intentionally limited to conservative compare-stage verdicts and compare evidence review.
+
+### Broader launch
 
 **Verdict: NOT READY**
 
-Recommendation must remain blocked from the public product surface in this phase.
+Recommendation must remain blocked from broader public product surfaces in this phase.
 
 ### Internal experimentation
 
@@ -279,11 +285,11 @@ Prompt 8 now proves that the repo can:
 
 That is enough for internal evaluation continuity.
 
-It is not enough for public launch.
+It is not enough for broader launch.
 
-## Minimum Gates Before Any Future Public-Launch Prompt
+## Minimum Gates Before Any Future Broader-Launch Prompt
 
-The next future launch discussion should stay blocked until the repo can show all of the following:
+The next future broader-launch discussion should stay blocked until the repo can show all of the following:
 
 1. a materially larger and more diverse replay corpus than the current fresh Prompt 8 `2 seeded + 1 breadth-selected native compare-origin + 8 runtime-derived` replay batch, **and** a native runtime pool that is no longer `30` copies of the same pattern
 2. repeated maintainer adjudication over time once the corpus contains more than one meaningful native compare-origin pattern family
@@ -291,9 +297,9 @@ The next future launch discussion should stay blocked until the repo can show al
 4. stronger recommendation-specific calibration evidence rooted in deeper native compare-origin history instead of only runtime-summary reconstruction
 5. unchanged public silence until the explicit launch decision is reopened
 
-## What Evidence Would Justify The Next Prompt
+## What Evidence Would Justify The Next Expansion Prompt
 
-The next public-launch discussion only becomes worth opening once Prompt 8 evidence improves in these concrete ways:
+The next broader-launch discussion only becomes worth opening once Prompt 8 evidence improves in these concrete ways:
 
 - replay is driven by a broader repo-local evidence corpus, not mainly by seeded samples, runtime-summary reconstruction, and one repeated native pair
 - the native compare-origin pool shows more than the current `1` unique pattern / `1` unique store pair / `1` unique source-url pair family ceiling
@@ -311,4 +317,4 @@ The honest Prompt 8 posture is:
 
 It is still true that:
 
-> recommendation has not earned a public launch discussion yet.
+> recommendation has not yet earned a broader public launch discussion beyond Compare Preview advisory v1.

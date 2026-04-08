@@ -123,6 +123,18 @@
         "skipped": "这次 compare 跳过了 AI 辅助解释，但确定性的摘要和配对证据仍然能讲完整个故事。",
         "unavailable": "AI 辅助解释当前不可用，因此这里只显示确定性摘要和证据。"
       }
+    },
+    "recommendation": {
+      "eyebrow": "Recommendation",
+      "basisTitle": "依据",
+      "uncertaintyTitle": "不确定项",
+      "evidenceRefsTitle": "证据引用",
+      "whyAbstained": "为什么这条 recommendation 选择 abstain",
+      "verdict": {
+        "wait": "继续观察",
+        "recheck_later": "稍后再看",
+        "insufficient_evidence": "证据还不够"
+      }
     }
   },
   "saved": {
@@ -1092,7 +1104,7 @@
       "sampleNot1": "不是公开可写的 compare API",
       "sampleNot2": "不是能直接创建 watch task 或 watch group 的写路径",
       "sampleNot3": "不是“没跑本地栈也能保证你的 URL 一定能工作”的承诺",
-      "sampleNot4": "不是购物聊天机器人，也不是自动 buy / wait 推荐流",
+      "sampleNot4": "不是购物聊天机器人，也不是当前这张 live 本地 recommendation 卡。真正 shipped 的 recommendation 只在本地 runtime 的 Compare Preview 流里。",
       "demoSubmittedUrls": "这份公开 fixture 中提交的 URL 数",
       "demoResolvedOffers": "成功解析出的候选 offer 数",
       "demoTopMatchScore": "两门店梨子样本的最高匹配分",
@@ -1181,7 +1193,7 @@
         "about": [
           "AI 辅助 compare 解释",
           "只读 MCP/API builder 访问",
-          "recommendation 边界",
+          "Compare Preview recommendation 边界",
           "repo-side 证据表面"
         ],
         "isPartOf": {
@@ -1199,7 +1211,7 @@
       "statusMcpTitle": "只读 MCP 边界",
       "statusMcpSummary": "Claude Code、Codex、OpenHands、OpenCode、OpenClaw 等 agent 客户端今天已经可以消费这层表面，包括 builder starter pack 和按客户端拆开的 starter assets，但暴露出来的 MCP/API 仍刻意保持只读。maintenance、cleanup、legacy bridge command、run-now mutation，以及仅供维护者使用的浏览器调试命令，继续留在公开工具面之外。",
       "statusRecommendationTitle": "Recommendation 边界",
-      "statusRecommendationSummary": "DealWatch 今天可以解释 compare 和 recovery 状态，但 buy / wait recommendation 仍然不是已发货产品事实。",
+      "statusRecommendationSummary": "本地 Compare Preview runtime 现在已经有 deterministic-first recommendation 卡，但更广或更自动化的 buy / wait coverage 仍然不是已发货产品事实。",
       "evidenceMapTitle": "证据地图",
       "evidenceMapSummary": "把这里理解成图例，不是排行榜。它告诉你每条 public claim 现在该指向哪里找新鲜证据，而不是把一堆会过期的数字硬编码在页面里。",
       "mapTitle": "证据地图",
@@ -1231,7 +1243,7 @@
       "evidenceMapRowMcpWhere": "`list-tools`、`client-starters`、`serve --transport stdio`、`GET /api/runtime/builder-starter-pack`，以及仓库里 `docs/integrations/` 下的 builder starter pack 和 skill cards",
       "evidenceMapRowMcpWhy": "说明 agent 访问今天已经存在，但只作为安全观察窗口。",
       "evidenceMapRowRecommendationTitle": "Recommendation 边界",
-      "evidenceMapRowRecommendationWhere": "README 和本页都明确把 buy / wait recommendation 保持在当前 shipped surface 之外",
+      "evidenceMapRowRecommendationWhere": "本地 runtime 的 Compare Preview 加 compare evidence review 现在承载了已发货的 recommendation 薄片，而 README 和本页继续把更广的边界讲清楚。",
       "evidenceMapRowRecommendationWhy": "避免 SEO 或 AI 文案夸大 runtime 今天已经能替用户做决定。",
       "evidenceMapRowGuardsTitle": "公共 proof 守卫",
       "evidenceMapRowGuardsWhere": "下面列出的 verifier 入口，以及它们会对照的 branch protection、workflow 和 label 等 GitHub API 事实表面",
@@ -1261,7 +1273,7 @@
       "claimRowMcpProof": "`python -m dealwatch.mcp list-tools --json`、`python -m dealwatch.mcp client-starters --json`、`python -m dealwatch.mcp serve --transport stdio`、`GET /api/runtime/builder-starter-pack`、`src/dealwatch/mcp/server.py` 里的注册只读工具清单，以及仓库中 `docs/integrations/` 下的 builder starter pack 和 skill cards",
       "claimRowMcpWhy": "说明 agent 访问已经存在，同时没有把产品变成可写自动化表面。",
       "claimRowRecommendationTitle": "Recommendation 仍然处于 defer",
-      "claimRowRecommendationProof": "当前 AI 表面解释的是 compare、group 和 recovery 证据；roadmap 仍然把 buy / wait recommendation 视为后续赌注，而不是当前 live runtime 能力。",
+      "claimRowRecommendationProof": "本地 Compare Preview runtime 现在已经有一张建立在 deterministic compare evidence 之上的保守 recommendation 卡，但更广的 task/group/MCP 扩张仍然处于 gated 状态。",
       "claimRowRecommendationWhy": "通过把解释和自动决策分开，保持公共叙事诚实。",
       "claimRowPublicTitle": "公共站点有人维护",
       "claimRowPublicProof": "GitHub Pages、README 入口、releases、discussions 和远端验证脚本",
@@ -1294,7 +1306,7 @@
       "boundaryRowInterpretationHuman": "人类或 AI 对这些信号写出的解释仍然只是 advisory。仓库检查不会自动证明这些语义解释一定正确。",
       "boundaryRowRecommendationTitle": "Recommendation 边界",
       "boundaryRowRecommendationRepo": "仓库今天能证明的是 AI compare explanation、watch-group explanation、recovery guidance 和只读 MCP safe access 已经实现。",
-      "boundaryRowRecommendationHuman": "仓库今天并不能证明已经 shipped autonomous buy / wait recommendation 流。请把 recommendation 视为 roadmap，而不是当前 runtime 真相。",
+      "boundaryRowRecommendationHuman": "仓库现在已经能证明 Compare Preview recommendation 这条薄片已 shipped，但还不能证明 task、group、MCP 或静态 public pages 上存在更广的 autonomous buy / wait coverage。",
       "visualTitle": "视觉证据",
       "visualSummary": "这些截图存在，是因为 UI 和路由已经真的连起来了，不是为了装饰页面。最强的 proof 路径仍然是产品真实遵循的那条三步故事线。",
       "visualCompareAlt": "Compare Preview 截图，展示支持的 URL、规范化结果和匹配分数",
@@ -1345,9 +1357,9 @@
       "questionAiTitle": "AI 层到底在做什么？",
       "questionAiAnswer": "DealWatch 用 AI 辅助解释 compare 决策、watch-group 决策和 recovery guidance。AI 帮你解释证据，不会替代确定性产品真相。",
       "q8Title": "DealWatch 已经会给 buy / wait recommendation 了吗？",
-      "q8Answer": "还没有。当前产品会解释 compare 证据、价格变化和 runtime 风险，但不会声称自己已经替用户决定购买时机。",
+      "q8Answer": "有，但只在本地 runtime 的 Compare Preview 流里。它坚持 deterministic-first，而且非常保守：可以告诉你 wait、re-check later 或直接 abstain，但仍然不会声称自己已经具备 autonomous buy-now，或在 builder/MCP 面上公开 recommendation 支持。",
       "questionRecommendationTitle": "DealWatch 已经会给 buy / wait recommendation 了吗？",
-      "questionRecommendationAnswer": "还没有。当前产品会解释 compare 证据、价格变化和 runtime 风险，但不会声称自己已经替用户决定购买时机。",
+      "questionRecommendationAnswer": "有，但只在本地 runtime 的 Compare Preview 流里。它坚持 deterministic-first，而且非常保守：可以告诉你 wait、re-check later 或直接 abstain，但仍然不会声称自己已经具备 autonomous buy-now，或在 builder/MCP 面上公开 recommendation 支持。",
       "q9Title": "Agent 现在能安全调用 DealWatch 吗？",
       "q9Answer": "可以。DealWatch 现在有一层薄的只读 MCP surface，再加上稳定的只读 API 入口，可供 Claude Code、Codex、OpenHands、OpenCode、OpenClaw 等 agent 客户端消费 compare、watch、runtime、notification 和 store cockpit 真相；仓库也提供了 `docs/integrations/` 下的 builder starter assets，包括按客户端拆开的 prompt starters、skill cards、`client-starters --json`，以及 builder starter pack read surface。写侧运维动作和仅供维护者使用的浏览器调试命令，仍然挡在默认公开工具面之外。",
       "questionMcpTitle": "Agent 现在能安全调用 DealWatch 吗？",
@@ -1417,7 +1429,7 @@
             "name": "DealWatch 已经会给 buy / wait recommendation 了吗？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "还没有。当前产品会解释 compare 证据、价格变化和 runtime 风险，但不会声称自己已经替用户决定购买时机。"
+              "text": "有，但只在本地 runtime 的 Compare Preview 流里。它坚持 deterministic-first，而且非常保守：可以告诉你 wait、re-check later 或直接 abstain，但仍然不会声称自己已经具备 autonomous buy-now，或在 builder/MCP 面上公开 recommendation 支持。"
             }
           },
           {
@@ -1544,7 +1556,7 @@
       "boundaryWriteTitle": "没有 write-side MCP 承诺",
       "boundaryWriteSummary": "当前 builder surface 仍然是 read-only-first。maintenance、cleanup、owner bootstrap 和 maintainer-only browser debug commands 都不属于 builder promise。",
       "boundaryRecommendationTitle": "没有 recommendation overclaim",
-      "boundaryRecommendationSummary": "DealWatch 今天能解释 compare 和 recovery evidence，但还没有承诺 autonomous buy / wait recommendation。",
+      "boundaryRecommendationSummary": "DealWatch 现在已经有本地 Compare Preview recommendation 薄片，但 builder surface 仍然不会暴露 autonomous 或 builder-facing 的 buy / wait recommendation 支持。",
       "footerPrompt": "接下来要看 repo-owned 文档吗？",
       "footerCta": "打开 config recipe ledger",
       "schema": {
@@ -1609,9 +1621,9 @@
       "fitGoodTitle": "适合的人",
       "fitGoodSummary": "想用 local-first 工具比较生鲜商品 URL、解释为什么某个选项更好，然后继续跟踪最佳单候选或 compare-aware group，并查看价格、健康度和提醒历史的个人或小团队。",
       "notFitTitle": "不适合的人",
-      "notFitSummary": "期待 hosted SaaS、购物聊天机器人、自动 buy/wait recommendation、首日覆盖所有零售商，或者完全不做本地部署的人。",
+      "notFitSummary": "期待 hosted SaaS、购物聊天机器人、在所有表面上都自动给出 buy/wait、首日覆盖所有零售商，或者完全不做本地部署的人。",
       "fitNotTitle": "不适合的人",
-      "fitNotSummary": "期待 hosted SaaS、购物聊天机器人、自动 buy/wait recommendation、首日覆盖所有零售商，或者完全不做本地部署的人。",
+      "fitNotSummary": "期待 hosted SaaS、购物聊天机器人、在所有表面上都自动给出 buy/wait、首日覆盖所有零售商，或者完全不做本地部署的人。",
       "nextTitle": "下一步会往哪里长",
       "nextSummary": "下一批主要增长方向已经能在公开路线里看见。",
       "next1Title": "更多 live 门店",
@@ -1628,8 +1640,8 @@
       "nextDocsSummary": "继续补 setup、FAQ 和产品 walkthrough，但不假装项目已经是 hosted platform。",
       "next4Title": "先强化决策支持，再谈 recommendation",
       "next4Summary": "先把 explainability、monitoring 和 recovery guidance 做强，再跨到 buy / wait recommendation 这条线。",
-      "nextDecisionTitle": "先强化决策支持，再谈 recommendation",
-      "nextDecisionSummary": "先把 explainability、monitoring 和 recovery guidance 做强，再跨到 buy / wait recommendation 这条线。",
+      "nextDecisionTitle": "Recommendation 现在先从 compare 开始",
+      "nextDecisionSummary": "第一条 compare-stage recommendation 现在已经在本地 Compare Preview 里上线。更广的 buy / wait 扩张仍然依赖更强的 calibration、monitoring 和 coverage。",
       "nextVisualAlt": "任务详情截图，展示价格历史、到手价、返现和投递事件",
       "footerPrompt": "还在判断它适不适合你？",
       "footerLink": "去看 FAQ",

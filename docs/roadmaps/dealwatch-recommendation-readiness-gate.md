@@ -6,17 +6,18 @@ This document records the current recommendation launch boundary for DealWatch.
 
 In plain English:
 
-- user-visible recommendation is still blocked
+- a narrow local Compare Preview recommendation surface is now shipped
+- broader user-visible recommendation is still blocked
 - internal shadow mode is now allowed to start under a strict contract
-- later Workers should not confuse "shadow-ready" with "product-ready"
+- later Workers should not confuse "compare-preview advisory-ready" or "shadow-ready" with broader launch readiness
 
 Use this document when the question is:
 
-> "Why is recommendation still not a shipped feature, what changed in this wave, and what exactly is allowed now?"
+> "What recommendation surface is actually shipped now, what still stays blocked, and what exactly is allowed next?"
 
 ## Status
 
-> **Status:** `user-ready = NOT READY`, `internal-shadow = READY UNDER GOVERNANCE`.
+> **Status:** `compare-preview-public-advisory-v1 = SHIPPED`, `broader-user-launch = NOT READY`, `internal-shadow = READY UNDER GOVERNANCE`.
 > Prompt mapping truth: current total closeout program `Prompt 1 — Recommendation Final Repo-Side Closeout` is refreshing the inherited Prompt 8 recommendation lane after the earlier Prompt 7 evaluation campaign. Historical execution-program `Prompt 9` remains the later closeout stage. These labels describe one sequence, not competing truth sources.
 
 This gate is a launch-boundary document, not a marketing page.
@@ -30,7 +31,8 @@ Previous gate truth was:
 
 Current gate truth is:
 
-- recommendation is **still blocked from user-visible launch**
+- a narrow Compare Preview recommendation surface is now allowed in the local runtime compare flow
+- broader recommendation is **still blocked from user-visible launch**
 - the repo now has a formal governance contract in [`docs/roadmaps/dealwatch-recommendation-shadow-governance.md`](./dealwatch-recommendation-shadow-governance.md)
 - internal shadow artifacts may now start as repo-local, internal-only outputs
 - Prompt 7 already moved recommendation from governed shadow into a real internal evaluation campaign with seeded starter replay, harvested native compare-origin cases, non-seeded runtime corpus expansion, adjudication workflow, monitoring totals, and a launch-readiness dossier
@@ -47,18 +49,36 @@ Current workspace truth for this gate is:
 
 ## Current decision
 
-### User-visible recommendation
+### Compare Preview public advisory v1
+
+**Status: SHIPPED**
+
+DealWatch now ships one narrow recommendation surface:
+
+- the local runtime Compare Preview result
+- the paired compare evidence review artifact
+
+This first public contract is intentionally conservative:
+
+- deterministic compare evidence stays primary
+- abstention is first-class
+- the verdict subset is `wait`, `recheck_later`, or `insufficient_evidence`
+- `buy_now` remains blocked in compare-only v1
+- users still choose whether to save evidence, create a watch task, or create a watch group
+
+### Broader recommendation expansion
 
 **Status: NOT READY**
 
-DealWatch should still **not** ship `Buy now / Wait / Re-check later` as a public product surface in this wave.
+DealWatch should still **not** ship broader recommendation surfaces in this wave.
 
 That means:
 
-- no user-visible recommendation card
-- no public recommendation API field
-- no README / proof / FAQ wording that implies launch
-- no MCP recommendation tool
+- no task-detail recommendation surface
+- no watch-group recommendation surface
+- no builder or MCP recommendation tool
+- no README / proof / FAQ wording that implies autonomous or cross-surface buy/wait parity
+- no static GitHub Pages sample page that pretends to run the live local recommendation card
 
 ### Internal shadow recommendation
 
@@ -90,7 +110,7 @@ For the current v1 workspace, those two conditions now hold:
 - the repo-local review debt has been adjudicated to `11 reviewed`, `0 pending`
 - the next meaningful breadth increase still depends on new live compare-origin families beyond the repeated pears pair
 
-That means the lane is now **mostly external-blocker-shaped for breadth growth**, while still remaining firmly blocked from any user-visible launch.
+That means the lane is now **mostly external-blocker-shaped for breadth growth**, while still remaining firmly blocked from any broader recommendation launch beyond Compare Preview v1.
 
 ## What is already true
 
@@ -104,19 +124,19 @@ The current repo already supports strong evidence-reading surfaces:
 
 These are meaningful decision-support signals.
 
-They are still **not** the same as a shipped purchase-timing contract.
+They are still **not** the same as a broadly shipped purchase-timing contract.
 
 ## Gate table
 
-| Gate | Current repo truth | User-visible launch verdict | Internal shadow verdict |
+| Gate | Current repo truth | Broader launch verdict | Internal shadow verdict |
 | --- | --- | --- | --- |
-| Deterministic evidence exists | Compare, group, task, and recovery evidence are real | not sufficient by itself | sufficient to start shadow |
-| Recommendation governance exists | governance, abstention, monitoring, and review contracts now exist | still not enough alone | pass |
-| Abstention contract exists | `insufficient_evidence` and silence boundaries are now explicit | required but not launch-sufficient alone | pass |
+| Deterministic evidence exists | Compare, group, task, and recovery evidence are real | Compare Preview v1 may speak conservatively; broader launch still not sufficient by itself | sufficient to start shadow |
+| Recommendation governance exists | governance, abstention, monitoring, and review contracts now exist | still not enough for broader launch alone | pass |
+| Abstention contract exists | `insufficient_evidence` and silence boundaries are now explicit | required and active in Compare Preview v1, but still not broader-launch sufficient alone | pass |
 | Internal artifact path exists | repo-local compare-evidence-side shadow artifact can exist | must stay hidden from public contract | pass |
-| Override / feedback loop is live | repo-local review recording and review log now exist, but the loop is still internal-only | fail | pass |
-| Recommendation-specific evaluation exists | Prompt 7 proved the replay/adjudication workflow; Prompt 8 now proves the current native compare-origin runtime pool is still a single concentrated pattern (`30` available rows, `1` unique pattern, `1` unique store pair, top pattern share `1.0`) | fail | pass for internal evidence continuation |
-| Public UI/API boundary is protected | recommendation still absent from user UI and public API contract | pass | pass |
+| Override / feedback loop is live | repo-local review recording and review log now exist, but the loop is still maintainer-facing | fail for broader launch | pass |
+| Recommendation-specific evaluation exists | Prompt 7 proved the replay/adjudication workflow; Prompt 8 now proves the current native compare-origin runtime pool is still a single concentrated pattern (`30` available rows, `1` unique pattern, `1` unique store pair, top pattern share `1.0`) | fail for broader launch | pass for internal evidence continuation |
+| Public UI/API boundary is protected | recommendation is now limited to Compare Preview plus compare evidence review, while wider surfaces remain silent | pass | pass |
 
 ## Why user-visible launch is still blocked
 
@@ -216,15 +236,15 @@ Why:
 
 ## Required silence
 
-Even after shadow starts, recommendation must stay silent in:
+Beyond the shipped Compare Preview advisory slice, recommendation must stay silent in:
 
-- user-facing WebUI routes
-- GitHub Pages public screens
-- public README / proof / FAQ launch language
-- public API response models
-- MCP read surfaces
+- user-facing WebUI routes outside the local Compare Preview and compare evidence review flow
+- GitHub Pages static sample screens
+- public API response models outside compare preview / compare evidence review
+- MCP and builder read surfaces
+- public README / proof / FAQ wording that would imply autonomous or cross-surface buy/wait parity
 
-If any of those surfaces starts rendering recommendation as if it is already shipped, this gate has been violated.
+If any of those wider surfaces starts rendering recommendation as if it is already broadly shipped, this gate has been violated.
 
 ## Required abstention
 
@@ -237,9 +257,9 @@ Shadow mode must emit `insufficient_evidence` instead of forcing a verdict when:
 - runtime trust is degraded
 - the call would depend on AI prose rather than deterministic anchors
 
-## Promotion checklist before any future user-visible MVP
+## Promotion checklist before any broader recommendation expansion
 
-Recommendation must stay blocked until the repo can answer all of these with code, tests, and product language:
+Recommendation must stay blocked from broader expansion until the repo can answer all of these with code, tests, and product language:
 
 1. What deterministic rule stack produces the recommendation?
 2. What explicit abstention rules stop false certainty?
@@ -256,4 +276,4 @@ The current repo is no longer at:
 
 It is now at:
 
-> "recommendation is governed enough for internal shadow, but still not honest enough for user-visible launch"
+> "recommendation is shipped as a narrow Compare Preview advisory surface, governed enough for internal shadow, and still not honest enough for broader user-visible launch"

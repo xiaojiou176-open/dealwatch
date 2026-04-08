@@ -82,7 +82,7 @@ Prompt 1~5 created the product surfaces. Prompt 6 is the repo-side formal closeo
 | AI Health / Recovery Copilot | AI mainline integration | Prompt 3 landed: recovery inbox now returns an optional AI copilot envelope while keeping deterministic reason/action anchors | `src/dealwatch/application/ai_integration.py`, `src/dealwatch/application/services.py`, `frontend/src/pages/TaskListPage.tsx` | Wave 1 recovery inbox + feature-flagged AI layer | Wave 3 | Medium | Medium | It helps operators triage issues faster without letting AI mutate health or retry logic |
 | Store Onboarding Cockpit | Store extensibility | Prompt 4 landed: settings surface now exposes capability matrix, binding truth, onboarding checklist, and verification refs | `src/dealwatch/application/store_onboarding.py`, `src/dealwatch/api/app.py`, `frontend/src/pages/NotificationSettingsPage.tsx`, `docs/runbooks/store-onboarding-contract.md` | Stable operational surfaces and existing store contract files | Wave 4 | Medium | Medium | It makes store growth legible without pretending onboarding is fully automated |
 | Thin MCP Layer | MCP exposure | Prompt 4 landed: read-only MCP server wraps existing product truth and lists tools through a local-first server entrypoint | `src/dealwatch/mcp/`, `src/dealwatch/application/services.py`, `src/dealwatch/api/deps.py`, `tests/test_mcp_server.py` | Stable read-mostly runtime surfaces and explicit safety boundary | Wave 4 | Medium | Medium | MCP now adapts a stable runtime instead of becoming a second backend |
-| Buy / Wait Recommendation | Recommendation / intelligence bets | Prompt 5 gate says NOT READY; explicitly deferred until recommendation-specific evaluation, override, abstention, and monitoring exist | `docs/roadmaps/dealwatch-recommendation-readiness-gate.md`, compare/group/task decision surfaces | Stable explanations and trust surfaces plus recommendation-specific governance | Wave 5 | Medium | High | Recommendation is still higher-risk because it starts making decisions for the user, not just explaining state |
+| Buy / Wait Recommendation | Recommendation / intelligence bets | Compare Preview public advisory v1 is now the shipped narrow slice; broader/autonomous buy-wait expansion remains gated behind stronger evaluation, override, abstention, and monitoring evidence | `docs/roadmaps/dealwatch-recommendation-readiness-gate.md`, compare/group/task decision surfaces | Stable explanations and trust surfaces plus recommendation-specific governance | Wave 5 | Medium | High | Recommendation is still higher-risk because the broader versions start making decisions for the user, not just explaining state |
 | AI Landing / SEO / Messaging Upgrade | Brand / landing / SEO / AI messaging | Prompt 5 landed: README, homepage, compare preview, proof, FAQ, use-cases, and `llms.txt` now express the AI-enhanced compare-first product more clearly | `README.md`, `site/`, proof pages, release/docs surfaces | Real AI-enabled product features to talk about | Wave 5 | Medium | Medium | Messaging now follows shipped product truth rather than brand hype |
 | Shared Operator Mode / Light Collaboration Labels | Foundation productization | Suggestion only; single-owner runtime is the real current model | `users`, `user_preferences`, future notifications/inbox surfaces | Stable operator state, explicit auth/product decision | Wave 5 | Low | High | Collaboration is a broader product shift and should not distort the current single-owner control-cabin path early |
 
@@ -158,7 +158,7 @@ Prompt 5 completion note:
 
 - README and public pages now present DealWatch as an AI-enhanced compare-first grocery price intelligence product
 - AI messaging is now tied to real compare explanation, watch-group explanation, recovery guidance, store cockpit, and read-only MCP capabilities
-- `Buy / Wait Recommendation` was explicitly reviewed and deferred behind a recommendation-readiness gate instead of being shipped as a shell
+- `Buy / Wait Recommendation` is now only shipped as a narrow compare-preview advisory slice; broader/autonomous expansion still stays behind the recommendation-readiness gate
 
 ## Explicit Deferrals After Wave 3
 
@@ -167,5 +167,5 @@ Still not in scope after this wave:
 - MCP server implementation
 - domain rename / `.ai` rename
 - major auth or multi-user shift
-- recommendation-style AI that starts deciding for the user
+- broader recommendation-style AI that starts deciding for the user beyond the compare-preview advisory slice
 - major brand / SEO revamp before the next product wave is proven

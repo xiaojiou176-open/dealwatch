@@ -500,11 +500,44 @@ export interface ComparePreviewMatch {
   whyUnlike?: string[];
 }
 
+export type CompareRecommendationVerdict = "wait" | "recheck_later" | "insufficient_evidence";
+
+export interface CompareRecommendationEvidenceRef {
+  code: string;
+  label: string;
+  anchor: string;
+}
+
+export interface CompareRecommendation {
+  contractVersion: string;
+  surface: string;
+  scope: string;
+  visibility: string;
+  status: "issued" | "abstained";
+  verdict: CompareRecommendationVerdict;
+  verdictVocabulary: string[];
+  headline: string;
+  summary: string;
+  basis: string[];
+  uncertaintyNotes: string[];
+  abstention: {
+    active: boolean;
+    code: string | null;
+    reason: string | null;
+  };
+  evidenceRefs: CompareRecommendationEvidenceRef[];
+  deterministicPrimaryNote: string;
+  feedbackBoundary: string;
+  overrideBoundary: string;
+  buyNowBlocked: boolean;
+}
+
 export interface ComparePreviewResponse {
   submittedCount: number;
   resolvedCount: number;
   comparisons: ComparePreviewComparison[];
   matches: ComparePreviewMatch[];
+  recommendation: CompareRecommendation;
   recommendedNextStepHint?: CompareEvidenceNextStepHint;
   riskNotes?: string[];
   riskNoteItems?: { code: string; message: string }[];
@@ -552,6 +585,7 @@ export interface CompareEvidenceArtifactDetail {
   resolvedCount: number;
   comparisons: ComparePreviewComparison[];
   matches: ComparePreviewMatch[];
+  recommendation: CompareRecommendation;
   recommendedNextStepHint: CompareEvidenceNextStepHint;
   riskNotes: string[];
   summary: CompareEvidenceArtifactSummary;

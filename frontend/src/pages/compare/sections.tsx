@@ -1,6 +1,7 @@
 import { formatCurrency, formatDateTime, formatNumber, type AppLocale } from "../../lib/i18n";
 import type {
   AIAssistEnvelope,
+  CompareRecommendation,
   ComparePreviewComparison,
   ComparePreviewResponse,
   SavedCompareEvidencePackage,
@@ -49,6 +50,7 @@ export interface CompareGroupFormState {
 
 interface CompareDecisionSectionProps {
   compareAIExplain: AIAssistEnvelope | null;
+  recommendation: CompareRecommendation | null;
   compareText: CompareText;
   copyCurrentEvidenceSummary: () => void;
   createRuntimeEvidencePackage: () => void;
@@ -64,6 +66,7 @@ interface CompareDecisionSectionProps {
 
 export function CompareDecisionSection({
   compareAIExplain,
+  recommendation,
   compareText,
   copyCurrentEvidenceSummary,
   createRuntimeEvidencePackage,
@@ -131,6 +134,79 @@ export function CompareDecisionSection({
             <div class="text-sm leading-6">{decisionBoard.recommendedAction}</div>
           </div>
         </div>
+
+        {recommendation ? (
+          <div class="mt-4 rounded-2xl border border-base-300 bg-base-200/30 px-4 py-4">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  {compareText("compare.recommendation.eyebrow", COMPARE_COPY.recommendation.eyebrow)}
+                </div>
+                <h4 class="mt-2 text-lg font-semibold text-ink">{recommendation.headline}</h4>
+              </div>
+              <span class={`badge ${recommendationBadgeClass(recommendation)}`}>
+                {recommendation.abstention.active
+                  ? compareText(
+                      "compare.recommendation.verdict.insufficient_evidence",
+                      COMPARE_COPY.recommendation.verdict.insufficient_evidence,
+                    )
+                  : recommendation.verdict === "wait"
+                    ? compareText("compare.recommendation.verdict.wait", COMPARE_COPY.recommendation.verdict.wait)
+                    : compareText(
+                        "compare.recommendation.verdict.recheck_later",
+                        COMPARE_COPY.recommendation.verdict.recheck_later,
+                      )}
+              </span>
+            </div>
+            <p class="mt-2 text-sm leading-6 text-slate-600">{recommendation.summary}</p>
+            {recommendation.abstention.active && recommendation.abstention.reason ? (
+              <div class="mt-3 rounded-2xl border border-dashed border-base-300 bg-base-100/80 px-4 py-3 text-sm leading-6 text-slate-600">
+                <div class="font-semibold">
+                  {compareText("compare.recommendation.whyAbstained", COMPARE_COPY.recommendation.whyAbstained)}
+                </div>
+                <p class="mt-2">{recommendation.abstention.reason}</p>
+              </div>
+            ) : null}
+            <div class="mt-4 grid gap-3 lg:grid-cols-3">
+              <div class="rounded-2xl bg-base-100/80 px-4 py-4">
+                <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  {compareText("compare.recommendation.basisTitle", COMPARE_COPY.recommendation.basisTitle)}
+                </div>
+                <ul class="mt-3 space-y-2 text-sm leading-6 text-slate-600">
+                  {recommendation.basis.map((item) => (
+                    <li key={item}>- {item}</li>
+                  ))}
+                </ul>
+              </div>
+              <div class="rounded-2xl bg-base-100/80 px-4 py-4">
+                <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  {compareText("compare.recommendation.uncertaintyTitle", COMPARE_COPY.recommendation.uncertaintyTitle)}
+                </div>
+                <ul class="mt-3 space-y-2 text-sm leading-6 text-slate-600">
+                  {recommendation.uncertaintyNotes.map((item) => (
+                    <li key={item}>- {item}</li>
+                  ))}
+                </ul>
+              </div>
+              <div class="rounded-2xl bg-base-100/80 px-4 py-4">
+                <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  {compareText("compare.recommendation.evidenceRefsTitle", COMPARE_COPY.recommendation.evidenceRefsTitle)}
+                </div>
+                <ul class="mt-3 space-y-2 text-sm leading-6 text-slate-600">
+                  {recommendation.evidenceRefs.map((item) => (
+                    <li key={`${item.code}-${item.anchor}`}>
+                      <span class="font-semibold text-ink">{item.label}</span>
+                      <span class="text-slate-500"> · {item.anchor}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            <p class="mt-3 text-xs leading-5 text-slate-500">{recommendation.deterministicPrimaryNote}</p>
+            <p class="mt-1 text-xs leading-5 text-slate-500">{recommendation.feedbackBoundary}</p>
+            <p class="mt-1 text-xs leading-5 text-slate-500">{recommendation.overrideBoundary}</p>
+          </div>
+        ) : null}
 
         <div class="mt-4 flex flex-wrap gap-3">
           <button class="btn btn-primary" onClick={saveEvidencePackage} type="button">{t("compare.decision.saveReviewPackage")}</button>
@@ -232,6 +308,16 @@ export function CompareDecisionSection({
       </aside>
     </div>
   );
+}
+
+function recommendationBadgeClass(recommendation: CompareRecommendation): string {
+  if (recommendation.abstention.active) {
+    return "badge-outline";
+  }
+  if (recommendation.verdict === "wait") {
+    return "badge-warning";
+  }
+  return "badge-info";
 }
 
 interface SavedEvidenceSectionProps {

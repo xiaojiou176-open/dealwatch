@@ -11,12 +11,12 @@ This runbook defines the smallest honest maintainer workflow for Prompt 8:
 
 Use this file when the practical question is:
 
-> "How do I actually review one recommendation shadow call without pretending this is already a public feature?"
+> "How do I actually review one recommendation shadow call without pretending the broader recommendation roadmap is already ready just because Compare Preview advisory v1 now exists?"
 
 ## Status
 
 > **Status:** active internal-only Prompt 8 runbook.  
-> This is a maintainer/operator workflow, not a public product contract and not a launch brief.
+> This is a maintainer/operator workflow that continues behind the shipped Compare Preview advisory slice; it is not a broader launch brief.
 
 ## Boundary
 

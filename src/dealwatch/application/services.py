@@ -65,6 +65,7 @@ from .ai_integration import AiNarrativeService
 from .compare_evidence import (
     build_compare_ai_explain as build_compare_ai_explain_payload,
     build_compare_evidence_payload as build_compare_evidence_payload_artifact,
+    build_compare_public_recommendation_payload as build_compare_public_recommendation_payload_artifact,
     build_compare_evidence_truth as build_compare_evidence_truth_payload,
     build_compare_recommendation_shadow_payload as build_compare_recommendation_shadow_payload_artifact,
     build_compare_support_contract as build_compare_support_contract_payload,
@@ -1018,10 +1019,12 @@ class ProductService:
             zip_code=zip_code,
             compare_result=compare_result,
         )
+        recommendation = self._build_compare_public_recommendation(compare_evidence)
         ai_explain = await self._build_compare_ai_explain(compare_evidence)
         return {
             **compare_result,
             "compare_evidence": compare_evidence,
+            "recommendation": recommendation,
             "recommended_next_step_hint": compare_evidence["recommended_next_step_hint"],
             "risk_notes": compare_evidence["risk_notes"],
             "risk_note_items": compare_evidence["risk_note_items"],
@@ -2374,6 +2377,9 @@ class ProductService:
             compare_evidence=compare_evidence,
             runs_dir=self.settings.RUNS_DIR,
         )
+
+    def _build_compare_public_recommendation(self, compare_evidence: dict[str, Any]) -> dict[str, Any]:
+        return build_compare_public_recommendation_payload_artifact(compare_evidence=compare_evidence)
 
     def _build_compare_recommendation_shadow_payload(
         self,

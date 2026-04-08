@@ -96,6 +96,18 @@ export const COMPARE_COPY = {
       },
     },
   },
+  recommendation: {
+    eyebrow: { en: "Recommendation", },
+    basisTitle: { en: "Basis", },
+    uncertaintyTitle: { en: "Uncertainty", },
+    evidenceRefsTitle: { en: "Evidence refs", },
+    whyAbstained: { en: "Why this recommendation abstained", },
+    verdict: {
+      wait: { en: "Keep watching", },
+      recheck_later: { en: "Re-check later", },
+      insufficient_evidence: { en: "Not enough evidence yet", },
+    },
+  },
   saved: {
     labelWithTitle: { en: "{{title}} · ZIP {{zipCode}}", },
     labelFallback: { en: "Compare evidence · ZIP {{zipCode}}", },

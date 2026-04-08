@@ -277,6 +277,7 @@ def build_compare_evidence_payload(
     recommended_next_step_hint = dict(compare_evidence.get("recommended_next_step_hint") or {})
     risk_note_items = list(compare_evidence.get("risk_note_items", []))
     risk_notes = list(compare_evidence.get("risk_notes", []))
+    recommendation = build_compare_public_recommendation_payload(compare_evidence=compare_evidence)
 
     headline = str(recommended_next_step_hint.get("summary") or "Compare evidence package")
     saved_at = _utcnow().isoformat()
@@ -296,6 +297,7 @@ def build_compare_evidence_payload(
         "strongest_match_score": float(compare_evidence.get("strongest_match_score") or 0.0),
         "risk_notes": risk_notes,
         "risk_note_items": risk_note_items,
+        "recommendation": recommendation,
         "artifact_path": str(artifact_dir / "compare_evidence.json"),
         "html_path": str(artifact_dir / "compare_evidence.html"),
         "detail_url": f"/api/compare/evidence/{package_id}",
@@ -318,16 +320,12 @@ def build_compare_evidence_payload(
         "recommended_next_step_hint": recommended_next_step_hint,
         "risk_notes": risk_notes,
         "risk_note_items": risk_note_items,
+        "recommendation": recommendation,
         "summary": summary,
     }
 
 
-def build_compare_recommendation_shadow_payload(
-    *,
-    package_id: str,
-    compare_evidence: dict[str, Any],
-    runs_dir: Path,
-) -> dict[str, Any]:
+def _build_compare_recommendation_context(compare_evidence: dict[str, Any]) -> dict[str, Any]:
     recommended_next_step_hint = dict(compare_evidence.get("recommended_next_step_hint") or {})
     risk_note_items = list(compare_evidence.get("risk_note_items", []))
     risk_notes = list(compare_evidence.get("risk_notes", []))
@@ -343,7 +341,7 @@ def build_compare_recommendation_shadow_payload(
         )
     ]
     uncertainty_notes = [
-        "Internal-only shadow artifact: deterministic compare evidence remains the source of truth."
+        "Deterministic compare evidence stays primary, and this recommendation only interprets compare-stage signals."
     ]
     abstention = {
         "active": False,
@@ -358,22 +356,22 @@ def build_compare_recommendation_shadow_payload(
             "active": True,
             "code": reason_code,
             "reason": (
-                "The compare step does not yet have enough cross-store evidence to make an honest purchase-timing call."
+                "This compare run does not yet have enough cross-store evidence for a public recommendation, so stay in evidence review."
             ),
         }
         basis.append(
-            "Cross-store compare context is still incomplete, so this shadow artifact abstains instead of forcing a recommendation."
+            "Cross-store compare context is still incomplete, so this recommendation abstains instead of forcing a stronger call."
         )
         evidence_strength = "insufficient_compare_context"
     elif reason_code == "multi_candidate_strong_match":
         verdict = "wait"
         basis.append(
-            "Multiple candidates still look plausibly comparable, so keeping them under watch is safer than turning compare evidence into a buy-now claim."
+            "Multiple candidates still look plausibly comparable, so keeping the basket under watch is safer than turning compare evidence into a buy-now claim."
         )
     else:
         verdict = "recheck_later"
         basis.append(
-            "The compare evidence still needs another review or rerun before an internal reviewer should trust a stronger recommendation."
+            "The compare evidence still needs another review or rerun before a stronger timing call would be honest."
         )
         evidence_strength = "needs_recheck"
 
@@ -418,6 +416,85 @@ def build_compare_recommendation_shadow_payload(
                 "anchor": "compare_evidence.risk_note_items",
             }
         )
+
+    return {
+        "reason_code": reason_code,
+        "action": action,
+        "verdict": verdict,
+        "basis": basis,
+        "uncertainty_notes": uncertainty_notes,
+        "abstention": abstention,
+        "evidence_refs": evidence_refs,
+        "evidence_strength": evidence_strength,
+    }
+
+
+def build_compare_public_recommendation_payload(
+    *,
+    compare_evidence: dict[str, Any],
+) -> dict[str, Any]:
+    context = _build_compare_recommendation_context(compare_evidence)
+    verdict = str(context["verdict"])
+    abstention = dict(context["abstention"])
+    status = "abstained" if abstention["active"] else "issued"
+
+    if verdict == "wait":
+        headline = "Keep watching this basket"
+        summary = (
+            "The current compare evidence is strong enough to keep these candidates under watch, but it still does not justify a buy-now claim."
+        )
+    elif verdict == "recheck_later":
+        headline = "Re-check later"
+        summary = (
+            "The compare evidence is still too mixed to support a stronger timing call, so review this basket again after more evidence arrives."
+        )
+    else:
+        headline = "Not enough evidence yet"
+        summary = (
+            "This compare run does not have enough cross-store evidence for a public recommendation, so stay with evidence review only."
+        )
+
+    return {
+        "contract_version": "compare_preview_public_v1",
+        "surface": "compare_preview",
+        "scope": "local_runtime_compare_flow",
+        "visibility": "user_visible",
+        "status": status,
+        "verdict": verdict,
+        "verdict_vocabulary": ["wait", "recheck_later", "insufficient_evidence"],
+        "headline": headline,
+        "summary": summary,
+        "basis": list(context["basis"]),
+        "uncertainty_notes": list(context["uncertainty_notes"]),
+        "abstention": abstention,
+        "evidence_refs": list(context["evidence_refs"]),
+        "deterministic_primary_note": (
+            "Deterministic compare evidence stays primary. AI prose does not decide this recommendation, and compare-only v1 does not issue buy-now."
+        ),
+        "feedback_boundary": (
+            "End-user feedback is not yet a persisted product surface. Maintainers still monitor quality through the internal recommendation review ledger."
+        ),
+        "override_boundary": (
+            "Users still decide whether to save evidence, create a watch task, or create a watch group. Maintainers can keep correcting calibration through the internal review loop."
+        ),
+        "buy_now_blocked": True,
+    }
+
+
+def build_compare_recommendation_shadow_payload(
+    *,
+    package_id: str,
+    compare_evidence: dict[str, Any],
+    runs_dir: Path,
+) -> dict[str, Any]:
+    public_recommendation = build_compare_public_recommendation_payload(compare_evidence=compare_evidence)
+    context = _build_compare_recommendation_context(compare_evidence)
+    verdict = str(context["verdict"])
+    abstention = dict(context["abstention"])
+    basis = list(context["basis"])
+    uncertainty_notes = list(context["uncertainty_notes"])
+    evidence_refs = list(context["evidence_refs"])
+    evidence_strength = str(context["evidence_strength"])
 
     saved_at = _utcnow().isoformat()
     artifact_dir = runs_dir / "compare-evidence" / package_id
@@ -466,6 +543,12 @@ def build_compare_recommendation_shadow_payload(
             "uncertainty_notes": uncertainty_notes,
             "abstention": abstention,
             "evidence_refs": evidence_refs,
+        },
+        "public_contract_bridge": {
+            "contract_version": public_recommendation["contract_version"],
+            "surface": public_recommendation["surface"],
+            "public_verdict_vocabulary": list(public_recommendation["verdict_vocabulary"]),
+            "buy_now_blocked": public_recommendation["buy_now_blocked"],
         },
     }
 
@@ -534,6 +617,7 @@ async def build_compare_ai_explain(
 
 def render_compare_evidence_html(payload: dict[str, Any]) -> str:
     summary = payload["summary"]
+    recommendation = payload.get("recommendation") or {}
     comparisons = payload.get("comparisons", [])
     matches = payload.get("matches", [])
     comparison_rows = "\n".join(
@@ -569,6 +653,33 @@ def render_compare_evidence_html(payload: dict[str, Any]) -> str:
         f"<li>{html.escape(str(item))}</li>"
         for item in summary.get("risk_notes", [])
     )
+    recommendation_basis = "".join(
+        f"<li>{html.escape(str(item))}</li>"
+        for item in recommendation.get("basis", [])
+    )
+    recommendation_uncertainty = "".join(
+        f"<li>{html.escape(str(item))}</li>"
+        for item in recommendation.get("uncertainty_notes", [])
+    )
+    recommendation_refs = "".join(
+        (
+            "<tr>"
+            f"<td>{html.escape(str(item.get('code') or ''))}</td>"
+            f"<td>{html.escape(str(item.get('label') or ''))}</td>"
+            f"<td>{html.escape(str(item.get('anchor') or ''))}</td>"
+            "</tr>"
+        )
+        for item in recommendation.get("evidence_refs", [])
+    )
+    abstention = recommendation.get("abstention") or {}
+    abstention_text = (
+        (
+            f"Abstention active: {html.escape(str(abstention.get('code') or 'insufficient_evidence'))} - "
+            f"{html.escape(str(abstention.get('reason') or 'No abstention reason provided.'))}"
+        )
+        if abstention.get("active")
+        else "No abstention is active for this compare-preview recommendation."
+    )
     return (
         "<html><head><meta charset=\"utf-8\"/>"
         "<style>"
@@ -590,6 +701,21 @@ def render_compare_evidence_html(payload: dict[str, Any]) -> str:
         f"<ul>{submitted_urls}</ul>"
         "<h2>Risk Notes</h2>"
         f"<ul>{risk_notes or '<li>No additional risk notes.</li>'}</ul>"
+        "<h2>Recommendation</h2>"
+        "<div class=\"summary\">"
+        f"<h3>{html.escape(str(recommendation.get('headline') or 'Recommendation unavailable'))}</h3>"
+        f"<p>{html.escape(str(recommendation.get('summary') or 'Recommendation is unavailable for this evidence package.'))}</p>"
+        f"<p>{html.escape(str(recommendation.get('deterministic_primary_note') or 'Deterministic compare evidence stays primary.'))}</p>"
+        f"<p>{abstention_text}</p>"
+        f"<p>{html.escape(str(recommendation.get('feedback_boundary') or ''))}</p>"
+        "</div>"
+        "<h3>Recommendation Basis</h3>"
+        f"<ul>{recommendation_basis or '<li>No recommendation basis recorded.</li>'}</ul>"
+        "<h3>Recommendation Uncertainty</h3>"
+        f"<ul>{recommendation_uncertainty or '<li>No uncertainty notes recorded.</li>'}</ul>"
+        "<h3>Recommendation Evidence References</h3>"
+        "<table><tr><th>Code</th><th>Label</th><th>Anchor</th></tr>"
+        f"{recommendation_refs}</table>"
         "<h2>Candidate Results</h2>"
         "<table><tr><th>Store</th><th>Submitted URL</th><th>Candidate Key</th><th>Fetched</th><th>Title</th><th>Error</th></tr>"
         f"{comparison_rows}</table>"

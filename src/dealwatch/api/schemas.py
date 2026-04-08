@@ -327,12 +327,45 @@ class AiNarrativeEnvelopeResponse(BaseModel):
     provider: AiNarrativeProviderResponse
 
 
+class CompareRecommendationAbstentionResponse(BaseModel):
+    active: bool
+    code: str | None = None
+    reason: str | None = None
+
+
+class CompareRecommendationEvidenceRefResponse(BaseModel):
+    code: str
+    label: str
+    anchor: str
+
+
+class CompareRecommendationResponse(BaseModel):
+    contract_version: str
+    surface: str
+    scope: str
+    visibility: str
+    status: str = Field(pattern="^(issued|abstained)$")
+    verdict: str = Field(pattern="^(wait|recheck_later|insufficient_evidence)$")
+    verdict_vocabulary: list[str] = Field(default_factory=list)
+    headline: str
+    summary: str
+    basis: list[str] = Field(default_factory=list)
+    uncertainty_notes: list[str] = Field(default_factory=list)
+    abstention: CompareRecommendationAbstentionResponse
+    evidence_refs: list[CompareRecommendationEvidenceRefResponse] = Field(default_factory=list)
+    deterministic_primary_note: str
+    feedback_boundary: str
+    override_boundary: str
+    buy_now_blocked: bool = True
+
+
 class ComparePreviewResponse(BaseModel):
     submitted_count: int = Field(ge=0)
     resolved_count: int = Field(ge=0)
     comparisons: list[ComparePreviewComparisonResponse] = Field(default_factory=list)
     matches: list[ComparePreviewMatchResponse] = Field(default_factory=list)
     compare_evidence: dict[str, Any]
+    recommendation: CompareRecommendationResponse
     recommended_next_step_hint: dict[str, Any]
     risk_notes: list[str] = Field(default_factory=list)
     risk_note_items: list[dict[str, Any]] = Field(default_factory=list)

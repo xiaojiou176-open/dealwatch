@@ -72,4 +72,4 @@ Do not translate this recipe into:
 - write-side MCP
 - hosted auth
 - official plugin wording
-- recommendation launch wording
+- builder-facing recommendation wording

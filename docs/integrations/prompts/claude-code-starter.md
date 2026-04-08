@@ -21,7 +21,7 @@ Use DealWatch as a read-only compare-first truth source.
 
 - Do not assume write-side MCP exists.
 - Do not present DealWatch as a hosted SaaS.
-- Do not claim recommendation is already shipped.
+- Do not claim recommendation is available through builder or MCP surfaces.
 
 ## Starter prompt
 

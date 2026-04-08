@@ -677,6 +677,9 @@ def test_product_api_compare_preview(tmp_path, monkeypatch) -> None:
         assert payload["matches"][0]["score"] > 80
         assert payload["matches"][0]["why_like"]
         assert payload["matches"][0]["left_candidate_key"]
+        assert payload["recommendation"]["contract_version"] == "compare_preview_public_v1"
+        assert payload["recommendation"]["verdict"] == "wait"
+        assert payload["recommendation"]["buy_now_blocked"] is True
         assert payload["recommended_next_step_hint"]["action"] == "create_watch_group"
         assert payload["compare_evidence"]["recommended_next_step_hint"] == payload["recommended_next_step_hint"]
         assert payload["ai_explain"]["status"] == "disabled"
@@ -739,6 +742,8 @@ def test_product_api_compare_evidence_artifact_routes(tmp_path, monkeypatch) -> 
         created = create_response.json()
         assert created["artifact_kind"] == "compare_evidence"
         assert created["storage_scope"] == "runtime_local_artifact"
+        assert created["recommendation"]["contract_version"] == "compare_preview_public_v1"
+        assert created["recommendation"]["verdict"] == "wait"
         assert created["recommended_next_step_hint"]["action"] == "create_watch_group"
         assert "shadow_recommendation" not in created
         assert "recommendation_shadow" not in created
@@ -750,6 +755,7 @@ def test_product_api_compare_evidence_artifact_routes(tmp_path, monkeypatch) -> 
         listed = list_response.json()
         assert listed[0]["artifact_id"] == created["artifact_id"]
         assert listed[0]["strongest_match_score"] > 80
+        assert listed[0]["recommendation"]["verdict"] == "wait"
         assert "shadow_recommendation" not in listed[0]
         assert "recommendation_shadow" not in listed[0]
 
@@ -759,6 +765,7 @@ def test_product_api_compare_evidence_artifact_routes(tmp_path, monkeypatch) -> 
         assert detail["artifact_id"] == created["artifact_id"]
         assert detail["submitted_inputs"] == created["submitted_inputs"]
         assert detail["matches"][0]["score"] > 80
+        assert detail["recommendation"]["verdict"] == "wait"
         assert Path(detail["artifact_path"]).is_file()
         assert "shadow_recommendation" not in detail
         assert "recommendation_shadow" not in detail
@@ -847,6 +854,7 @@ def test_product_api_compare_evidence_package_route_ignores_client_compare_resul
 
         assert created["recommended_next_step_hint"]["action"] == "create_watch_group"
         assert created["recommended_next_step_hint"]["reason_code"] == "multi_candidate_strong_match"
+        assert created["recommendation"]["verdict"] == "wait"
         assert "shadow_recommendation" not in created
         assert shadow_payload["shadow_recommendation"]["verdict"] == "wait"
         assert shadow_payload["shadow_recommendation"]["abstention"]["active"] is False
