@@ -19,16 +19,37 @@ class _FakeLocator:
 
 
 class _FakePage:
-    def __init__(self, url: str, html: str, selectors: dict[str, str | None] | None = None) -> None:
+    def __init__(
+        self,
+        url: str,
+        html: str,
+        selectors: dict[str, str | None] | None = None,
+        hydrated_html: str | None = None,
+        hydrated_selectors: dict[str, str | None] | None = None,
+    ) -> None:
         self.url = url
         self._html = html
         self._selectors = selectors or {}
+        self._hydrated_html = hydrated_html
+        self._hydrated_selectors = hydrated_selectors
+        self._hydrated = False
 
     async def content(self) -> str:
+        if self._hydrated and self._hydrated_html is not None:
+            return self._hydrated_html
         return self._html
 
     def locator(self, selector: str):
-        return _FakeLocator(self._selectors.get(selector))
+        selectors = self._selectors
+        if self._hydrated and self._hydrated_selectors is not None:
+            selectors = self._hydrated_selectors
+        return _FakeLocator(selectors.get(selector))
+
+    async def wait_for_selector(self, selector: str, timeout: int | None = None):
+        if self._hydrated_html is None and self._hydrated_selectors is None:
+            raise RuntimeError(f"selector not available: {selector}")
+        self._hydrated = True
+        return object()
 
 
 @pytest.mark.asyncio
@@ -122,3 +143,113 @@ async def test_target_parser_missing_price_returns_none() -> None:
 
     offer = await parser.parse(page)
     assert offer is None
+
+
+@pytest.mark.asyncio
+async def test_target_parser_extracts_price_when_price_block_is_far_from_tcin() -> None:
+    filler = "x" * 18_000
+    html = f"""
+    <html>
+      <head>
+        <title>Fairlife Lactose-Free 2% Chocolate Milk - 52 fl oz : Target</title>
+      </head>
+      <body>
+        <script>
+          window.__STATE__ = "{{\\"product\\":{{\\"tcin\\":\\"17093199\\",\\"primary_brand\\":{{\\"name\\":\\"fairlife\\"}}}}}}{filler}\\"price\\":{{\\"current_retail\\":5.39,\\"formatted_current_price\\":\\"$5.39\\",\\"reg_retail\\":5.39,\\"primary_barcode\\":\\"811620020444\\"}}";
+        </script>
+      </body>
+    </html>
+    """
+    page = _FakePage(
+        "https://www.target.com/p/fairlife-lactose-free-2-chocolate-milk-52-fl-oz/-/A-17093199",
+        html,
+        selectors={'[data-test="product-title"]': "Fairlife Lactose-Free 2% Chocolate Milk - 52 fl oz"},
+    )
+    parser = TargetParser(store_id="target", context=PriceContext(region="98102"))
+
+    offer = await parser.parse(page)
+
+    assert offer is not None
+    assert offer.price == 5.39
+    assert offer.unit_price_info["brand"] == "fairlife"
+    assert parser.last_debug["price_source"] == "html:tcin_window.price"
+
+
+@pytest.mark.asyncio
+async def test_target_parser_falls_back_to_above_the_fold_dom_price() -> None:
+    html = """
+    <html>
+      <head>
+        <title>Fairlife Lactose-Free 2% Chocolate Milk - 52 fl oz : Target</title>
+      </head>
+      <body>
+        <script>
+          window.__STATE__ = "{\\"product\\":{\\"tcin\\":\\"17093199\\",\\"primary_barcode\\":\\"811620020444\\",\\"primary_brand\\":{\\"name\\":\\"fairlife\\"}}}";
+        </script>
+      </body>
+    </html>
+    """
+    page = _FakePage(
+        "https://www.target.com/p/fairlife-lactose-free-2-chocolate-milk-52-fl-oz/-/A-17093199",
+        html,
+        selectors={
+            '[data-test="product-title"]': "Fairlife Lactose-Free 2% Chocolate Milk - 52 fl oz",
+            "#above-the-fold-information": (
+                "Shop all fairlife\n"
+                "Fairlife Lactose-Free 2% Chocolate Milk - 52 fl oz\n"
+                "4.7 out of 5 stars with 4570 reviews\n"
+                "$5.39 ($0.10/fluid ounce)\n"
+                "Add to cart\n"
+                "Pay over time With Affirm on orders over $50"
+            ),
+        },
+    )
+    parser = TargetParser(store_id="target", context=PriceContext(region="98102"))
+
+    offer = await parser.parse(page)
+
+    assert offer is not None
+    assert offer.price == 5.39
+    assert offer.unit_price_info["upc"] == "811620020444"
+    assert offer.unit_price_info["brand"] == "fairlife"
+    assert parser.last_debug["price_source"] == "dom:#above-the-fold-information"
+
+
+@pytest.mark.asyncio
+async def test_target_parser_waits_for_hydrated_dom_price() -> None:
+    html = """
+    <html>
+      <head>
+        <title>Fairlife Lactose-Free 2% Chocolate Milk - 52 fl oz : Target</title>
+      </head>
+      <body>
+        <script>
+          window.__STATE__ = "{\\"product\\":{\\"tcin\\":\\"17093199\\",\\"primary_barcode\\":\\"811620020444\\",\\"primary_brand\\":{\\"name\\":\\"fairlife\\"}}}";
+        </script>
+      </body>
+    </html>
+    """
+    page = _FakePage(
+        "https://www.target.com/p/fairlife-lactose-free-2-chocolate-milk-52-fl-oz/-/A-17093199",
+        html,
+        selectors={
+            '[data-test="product-title"]': "Fairlife Lactose-Free 2% Chocolate Milk - 52 fl oz",
+        },
+        hydrated_html=html,
+        hydrated_selectors={
+            '[data-test="product-title"]': "Fairlife Lactose-Free 2% Chocolate Milk - 52 fl oz",
+            '[data-test="product-price"]': "$5.39",
+        },
+    )
+    parser = TargetParser(store_id="target", context=PriceContext(region="98102"))
+
+    offer = await parser.parse(page)
+
+    assert offer is not None
+    assert offer.price == 5.39
+    assert offer.unit_price_info["upc"] == "811620020444"
+    assert offer.unit_price_info["brand"] == "fairlife"
+    assert parser.last_debug["price_wait"] == (
+        'selector:[data-test="product-price"], #above-the-fold-information'
+    )
+    assert parser.last_debug["price_source"] == 'dom:[data-test="product-price"]'

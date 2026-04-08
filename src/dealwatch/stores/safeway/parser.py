@@ -27,6 +27,11 @@ _UNIT_RE: Final[re.Pattern[str]] = re.compile(
     r"(?P<qty>\d+(?:\.\d+)?)\s*(?P<unit>lb|lbs|oz|fl\.?\s*oz|foz|g|kg|ml|l|ct|count|pk|pack)",
     re.IGNORECASE,
 )
+_INCAPSULA_BLOCK_MARKERS: Final[tuple[str, ...]] = (
+    "_incapsula_resource",
+    "incapsula incident id",
+    "request unsuccessful",
+)
 
 
 @dataclass(slots=True)
@@ -42,6 +47,12 @@ class SafewayParser:
     async def parse(self, page: Page) -> Offer | None:
         self.last_debug = {"url": page.url}
         html_text = await page.content()
+        block_reason = self._detect_blocked_page(html_text)
+        if block_reason is not None:
+            self.last_debug["page_blocked"] = block_reason
+            self.last_debug["json_ld"] = "skipped: block page"
+            return None
+
         product = self._extract_product_json_ld(html_text)
         if product is None:
             self.last_debug["json_ld"] = "missing product payload"
@@ -102,6 +113,13 @@ class SafewayParser:
                 stack.extend(current.values())
             elif isinstance(current, list):
                 stack.extend(current)
+        return None
+
+    @staticmethod
+    def _detect_blocked_page(html_text: str) -> str | None:
+        lowered = html_text.lower()
+        if all(marker in lowered for marker in _INCAPSULA_BLOCK_MARKERS):
+            return "incapsula"
         return None
 
     @staticmethod

@@ -1307,11 +1307,15 @@ def _selected_native_compare_origin_diversity_from_manifest(
 
 def _render_campaign_markdown(report: dict[str, Any]) -> str:
     summary = dict(report.get("summary") or {})
+    summary_source_diversity = dict(summary.get("source_diversity") or {})
     first_pass_distribution = dict(summary.get("first_pass_distribution") or {})
     corpus_source_buckets = dict(report.get("corpus_source_buckets") or {})
     source_diversity = dict(report.get("source_diversity") or {})
     native_diversity = dict(source_diversity.get("native_compare_origin") or {})
     native_selected = dict(source_diversity.get("selected_native_compare_origin") or {})
+    native_source_case_kind = str(
+        summary_source_diversity.get("native_compare_origin_source_case_kind") or ""
+    ).strip()
     verdict_lines = "\n".join(
         f"- `{key}`: {value}" for key, value in first_pass_distribution.items()
     ) or "- none"
@@ -1344,6 +1348,11 @@ def _render_campaign_markdown(report: dict[str, Any]) -> str:
                 ),
             ]
         )
+        if native_source_case_kind:
+            diversity_lines += (
+                "\n"
+                f"- Native source case kind: `{native_source_case_kind}`"
+            )
         if native_selected and native_selected.get("available_pattern_counts"):
             diversity_lines += "\n- Selected native breadth snapshot:"
             for item in native_selected.get("available_pattern_counts") or []:

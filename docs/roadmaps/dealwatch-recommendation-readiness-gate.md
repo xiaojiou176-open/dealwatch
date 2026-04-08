@@ -99,6 +99,7 @@ The current internal stop line has moved forward:
 - the v1 workspace no longer carries repo-local review debt for the current corpus (`11 reviewed`, `0 pending`)
 - the disagreement map is now deeper than a starter packet, but it still only spans two disagreement classes across the current narrow corpus
 - the native compare-origin breadth ceiling is now proven, and the corpus is still too concentrated to justify launch language
+- the canonical campaign report still reads `native_compare_origin_source_case_kind = runtime_group_summary_fallback`, which means the current machine still lacks a fresh second-family runtime compare-evidence package for native harvesting
 
 The recommendation lane only becomes "mostly real external blockers" after both of these are true:
 
@@ -109,8 +110,38 @@ For the current v1 workspace, those two conditions now hold:
 
 - the repo-local review debt has been adjudicated to `11 reviewed`, `0 pending`
 - the next meaningful breadth increase still depends on new live compare-origin families beyond the repeated pears pair
+- the next best candidate pair is now narrowed to `safeway + target` fairlife, where a fresh Target self-test now succeeds again but Safeway still returns an Incapsula block page on the automated Playwright path
+- the current machine also has no live DealWatch-owned dedicated Chrome lane under `~/.cache/dealwatch/browser/chrome-user-data`, so this turn has no separate repo-owned session lane to claim as an alternate green path
 
 That means the lane is now **mostly external-blocker-shaped for breadth growth**, while still remaining firmly blocked from any broader recommendation launch beyond Compare Preview v1.
+
+### Current broader-expansion-only blocker pack
+
+The current blocker is smaller than it was in earlier waves.
+
+It is no longer:
+
+- a repo-side compare-evidence ingestion gap
+- a repo-side review continuity gap
+- a question about whether Compare Preview advisory v1 shipped
+
+It is now:
+
+- current native harvesting still falls back to `runtime_group_summary_fallback`
+- the native compare-origin pool is still `30 available -> 1 unique pattern -> top share 1.0`
+- the current corpus is still maintainer-scoped mixed internal evidence, not broader public-calibration evidence
+- future expansion to task/group/MCP/builder/static pages would still need more native compare-origin families, more stable disagreement buckets, and broader calibration evidence than the current compare-preview slice
+
+The next honest runtime candidate remains the Safeway + Target fairlife pair:
+
+- Target now has a fresh repo-side live parse proof (`Title = Fairlife Lactose-Free 2% Chocolate Milk - 52 fl oz`, `Price = 5.39`)
+- Safeway is still blocked by a live Incapsula/WAF response on the current Playwright path (`page_blocked = incapsula`, `json_ld = skipped: block page`)
+
+So the repo-side question is no longer "did we wire the lane correctly?"
+
+It is now:
+
+> can the repo obtain a new real compare-evidence package for a second family without cheating, and without pretending one repeated pears family is broad recommendation maturity?
 
 ## What is already true
 
@@ -268,6 +299,7 @@ Recommendation must stay blocked from broader expansion until the repo can answe
 4. How will the repo measure false-positive and false-negative cost?
 5. What monitoring shows shadow quality over time?
 6. How will UI wording stay subordinate to deterministic truth?
+7. Which new real cross-store compare-evidence families exist beyond the repeated pears pair, so broader expansion is not still anchored to `runtime_group_summary_fallback`
 
 ## Current phase summary
 
@@ -278,3 +310,7 @@ The current repo is no longer at:
 It is now at:
 
 > "recommendation is shipped as a narrow Compare Preview advisory surface, governed enough for internal shadow, and still not honest enough for broader user-visible launch"
+
+More specifically for the current broader-expansion blocker:
+
+> "Target is no longer the repo-side blocker for the next candidate pair; Safeway's current live automated fetch path and the absence of a repo-local session lane are the remaining blockers to generating the next real native family on this machine"

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import re
 from typing import List, Optional
 
 from dealwatch.core.models import Offer, PriceContext
@@ -16,6 +17,9 @@ class TargetAdapter(BaseStoreAdapter):
     store_id = "target"
     base_url = "https://www.target.com"
     cashback_merchant_key = "target"
+    _PRICE_READY_RE = re.compile(r"\$\d+(?:\.\d{1,2})?")
+    _PRICE_WAIT_ATTEMPTS = 5
+    _PRICE_WAIT_DELAY_MS = 2_000
 
     def __init__(self, client: PlaywrightClient, settings: Settings) -> None:
         super().__init__(client, settings)
@@ -34,8 +38,13 @@ class TargetAdapter(BaseStoreAdapter):
 
     @safe_parse
     async def parse_product(self, url: str) -> Optional[Offer]:
-        page = await self.client.fetch_page(url, return_page=True)
+        page = await self.client.fetch_page(
+            url,
+            wait_until="domcontentloaded",
+            return_page=True,
+        )
         try:
+            await self._wait_for_price_signal(page)
             offer = await self._parser.parse(page)
             if offer is None:
                 await self._capture_failed_page(page, url, "parse_returned_none")
@@ -47,6 +56,21 @@ class TargetAdapter(BaseStoreAdapter):
             raise
         finally:
             await page.close()
+
+    async def _wait_for_price_signal(self, page) -> None:
+        for attempt in range(self._PRICE_WAIT_ATTEMPTS):
+            html_text = await page.content()
+            if "current_retail" in html_text or "formatted_current_price" in html_text:
+                return
+
+            summary = await self._parser._text_by_selector(page, "#above-the-fold-information")
+            if summary:
+                leading_summary = summary.split("Add to cart", 1)[0]
+                if self._PRICE_READY_RE.search(leading_summary):
+                    return
+
+            if attempt + 1 < self._PRICE_WAIT_ATTEMPTS:
+                await page.wait_for_timeout(self._PRICE_WAIT_DELAY_MS)
 
 
 def _parse_args() -> argparse.Namespace:

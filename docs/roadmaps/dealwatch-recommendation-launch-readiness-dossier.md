@@ -81,6 +81,7 @@ The current breadth-hardening snapshot therefore shows:
 | `native unique pattern count` | `1` | proves the apparent native growth is still one repeated pattern, not broader product coverage |
 | `native top repeated pattern share` | `1.0` | the concentration risk is effectively total: the same pattern owns the full current native pool |
 | `native dropped repeat count` | `29` | Prompt 8 now refuses to treat repeated copies of the same smoke-test pair as if they added recommendation breadth |
+| `native source case kind` | `runtime_group_summary_fallback` | the current machine still lacks fresh native compare-evidence packages for a broader second family, so native harvesting still falls back to reconstructed watch-group summaries |
 
 Historical note:
 
@@ -263,6 +264,7 @@ What remains is also now explicit:
 - the current v1 workspace no longer carries repo-local review debt (`11 reviewed`, `0 pending`)
 - disagreement evidence is deeper than before, but it still only covers two disagreement classes across a concentrated corpus
 - seeded, runtime-derived, and harvested native compare-origin artifacts are still internal experiment truth, not public product maturity
+- the canonical report still shows `native_compare_origin_source_case_kind = runtime_group_summary_fallback`, so the native lane is still missing a fresh runtime compare-evidence package for a second family
 
 This lane becomes "mostly real external blockers" only after both of these are true:
 
@@ -270,6 +272,47 @@ This lane becomes "mostly real external blockers" only after both of these are t
 2. further breadth growth genuinely requires new live compare-origin families beyond the current repeated pears pair
 
 For the current v1 workspace, those two conditions now hold. The honest next blocker is therefore not missing review plumbing, but the lack of broader native compare-origin families beyond the repeated pears pair.
+
+## Current live-generation frontier
+
+The current repo-side next move is no longer abstract.
+
+The most credible next family remains:
+
+- Safeway fairlife
+- Target fairlife
+
+That pair now tells a more precise story:
+
+- Target had a real repo-side live bug, and that path is now fixed locally
+- Safeway is still returning an Incapsula/WAF block page on the current Playwright path, so the repo cannot honestly pretend it already has a second native family
+
+That means the remaining blocker is now narrower and more external than before:
+
+- not compare-evidence ingestion
+- not review continuity
+- not Compare Preview advisory v1 launch
+- but the lack of a new real runtime compare-evidence package for a second family
+
+This is why the remaining blocker now belongs to broader expansion only.
+
+Future expansion beyond Compare Preview v1 still needs:
+
+- more native compare-origin families than the current repeated pears pool
+- disagreement buckets that stabilize over broader coverage instead of a starter corpus
+- broader calibration evidence before task/group/MCP/builder/static-page recommendation claims become honest
+
+Fresh live narrowing now makes that blocker more specific:
+
+- `target + fairlife` is no longer blocked by the repo-side adapter path for `https://www.target.com/p/fairlife-lactose-free-2-chocolate-milk-52-fl-oz/-/A-17093199`; a fresh self-test now resolves the real live PDP to `Title = Fairlife Lactose-Free 2% Chocolate Milk - 52 fl oz`, `Price = 5.39`
+- `safeway + fairlife` is still a live PDP over raw HTTP at `https://www.safeway.com/shop/product-details.960127167.html`
+- the Safeway Playwright path still captures an Incapsula block page instead of the real PDP (`page_blocked = incapsula`, `json_ld = skipped: block page`), so the repo still cannot harvest a second real cross-store compare-evidence family from that candidate pair on this machine
+- there is currently no live DealWatch-owned dedicated Chrome lane under `~/.cache/dealwatch/browser/chrome-user-data`, so this turn also has no separate repo-owned session lane to claim as an alternate green path
+
+In plain English:
+
+> the blocker has shrunk from "recommendation plumbing is incomplete"
+> to "the next real live cross-store family still needs store/browser conditions the repo does not currently control"
 
 ## Current Launch Verdict
 
@@ -310,6 +353,7 @@ The next future broader-launch discussion should stay blocked until the repo can
 3. disagreement patterns across multiple classes, not only the current `false_positive`, `speak_when_should_abstain`, and `abstain_when_should_speak` starter modes
 4. stronger recommendation-specific calibration evidence rooted in deeper native compare-origin history instead of only runtime-summary reconstruction
 5. unchanged public silence until the explicit launch decision is reopened
+6. at least one more real runtime compare-evidence family so native harvesting no longer depends on reconstructed fallback for new breadth growth
 
 ## What Evidence Would Justify The Next Expansion Prompt
 
@@ -317,6 +361,7 @@ The next broader-launch discussion only becomes worth opening once Prompt 8 evid
 
 - replay is driven by a broader repo-local evidence corpus, not mainly by seeded samples, runtime-summary reconstruction, and one repeated native pair
 - the native compare-origin pool shows more than the current `1` unique pattern / `1` unique store pair / `1` unique source-url pair family ceiling
+- fresh runtime compare-evidence packages exist for a new cross-store family instead of leaving `runtime_group_summary_fallback` as the only native source kind for further breadth growth
 - reviewed artifacts grow on top of that broader corpus instead of only re-grading repeated copies of the same smoke-test pair
 - disagreement buckets keep showing stable patterns outside the current `false_positive`, `speak_when_should_abstain`, and `abstain_when_should_speak` starter modes
 - deeper disagreement packets keep accumulating over time instead of appearing only in a single review sweep

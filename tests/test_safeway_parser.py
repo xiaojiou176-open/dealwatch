@@ -103,6 +103,35 @@ async def test_safeway_parser_missing_title_sets_debug_reason() -> None:
 
 
 @pytest.mark.asyncio
+async def test_safeway_parser_marks_incapsula_block_page() -> None:
+    html = """
+    <html style="height:100%">
+      <head>
+        <meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
+      </head>
+      <body style="margin:0px;height:100%">
+        <iframe
+          id="main-iframe"
+          src="/_Incapsula_Resource?incident_id=123"
+          frameborder="0"
+          width="100%"
+          height="100%">
+          Request unsuccessful. Incapsula incident ID: 123
+        </iframe>
+      </body>
+    </html>
+    """
+    page = _FakePage("https://www.safeway.com/shop/product-details.960127167.html", html)
+    parser = SafewayParser(store_id="safeway", context=PriceContext(region="98004"))
+
+    offer = await parser.parse(page)
+
+    assert offer is None
+    assert parser.last_debug["page_blocked"] == "incapsula"
+    assert parser.last_debug["json_ld"] == "skipped: block page"
+
+
+@pytest.mark.asyncio
 async def test_safeway_parser_accepts_single_quoted_json_ld_script_type() -> None:
     html = """
     <html>

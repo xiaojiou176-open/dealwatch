@@ -63,6 +63,7 @@ The active repo-local workspace truth for this contract is:
 - current adjudication snapshot: `11 reviewed`, `0 pending`
 - disagreement buckets in the adjudicated v1 corpus now read: `abstain_when_should_speak: 3`, `speak_when_should_abstain: 3`
 - native breadth ceiling is already evidenced as `single_pattern_runtime_ceiling`: `30` available native histories collapse to `1` unique pattern / `1` store pair / `1` source-url family, with `29` repeats dropped and `top share = 1.0`
+- the canonical campaign report now also writes `native_compare_origin_source_case_kind`; the current workspace truth is still `runtime_group_summary_fallback`, which means the machine's `.runtime-cache/runs` does not yet hold a fresh native compare-evidence package for a broader second family
 
 That means Prompt 8 is no longer grading an empty rerun. It is grading a real, still-internal corpus whose remaining problem is concentration, not lack of any replay artifacts.
 
@@ -95,6 +96,7 @@ Prompt 8 adds one more honesty rule for native compare-origin harvesting:
 - breadth comes before repeat depth
 - repeated history for the same pattern may still exist in the runtime pool
 - but the fresh replay batch should keep one representative case per detected native pattern before it starts admitting more repeated copies
+- the campaign report must state whether native harvesting came from `runtime_compare_evidence_package` or had to fall back to `runtime_group_summary_fallback`, because that difference decides whether we are grading original compare-stage answer sheets or reconstructed watch-group recap notes
 5. `deterministic_truth_anchor.artifact_path` matches the colocated `compare_evidence.json`
 
 In plain English:
@@ -228,6 +230,22 @@ Even with replay/eval v1 in place, recommendation remains blocked from user-visi
 - monitoring evidence over time instead of only one-off samples
 - product wording that stays subordinate to deterministic truth
 - a future launch review that looks at accumulated shadow quality, not just code presence
+
+## Current smaller blocker pack
+
+The current replay/eval contract is no longer stuck on repo-local plumbing.
+
+For the inherited Prompt 8 workspace, the narrower truth is:
+
+- compare-evidence package ingestion for native harvesting is already wired
+- reruns no longer reopen the reviewed queue as if adjudication continuity were missing
+- the current report still says `native_compare_origin_source_case_kind = runtime_group_summary_fallback`
+- the current native pool is still one repeated pears family, so more harvesting mostly adds depth, not breadth
+
+In plain English:
+
+> the replay lane is no longer failing because the repo forgot how to ingest or preserve review state
+> it is now failing to grow because the broader native compare-origin history is not there yet
 
 ## Current phase summary
 

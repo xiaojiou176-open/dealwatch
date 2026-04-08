@@ -98,6 +98,20 @@ In plain English:
 > if the repo already has the original compare-stage answer sheets, grade those first
 > only fall back to watch-group recap notes when the answer sheets are still missing
 
+The current canonical report gives you a direct truth signal for that boundary:
+
+- `native_compare_origin_source_case_kind = runtime_compare_evidence_package`
+  means the lane is grading original compare-stage answer sheets
+- `native_compare_origin_source_case_kind = runtime_group_summary_fallback`
+  means the lane is still grading reconstructed watch-group recap notes because no fresh runtime compare-evidence package is available for native harvesting
+
+Current live narrowing for the next honest breadth attempt:
+
+- the best current next family is still the `safeway + target` fairlife pair
+- the Target live adapter path for `https://www.target.com/p/fairlife-lactose-free-2-chocolate-milk-52-fl-oz/-/A-17093199` now succeeds again with a fresh self-test (`Title = Fairlife Lactose-Free 2% Chocolate Milk - 52 fl oz`, `Price = 5.39`)
+- the Safeway live Playwright path for `https://www.safeway.com/shop/product-details.960127167.html` still captures an Incapsula block page instead of the real PDP, even though raw HTTP still reaches the product page (`page_blocked = incapsula`, `json_ld = skipped: block page`)
+- there is currently no live DealWatch-owned dedicated Chrome lane under `~/.cache/dealwatch/browser/chrome-user-data`, so this runbook should treat "generate a new native family right now" as externally blocked on this machine unless Safeway stops returning the bot wall or a separate repo-owned session lane produces a provably green automated fetch path
+
 Use the runtime-only path when you explicitly want to skip the seeded starter lab:
 
 ```bash
@@ -137,6 +151,14 @@ When you are trying to grow native compare-origin breadth with fresh local compa
 
 - if the machine already has more than six browser instances, do not open another compare session just to squeeze out one more corpus item
 - finish non-browser repo-side work first or wait for active owners to recover their browser lanes
+
+The current most credible next family is still the Safeway + Target fairlife pair.
+
+Read that frontier honestly:
+
+- if Target parses but Safeway is still blocked by Incapsula/WAF, that is not a reason to pad the corpus with more repeated pears depth
+- if the canonical report still says `runtime_group_summary_fallback`, the right next move is to obtain a new real runtime compare-evidence package, not to overclaim broader recommendation maturity
+- do not mistake a raw-HTTP-success Safeway PDP for a green automated fetch path; the current blocker is specifically the live browser automation path, not PDP existence
 
 ## Step 2 — List pending internal reviews
 

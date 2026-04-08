@@ -755,7 +755,23 @@ def test_recommendation_evaluation_campaign_harvests_native_compare_origin(tmp_p
     summary = payload["summary"]
     assert payload["corpus_source"] == "native_compare_origin"
     assert payload["corpus_source_buckets"] == {"native_compare_origin": 1}
+    assert payload["native_compare_origin_result"]["source_case_kind"] == "runtime_group_summary_fallback"
     assert payload["native_compare_origin_result"]["native_compare_origin_case_count"] == 1
+    assert summary["source_diversity"]["native_compare_origin_source_case_kind"] == (
+        "runtime_group_summary_fallback"
+    )
+    assert any(
+        "fall back to reconstructed watch-group summaries" in item
+        for item in payload["launch_blockers"]
+    )
+    assert any(
+        "single repeated pattern" in item
+        for item in payload["launch_blockers"]
+    )
+    report_markdown = Path(payload["artifact_paths"]["campaign_report_markdown_path"]).read_text(
+        encoding="utf-8"
+    )
+    assert "Native source case kind: `runtime_group_summary_fallback`" in report_markdown
     assert payload["native_compare_origin_result"]["cases"][0]["label"] == "runtime_group:Runtime Pear Group"
     assert payload["native_compare_origin_result"]["cases"][0]["review_seed_suggestion"] == "correct_verdict"
     assert payload["summary"]["source_diversity"]["native_compare_origin_unique_patterns"] == 1

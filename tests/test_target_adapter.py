@@ -14,6 +14,7 @@ from dealwatch.stores.target.parser import TargetParser
 class _FakePage:
     def __init__(self) -> None:
         self.closed = False
+        self.wait_calls: list[int] = []
 
     async def content(self) -> str:
         return "<html><body>fake</body></html>"
@@ -21,16 +22,40 @@ class _FakePage:
     async def screenshot(self, path: str) -> None:
         return None
 
+    async def wait_for_timeout(self, timeout_ms: int) -> None:
+        self.wait_calls.append(timeout_ms)
+
     async def close(self) -> None:
         self.closed = True
+
+    def locator(self, selector: str):
+        return _FakeLocator(None)
+
+
+class _FakeLocator:
+    def __init__(self, text: str | None) -> None:
+        self._text = text
+        self.first = self
+
+    async def count(self) -> int:
+        return 0 if self._text is None else 1
+
+    async def text_content(self) -> str | None:
+        return self._text
 
 
 class _FakeClient:
     def __init__(self) -> None:
         self.storage_state_path = "state.json"
         self.page = _FakePage()
+        self.last_fetch_kwargs: dict[str, object] = {}
 
-    async def fetch_page(self, url: str, return_page: bool = False):
+    async def fetch_page(self, url: str, wait_until: str = "networkidle", return_page: bool = False):
+        self.last_fetch_kwargs = {
+            "url": url,
+            "wait_until": wait_until,
+            "return_page": return_page,
+        }
         return self.page
 
 
@@ -68,6 +93,8 @@ async def test_target_adapter_discover_and_parse(monkeypatch) -> None:
     parsed = await adapter.parse_product(urls[0])
     assert parsed == offer
     assert client.page.closed is True
+    assert client.last_fetch_kwargs["wait_until"] == "domcontentloaded"
+    assert client.last_fetch_kwargs["return_page"] is True
 
 
 @pytest.mark.asyncio
@@ -106,3 +133,51 @@ def test_target_adapter_main_invokes_test_adapter(monkeypatch) -> None:
 
     target_adapter_module._main()
     assert called["url"] == "https://www.target.com/p/-/A-13202943"
+
+
+@pytest.mark.asyncio
+async def test_target_adapter_waits_for_price_signal_before_parse(monkeypatch) -> None:
+    class _DynamicPage(_FakePage):
+        def __init__(self) -> None:
+            super().__init__()
+            self.summary_ready = False
+
+        async def content(self) -> str:
+            return "<html><body>no price yet</body></html>"
+
+        async def wait_for_timeout(self, timeout_ms: int) -> None:
+            await super().wait_for_timeout(timeout_ms)
+            self.summary_ready = True
+
+        def locator(self, selector: str):
+            if selector == "#above-the-fold-information" and self.summary_ready:
+                return _FakeLocator("$5.39 Add to cart")
+            return _FakeLocator(None)
+
+    settings = Settings()
+    client = _FakeClient()
+    client.page = _DynamicPage()
+    adapter = TargetAdapter(client, settings)
+
+    offer = Offer(
+        store_id="target",
+        product_key="17093199",
+        title="Fairlife Lactose-Free 2% Chocolate Milk - 52 fl oz",
+        url="https://www.target.com/p/fairlife-lactose-free-2-chocolate-milk-52-fl-oz/-/A-17093199",
+        price=5.39,
+        original_price=None,
+        fetch_at=datetime(2026, 4, 8, 12, 0, 0, tzinfo=timezone.utc),
+        context=PriceContext(region="98102"),
+        unit_price_info={"raw": "Fairlife Lactose-Free 2% Chocolate Milk - 52 fl oz"},
+    )
+
+    async def _parse(self, page):
+        summary = await self._text_by_selector(page, "#above-the-fold-information")
+        return offer if summary else None
+
+    monkeypatch.setattr(TargetParser, "parse", _parse)
+
+    parsed = await adapter.parse_product(offer.url)
+
+    assert parsed == offer
+    assert client.page.wait_calls == [adapter._PRICE_WAIT_DELAY_MS]
