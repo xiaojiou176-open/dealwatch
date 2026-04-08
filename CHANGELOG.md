@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- A repo-owned Chrome companion extension package, listing notes, and bundle build/verify scripts so browser-extension distribution is prepared up to the final Chrome Web Store submission step.
+- Top-level `INTEGRATIONS.md` and `DISTRIBUTION.md` entrypoints so distribution truth can stay short, truthful, and easier to find.
 - A value-first public path in the README and Pages surface so first contact can start with `Comparison`, `Compare Preview`, and `Proof` instead of immediate stack assembly.
 - A new quantified public proof snapshot built around current repository facts such as live stores, runtime surfaces, and public verification guards.
 - A dedicated `./scripts/quickstart_stack.sh` entrypoint so the fastest local stack path is executable instead of README-only prose.
@@ -18,6 +20,8 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- Frontend TypeScript config now tolerates the TypeScript 6 `baseUrl` deprecation warning so maintenance dependency PRs can stay mergeable without lowering the repo's CI bar.
+- Gitleaks filesystem scans now ignore gitignored local-only namespaces through `.gitleaks.toml`, while history/public-surface scans stay enforced.
 - The public quick-start story now leads with a one-command Compose path before the longer manual multi-process setup.
 - The public feed now points readers at stable release and proof entrypoints instead of hand-maintained version text scattered across multiple surfaces.
 - Public Pages and README now describe proof entrypoints without relying on duplicated snapshot counters or a dedicated story-sync guard.

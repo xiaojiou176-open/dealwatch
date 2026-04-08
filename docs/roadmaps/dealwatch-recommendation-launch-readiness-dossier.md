@@ -258,7 +258,7 @@ It does **not** authorize:
 
 The honest Prompt 8 stop line is no longer "maybe the repo just needs one more local rerun."
 
-The repo already proved the current native lane is at `single_pattern_runtime_ceiling`.
+The repo already proved the current native lane is reading `runtime_compare_evidence_package`.
 
 What remains is also now explicit:
 
@@ -266,7 +266,7 @@ What remains is also now explicit:
 - disagreement evidence is deeper than before, but it still only covers two disagreement classes across a concentrated corpus
 - seeded, runtime-derived, and harvested native compare-origin artifacts are still internal experiment truth, not public product maturity
 - the canonical report now shows `native_compare_origin_source_case_kind = runtime_compare_evidence_package`, so the native lane is no longer blocked on compare-evidence fallback
-- the fresh live package currently accepted into the native lane is the `safeway + target` fairlife compare pair
+- the fresh accepted native package is the `safeway + target` fairlife compare pair, but broader expansion still depends on additional families that clear the same quality bar
 - a newly repaired `weee` parser can now fetch the Weee side of the old pears lane again, but the paired Ranch99 URL has drifted into a soy-sauce product and therefore should not be counted as an honest second family
 
 This lane becomes "mostly real external blockers" only after both of these are true:
@@ -308,7 +308,7 @@ Fresh live narrowing now makes that blocker more specific:
 - `target + fairlife` is no longer blocked by the repo-side adapter path for `https://www.target.com/p/fairlife-lactose-free-2-chocolate-milk-52-fl-oz/-/A-17093199`; a fresh self-test now resolves the real live PDP to `Title = Fairlife Lactose-Free 2% Chocolate Milk - 52 fl oz`, `Price = 5.39`
 - `safeway + fairlife` is still a live PDP over raw HTTP at `https://www.safeway.com/shop/product-details.960127167.html`
 - the Safeway Playwright path still captures an Incapsula block page instead of the real PDP (`page_blocked = incapsula`, `json_ld = skipped: block page`), so the repo still cannot harvest a second real cross-store compare-evidence family from that candidate pair on this machine
-- there is currently no live DealWatch-owned dedicated Chrome lane under `~/.cache/dealwatch/browser/chrome-user-data`, so this turn also has no separate repo-owned session lane to claim as an alternate green path
+- the blocker is no longer the mere existence of a DealWatch-owned live lane; it is whether that lane can keep generating additional credible compare-evidence families instead of only weak or blocked-page packages
 
 In plain English:
 

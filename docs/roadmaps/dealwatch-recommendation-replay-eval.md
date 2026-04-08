@@ -62,7 +62,7 @@ The active repo-local workspace truth for this contract is:
 - current replay snapshot: `13 total`, `11 included`, `5 issued`, `6 abstained`, `2 invalid_or_skipped`
 - current adjudication snapshot: `11 reviewed`, `0 pending`
 - disagreement buckets in the adjudicated v1 corpus now read: `abstain_when_should_speak: 3`, `speak_when_should_abstain: 3`
-- native breadth ceiling is already evidenced as `single_pattern_runtime_ceiling`: `30` available native histories collapse to `1` unique pattern / `1` store pair / `1` source-url family, with `29` repeats dropped and `top share = 1.0`
+- the native lane now reads `runtime_compare_evidence_package` first and applies a plausibility floor, so broader expansion is no longer blocked on fallback-only ingestion; it is blocked on whether additional native families clear the quality bar strongly enough to count as real breadth
 - the canonical campaign report now also writes `native_compare_origin_source_case_kind`; after the fresh DealWatch-owned live-lane recovery, the current workspace truth is `runtime_compare_evidence_package`
 - Prompt 8 now also applies a minimum compare-plausibility floor for native compare-origin harvesting, so obviously weak mismatches no longer count as new breadth just because two rows fetched successfully
 

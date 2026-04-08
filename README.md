@@ -76,7 +76,7 @@ Most visitors should follow this order:
 - **Builder Machine Frontdoor**
   Use [`site/llms.txt`](./site/llms.txt), [`site/data/builder-client-catalog.json`](./site/data/builder-client-catalog.json), [`site/data/builder-client-starters.json`](./site/data/builder-client-starters.json), [`site/data/builder-starter-pack.json`](./site/data/builder-starter-pack.json), and [`site/data/builder-client-configs.json`](./site/data/builder-client-configs.json) when an agent wants machine-readable public pointers before it starts the local runtime. Think of them as: `catalog = index`, `client starters = prompt/skill mirror`, `starter pack = contract map`, and `all-clients bundle = full payload`.
 - **Builder Distribution / SEO Surfaces**
-  Use [`site/builders.html`](./site/builders.html), [`site/llms.txt`](./site/llms.txt), [`site/sitemap.xml`](./site/sitemap.xml), [`site/feed.xml`](./site/feed.xml), and [`site/assets/social/social-preview-1280x640.png`](./site/assets/social/social-preview-1280x640.png) when you want the repo-owned builder pack, listing-prep distribution assets, and crawlable SEO surfaces without pretending a published listing or hosted control plane already exists.
+  Use [`site/builders.html`](./site/builders.html), [`site/llms.txt`](./site/llms.txt), [`site/sitemap.xml`](./site/sitemap.xml), [`site/feed.xml`](./site/feed.xml), and [`assets/social/social-preview-1280x640.png`](./assets/social/social-preview-1280x640.png) when you want the repo-owned builder pack, listing-prep distribution assets, and crawlable SEO surfaces without pretending a published listing or hosted control plane already exists.
 
 ## Builder Start Here
 
@@ -625,6 +625,10 @@ path.
   Use `./scripts/smoke_product_hermetic.sh`, `python3 scripts/verify_remote_github_state.py`,
   `python3 scripts/verify_public_demo_interaction.py`, browser debug-lane probes, and any live
   platform checks only when the task actually needs them.
+- `distribution`
+  Use `python3 scripts/verify_browser_extension_surface.py` and `python3 scripts/build_browser_extension_bundle.py`
+  when you are preparing the Chrome companion package for manual store upload without changing the
+  default local baseline.
 - **Security**
   Security reports must stay private. Start with [`SECURITY.md`](./SECURITY.md).
 - **Support**

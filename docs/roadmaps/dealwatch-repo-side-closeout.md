@@ -26,9 +26,10 @@ remote truth, and the original hard-cut-era external blockers:
 
 ## Current Repo-Side Verdict
 
-> **Repo-side verdict:** the canonical public repo now lives on a clean linear `main` with `11`
-> current commits, no merge commits, current governance gates re-landed, and a single canonical
-> public release `v0.1.2`.
+> **Repo-side verdict:** the canonical public repo now lives on a clean linear `main`, carries the
+> post-hard-cut closeout chain through compare-preview recommendation follow-through, keeps current
+> governance gates plus required signed commits re-landed, and exposes a single canonical public
+> release `v0.1.2`.
 
 That is the honest call because:
 
@@ -44,12 +45,12 @@ That is the honest call because:
 | --- | --- |
 | Canonical repo | `xiaojiou176-open/dealwatch` |
 | Default branch | `main` |
-| Current `main` commit count | `11` |
+| Current `main` commit count | fresh-check via `git rev-list --count main` |
 | History shape | linear, no merge commits |
-| Current head | `28b4fd1` |
+| Current head | fresh-check via `git rev-parse --short HEAD` |
 | Current public release set | `v0.1.2` only |
 | Old repo role | no live repo-owned archive remains; truth is preserved in the dated closeout ledgers |
-| Open PRs | `0` |
+| Open PRs | fresh-check via `gh pr list --state open` |
 | Open issues | `0` |
 | Open Dependabot alerts | `0` |
 | Open code-scanning alerts | `0` |
@@ -58,8 +59,8 @@ That is the honest call because:
 ## History Shape
 
 The April 6 hard-cut snapshot reduced the rebuilt canonical history to 8 semantic commits. That
-still matters as an audit fact, but it is no longer the current head shape. The current linear
-`main` now carries 11 semantic commits:
+still matters as an audit fact, but it is no longer the current head shape. The clean rebuilt
+branch first stabilized as this 11-commit semantic baseline:
 
 1. `7bff236` = `feat(core): establish compare-first runtime foundation`
 2. `b9e3c29` = `feat(public): publish the static frontdoor and proof surfaces`
@@ -72,6 +73,14 @@ still matters as an audit fact, but it is no longer the current head shape. The 
 9. `bd70a82` = `fix(public): sync org-owned canonical entry and closeout truth`
 10. `b0fc2fd` = `docs(closeout): clear resolved PyPI blocker`
 11. `28b4fd1` = `[codex] sharpen front door and thin orchestration spine (#7)`
+
+That baseline later continued on the same linear branch through:
+
+12. `4ba9e76` = `chore(closeout): finish repo-side convergence (#9)`
+13. `cfc5d01` = `[codex] ship compare-preview recommendation advisory v1 (#11)`
+14. `f2e4cdf` = `[codex] preserve recommendation campaign review continuity (#12)`
+15. `00783db` = `[codex] fix recommendation broader expansion blocker pack (#13)`
+16. `8ccbf05` = `[codex] fix recommendation live lane follow-through (#15)`
 
 The dated overlay remains the place to read the original `<= 8` hard-cut snapshot without treating
 that older count as today's truth.
@@ -86,6 +95,7 @@ This history must stay free of:
 ## P0 GitHub Configuration Re-landed
 
 - branch protection on `main`
+- required signed commits on `main`
 - Discussions enabled
 - GitHub Pages configured for workflow publishing
 - labels cloned back onto the rebuilt repo
@@ -123,8 +133,8 @@ The following statements are historical hard-cut facts, not current-live facts:
 
 - `<= 8` commits on `main`
 - inactive social preview custom image
-- any overlay wording that still speaks from the first rebuilt snapshot rather than the current
-  `28b4fd1` head
+- any overlay wording that still speaks from the first rebuilt snapshot rather than the later
+  recommendation-and-live-lane continuation on `main`
 
 Keep those facts inside the dated overlay and hard-cut audit trail. Do not reuse them as the
 current repo-side verdict.

@@ -111,7 +111,7 @@ Current live narrowing for the next honest breadth attempt:
 - the best current next family is still the `safeway + target` fairlife pair
 - the Target live adapter path for `https://www.target.com/p/fairlife-lactose-free-2-chocolate-milk-52-fl-oz/-/A-17093199` now succeeds again with a fresh self-test (`Title = Fairlife Lactose-Free 2% Chocolate Milk - 52 fl oz`, `Price = 5.39`)
 - the Safeway live Playwright path for `https://www.safeway.com/shop/product-details.960127167.html` still captures an Incapsula block page instead of the real PDP, even though raw HTTP still reaches the product page (`page_blocked = incapsula`, `json_ld = skipped: block page`)
-- there is currently no live DealWatch-owned dedicated Chrome lane under `~/.cache/dealwatch/browser/chrome-user-data`, so this runbook should treat "generate a new native family right now" as externally blocked on this machine unless Safeway stops returning the bot wall or a separate repo-owned session lane produces a provably green automated fetch path
+- if there is no currently attachable DealWatch-owned dedicated Chrome lane under `~/.cache/dealwatch/browser/chrome-user-data`, this runbook should treat "generate a new native family right now" as externally blocked on this machine until a repo-owned session lane is available again
 
 Use the runtime-only path when you explicitly want to skip the seeded starter lab:
 
@@ -327,7 +327,7 @@ The current best candidate pair remains Safeway + Target fairlife:
 
 - Target now has a fresh repo-side live parse proof again
 - Safeway still returns an Incapsula block page on the automated Playwright path
-- the current machine still has no live DealWatch-owned dedicated Chrome lane under `~/.cache/dealwatch/browser/chrome-user-data`
+- the current machine may still lack an attachable DealWatch-owned dedicated Chrome lane under `~/.cache/dealwatch/browser/chrome-user-data`; confirm lane availability fresh instead of assuming one way or the other from an older report
 
 ## Troubleshooting
 

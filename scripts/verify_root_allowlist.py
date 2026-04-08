@@ -23,6 +23,7 @@ ALLOWED_ROOT_ENTRIES = {
     ".env.production.example",
     ".git",
     ".gitallowed",
+    ".gitleaks.toml",
     ".github",
     ".gitignore",
     ".gitleaksignore",
@@ -68,6 +69,7 @@ ALLOWED_ROOT_ENTRIES = {
     "tests",
     "uv.lock",
     "assets",
+    "browser-extension",
 }
 LOCAL_ONLY_PREFIXES = {
     ".agents",

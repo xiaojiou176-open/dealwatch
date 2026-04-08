@@ -43,8 +43,32 @@ import {
   type CompareGroupFormState,
 } from "./compare/sections";
 
+function readComparePrefillFromUrl(): { rawUrls: string; used: boolean } {
+  if (typeof window === "undefined") {
+    return { rawUrls: defaultUrls, used: false };
+  }
+
+  const current = new URL(window.location.href);
+  const batch = current.searchParams.get("dealwatch_submitted_urls");
+  const single = current.searchParams.get("dealwatch_submitted_url");
+  const raw = batch ?? single;
+  if (!raw) {
+    return { rawUrls: defaultUrls, used: false };
+  }
+
+  const values = raw
+    .split(/[\n,]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+  return {
+    rawUrls: values.join("\n"),
+    used: values.length > 0,
+  };
+}
+
 export function ComparePage() {
   const { locale, t } = useI18n();
+  const [{ rawUrls: initialRawUrls, used: usedPrefill }] = useState(() => readComparePrefillFromUrl());
   const compareSchema = useMemo(() => buildCompareSchema(), []);
   const createGroupSchema = useMemo(() => buildCreateGroupSchema(), []);
   const mutation = useComparePreview();
@@ -53,7 +77,7 @@ export function ComparePage() {
   const createEvidencePackageMutation = useCreateCompareEvidencePackage();
 
   const [zipCode, setZipCode] = useState("98004");
-  const [rawUrls, setRawUrls] = useState(defaultUrls);
+  const [rawUrls, setRawUrls] = useState(initialRawUrls);
   const [error, setError] = useState("");
   const [groupError, setGroupError] = useState("");
   const [evidenceError, setEvidenceError] = useState("");
@@ -91,6 +115,16 @@ export function ComparePage() {
       notificationsEnabled: settingsQuery.data.notificationsEnabled,
     }));
   }, [settingsQuery.data]);
+
+  useEffect(() => {
+    if (!usedPrefill || typeof window === "undefined") {
+      return;
+    }
+    const current = new URL(window.location.href);
+    current.searchParams.delete("dealwatch_submitted_url");
+    current.searchParams.delete("dealwatch_submitted_urls");
+    window.history.replaceState({}, "", `${current.pathname}${current.search}${current.hash}`);
+  }, [usedPrefill]);
 
   useEffect(() => {
     if (typeof window === "undefined") {

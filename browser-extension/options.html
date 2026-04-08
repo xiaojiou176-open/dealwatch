@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>DealWatch Companion Options</title>
+    <link rel="stylesheet" href="./options.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <p class="eyebrow">DealWatch Companion</p>
+      <h1>Configure the local runtime URL</h1>
+      <p class="summary">
+        Keep the companion pointed at the local DealWatch app that hosts the compare flow.
+      </p>
+
+      <label for="base-url">Local app URL</label>
+      <input id="base-url" type="url" spellcheck="false" />
+      <p class="hint">Default: <code>http://127.0.0.1:5173</code></p>
+
+      <div class="actions">
+        <button id="save" type="button">Save</button>
+        <button id="reset" type="button" class="secondary">Reset</button>
+      </div>
+
+      <p id="status" class="status"></p>
+    </main>
+
+    <script type="module" src="./options.js"></script>
+  </body>
+</html>
