@@ -58,7 +58,7 @@ _CORRELATION_ID_VAR: Final[contextvars.ContextVar[str]] = contextvars.ContextVar
 #########################################################
 class Settings(BaseSettings):
     DB_PATH: Path = Field(default=DEFAULT_DB_PATH)
-    DATABASE_URL: str = "postgresql+psycopg://dealwatch:dealwatch@localhost:5432/dealwatch"
+    DATABASE_URL: str = "postgresql+psycopg://dealwatch:dealwatch@localhost:15432/dealwatch"
     RUNS_DIR: Path = Field(default=DEFAULT_RUNS_DIR)
     REPORTS_DIR: Path = Field(default=DEFAULT_REPORTS_DIR)
     STORAGE_STATE_DIR: Path = Field(default=DEFAULT_STORAGE_STATE_DIR)

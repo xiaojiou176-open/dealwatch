@@ -334,7 +334,7 @@ async def test_init_product_database_uses_migrations_for_postgres(monkeypatch) -
     monkeypatch.setattr(session_module, "run_product_migrations", _fake_upgrade)
     await session_module.init_product_database(
         Settings(
-            DATABASE_URL="postgresql+psycopg://dealwatch:dealwatch@localhost:5432/dealwatch",
+            DATABASE_URL="postgresql+psycopg://dealwatch:dealwatch@localhost:15432/dealwatch",
             PRODUCT_AUTO_CREATE_SCHEMA=False,
         )
     )

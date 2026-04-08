@@ -6,13 +6,13 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-14213d.svg)](./LICENSE)
 [![Release](https://img.shields.io/github/v/release/xiaojiou176-open/dealwatch?display_name=tag)](https://github.com/xiaojiou176-open/dealwatch/releases)
 
-**Compare first. Understand the grocery price decision faster.**
+**Compare the aisle before you commit to one cart.**
 
-DealWatch is an AI-enhanced, compare-first grocery price intelligence product. It compares grocery product URLs across stores, turns the right candidate into a watch task or compare-aware watch group, and tracks listed price, cashback-adjusted price, health, and alerts from one control cabin.
+DealWatch turns “which grocery URL is actually the right target?” into one product-shaped loop: compare candidate URLs first, keep cross-store context alive, then carry the right row into a watch task or compare-aware watch group with proof, effective-price history, and alert state attached.
 
-The AI layer is real, but intentionally narrow: DealWatch uses AI-assisted explanations for compare decisions, watch-group decisions, and recovery guidance while keeping deterministic product truth in charge. The local runtime Compare Preview flow now also carries a deterministic-first recommendation card, but it stays compare-scoped, abstention-aware, and intentionally does not issue `buy_now`. It is not a hosted SaaS, a generic chat bot, or an autonomous buying agent.
+The public boundary stays strict on purpose: DealWatch is local-first, compare-first, and evidence-first. It is not a hosted SaaS, not a generic shopping chatbot, and not an autonomous buying agent. AI helps explain compare, watch-group, and recovery decisions, but deterministic product truth still leads.
 
-[Start Here](#start-here) · [Compare Preview](https://xiaojiou176-open.github.io/dealwatch/compare-preview.html#sample-compare-demo) · [Proof](https://xiaojiou176-open.github.io/dealwatch/proof.html) · [Quick Start](https://xiaojiou176-open.github.io/dealwatch/quick-start.html) · [Builders](https://xiaojiou176-open.github.io/dealwatch/builders.html) · [Comparison](https://xiaojiou176-open.github.io/dealwatch/compare-vs-tracker.html) · [Releases](https://github.com/xiaojiou176-open/dealwatch/releases/latest)
+[Try the Sample Compare](https://xiaojiou176-open.github.io/dealwatch/compare-preview.html#sample-compare-demo) · [See the Proof](https://xiaojiou176-open.github.io/dealwatch/proof.html) · [Run Local Quick Start](https://xiaojiou176-open.github.io/dealwatch/quick-start.html) · [Builder Route](https://xiaojiou176-open.github.io/dealwatch/builders.html) · [Releases](https://github.com/xiaojiou176-open/dealwatch/releases/latest)
 
 ![DealWatch control cabin brand bridge showing compare preview, artifact evidence, and notification surfaces](./assets/social/social-preview-1280x640.png)
 
@@ -22,11 +22,11 @@ The first public screen below is the actual Compare Preview evidence surface, us
 
 ## Start Here
 
-Recommended path for most visitors:
+Recommended first path for most visitors:
 
 - `Compare Preview` -> `Proof` -> `Quick Start`
-- `Builders` is the specialist route once the product story is already clear and you specifically
-  need the read-only agent/client surface. It is not the default first door.
+- `Builders` only after the product story is already clear and you specifically need the
+  read-only agent/client surface
 
 Choose the first door that matches your real goal:
 
@@ -41,12 +41,12 @@ If you need the next most useful follow-up after that first door:
 
 ## Public Entry Points
 
-Most visitors should follow this order:
+Most visitors should follow one short sequence:
 
 - `Compare Preview` to understand the product shape
 - `Proof` to verify the claims and boundaries
-- `Quick Start` when the product story is clear and you want your own URLs
-- `Builders` only if your real job is wiring an agent/client against the read-only decision surface
+- `Quick Start` when you want your own URLs in the local runtime
+- `Builders` only when your real job is wiring an agent/client against the read-only decision surface
 
 ### Three First-Run Doors
 

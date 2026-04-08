@@ -39,7 +39,7 @@ def test_validate_runtime_accepts_complete_render_payload() -> None:
 
 def test_validate_runtime_rejects_placeholders() -> None:
     payload = {
-        "DATABASE_URL": "postgresql+psycopg://dealwatch:dealwatch@localhost:5432/dealwatch",
+        "DATABASE_URL": "postgresql+psycopg://dealwatch:dealwatch@localhost:15432/dealwatch",
         "OWNER_EMAIL": "owner@example.com",
         "OWNER_BOOTSTRAP_TOKEN": "change-me",
         "APP_BASE_URL": "http://localhost:8000",
@@ -63,7 +63,7 @@ def test_validate_runtime_rejects_placeholders() -> None:
 
 def test_validate_runtime_accepts_ci_smoke_payload() -> None:
     payload = {
-        "DATABASE_URL": "postgresql+psycopg://dealwatch:dealwatch@127.0.0.1:5432/dealwatch",
+        "DATABASE_URL": "postgresql+psycopg://dealwatch:dealwatch@127.0.0.1:15432/dealwatch",
         "OWNER_EMAIL": "owner@example.com",
         "OWNER_BOOTSTRAP_TOKEN": "smoke-token",
         "APP_BASE_URL": "http://127.0.0.1:8000",
@@ -83,7 +83,7 @@ def test_validate_runtime_accepts_ci_smoke_payload() -> None:
 
 def test_validate_runtime_accepts_startup_payload() -> None:
     payload = {
-        "DATABASE_URL": "postgresql+psycopg://dealwatch:dealwatch@127.0.0.1:5432/dealwatch",
+        "DATABASE_URL": "postgresql+psycopg://dealwatch:dealwatch@127.0.0.1:15432/dealwatch",
         "OWNER_EMAIL": "owner@example.com",
         "OWNER_BOOTSTRAP_TOKEN": "change-me",
         "APP_BASE_URL": "http://127.0.0.1:8000",
@@ -109,7 +109,7 @@ def test_validate_runtime_accepts_startup_payload() -> None:
 
 def test_validate_runtime_warns_on_legacy_path_drift() -> None:
     payload = {
-        "DATABASE_URL": "postgresql+psycopg://dealwatch:dealwatch@127.0.0.1:5432/dealwatch",
+        "DATABASE_URL": "postgresql+psycopg://dealwatch:dealwatch@127.0.0.1:15432/dealwatch",
         "OWNER_EMAIL": "owner@example.com",
         "OWNER_BOOTSTRAP_TOKEN": "change-me",
         "APP_BASE_URL": "http://127.0.0.1:8000",
@@ -129,7 +129,7 @@ def test_validate_runtime_warns_on_legacy_path_drift() -> None:
 
 def test_validate_runtime_warns_on_placeholder_zip_only_when_startup_zip_is_default() -> None:
     payload = {
-        "DATABASE_URL": "postgresql+psycopg://dealwatch:dealwatch@127.0.0.1:5432/dealwatch",
+        "DATABASE_URL": "postgresql+psycopg://dealwatch:dealwatch@127.0.0.1:15432/dealwatch",
         "OWNER_EMAIL": "owner@example.com",
         "OWNER_BOOTSTRAP_TOKEN": "change-me",
         "APP_BASE_URL": "http://127.0.0.1:8000",
@@ -146,7 +146,7 @@ def test_validate_runtime_warns_on_placeholder_zip_only_when_startup_zip_is_defa
 
 def test_validate_runtime_rejects_partial_browser_profile_contract() -> None:
     payload = {
-        "DATABASE_URL": "postgresql+psycopg://dealwatch:dealwatch@127.0.0.1:5432/dealwatch",
+        "DATABASE_URL": "postgresql+psycopg://dealwatch:dealwatch@127.0.0.1:15432/dealwatch",
         "OWNER_EMAIL": "owner@example.com",
         "OWNER_BOOTSTRAP_TOKEN": "change-me",
         "APP_BASE_URL": "http://127.0.0.1:8000",
@@ -167,7 +167,7 @@ def test_validate_runtime_rejects_partial_browser_profile_contract() -> None:
 
 def test_validate_runtime_rejects_legacy_shared_chrome_root_for_dealwatch() -> None:
     payload = {
-        "DATABASE_URL": "postgresql+psycopg://dealwatch:dealwatch@127.0.0.1:5432/dealwatch",
+        "DATABASE_URL": "postgresql+psycopg://dealwatch:dealwatch@127.0.0.1:15432/dealwatch",
         "OWNER_EMAIL": "owner@example.com",
         "OWNER_BOOTSTRAP_TOKEN": "change-me",
         "APP_BASE_URL": "http://127.0.0.1:8000",
@@ -188,7 +188,7 @@ def test_validate_runtime_rejects_legacy_shared_chrome_root_for_dealwatch() -> N
 
 def test_validate_runtime_accepts_dedicated_chrome_root_contract() -> None:
     payload = {
-        "DATABASE_URL": "postgresql+psycopg://dealwatch:dealwatch@127.0.0.1:5432/dealwatch",
+        "DATABASE_URL": "postgresql+psycopg://dealwatch:dealwatch@127.0.0.1:15432/dealwatch",
         "OWNER_EMAIL": "owner@example.com",
         "OWNER_BOOTSTRAP_TOKEN": "change-me",
         "APP_BASE_URL": "http://127.0.0.1:8000",
