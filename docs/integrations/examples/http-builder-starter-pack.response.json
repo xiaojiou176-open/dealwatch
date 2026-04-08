@@ -138,6 +138,6 @@
     "claude_code_bundle": "plugins/dealwatch-builder-pack/.claude-plugin/plugin.json",
     "codex_bundle": "plugins/dealwatch-builder-pack/.codex-plugin/plugin.json",
     "claude_marketplace": ".claude-plugin/marketplace.json",
-    "codex_marketplace": ".agents/plugins/marketplace.json"
+    "codex_marketplace": "marketplace.json"
   }
 }

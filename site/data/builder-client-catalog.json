@@ -111,13 +111,13 @@
       "listing_status": "not_officially_listed",
       "repo_distribution_artifacts": [
         "plugins/dealwatch-builder-pack/.codex-plugin/plugin.json",
-        ".agents/plugins/marketplace.json",
+        "marketplace.json",
         "plugins/dealwatch-builder-pack/.mcp.json",
         "plugins/dealwatch-builder-pack/skills/dealwatch-readonly-builder/SKILL.md"
       ],
       "repo_distribution_artifact_urls": [
         "https://github.com/xiaojiou176-open/dealwatch/blob/main/plugins/dealwatch-builder-pack/.codex-plugin/plugin.json",
-        "https://github.com/xiaojiou176-open/dealwatch/blob/main/.agents/plugins/marketplace.json",
+        "https://github.com/xiaojiou176-open/dealwatch/blob/main/marketplace.json",
         "https://github.com/xiaojiou176-open/dealwatch/blob/main/plugins/dealwatch-builder-pack/.mcp.json",
         "https://github.com/xiaojiou176-open/dealwatch/blob/main/plugins/dealwatch-builder-pack/skills/dealwatch-readonly-builder/SKILL.md"
       ],

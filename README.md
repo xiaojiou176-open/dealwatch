@@ -72,7 +72,7 @@ Most visitors should follow one short sequence:
 - **Builder Starter Pack**
   Use [`docs/integrations/README.md`](./docs/integrations/README.md) when you want repo-owned example payloads, local onboarding order, starter prompts, config recipes, a copyable builder skill card, and per-client guidance for Claude Code, Codex, OpenHands, OpenCode, OpenClaw, and similar builder workflows that should stay inside the current read-only / local-first boundary.
 - **Native Plugin Bundles**
-  Use [`plugins/dealwatch-builder-pack/README.md`](./plugins/dealwatch-builder-pack/README.md), [`.claude-plugin/marketplace.json`](./.claude-plugin/marketplace.json), and [`.agents/plugins/marketplace.json`](./.agents/plugins/marketplace.json) when you want the repo-owned Claude Code and Codex package artifacts that now back the builder story. They are package candidates, not official listings.
+  Use [`plugins/dealwatch-builder-pack/README.md`](./plugins/dealwatch-builder-pack/README.md), [`.claude-plugin/marketplace.json`](./.claude-plugin/marketplace.json), and [`marketplace.json`](./marketplace.json) when you want the repo-owned Claude Code and Codex package artifacts that now back the builder story. They are package candidates, not official listings.
 - **Chrome Companion**
   Use [`browser-extension/README.md`](./browser-extension/README.md) when you want the repo-owned Chrome companion package, listing notes, and bundle build/verify scripts that leave only the Chrome Web Store dashboard submission step outside the repo.
 - **Builder Machine Frontdoor**

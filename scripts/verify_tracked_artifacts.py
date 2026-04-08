@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ALLOWED_TRACKED_FILES = {
-    ".agents/plugins/marketplace.json",
+    "marketplace.json",
 }
 FORBIDDEN_PREFIXES = (
     ".agents/",

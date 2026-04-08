@@ -80,7 +80,7 @@ _CLIENT_STARTER_SPECS: list[dict[str, Any]] = [
         "listing_status": "not_officially_listed",
         "repo_distribution_artifacts": [
             "plugins/dealwatch-builder-pack/.codex-plugin/plugin.json",
-            ".agents/plugins/marketplace.json",
+            "marketplace.json",
             "plugins/dealwatch-builder-pack/.mcp.json",
             "plugins/dealwatch-builder-pack/skills/dealwatch-readonly-builder/SKILL.md",
         ],
@@ -501,13 +501,13 @@ def build_public_builder_starter_pack_payload() -> dict[str, Any]:
                 "claude_code_bundle": "plugins/dealwatch-builder-pack/.claude-plugin/plugin.json",
                 "codex_bundle": "plugins/dealwatch-builder-pack/.codex-plugin/plugin.json",
                 "claude_marketplace": ".claude-plugin/marketplace.json",
-                "codex_marketplace": ".agents/plugins/marketplace.json",
+                "codex_marketplace": "marketplace.json",
             },
             "repo_distribution_artifact_urls": {
                 "claude_code_bundle": _github_repo_url("plugins/dealwatch-builder-pack/.claude-plugin/plugin.json"),
                 "codex_bundle": _github_repo_url("plugins/dealwatch-builder-pack/.codex-plugin/plugin.json"),
                 "claude_marketplace": _github_repo_url(".claude-plugin/marketplace.json"),
-                "codex_marketplace": _github_repo_url(".agents/plugins/marketplace.json"),
+                "codex_marketplace": _github_repo_url("marketplace.json"),
             },
             "warning": (
                 "This static builder starter pack mirrors repo-owned starter and distribution-candidate metadata "
@@ -659,6 +659,6 @@ def build_builder_starter_pack_payload() -> dict[str, Any]:
             "claude_code_bundle": "plugins/dealwatch-builder-pack/.claude-plugin/plugin.json",
             "codex_bundle": "plugins/dealwatch-builder-pack/.codex-plugin/plugin.json",
             "claude_marketplace": ".claude-plugin/marketplace.json",
-            "codex_marketplace": ".agents/plugins/marketplace.json",
+            "codex_marketplace": "marketplace.json",
         },
     }
