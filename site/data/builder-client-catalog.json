@@ -161,14 +161,14 @@
         "get_recovery_inbox",
         "get_store_onboarding_cockpit"
       ],
-      "plugin_status": "Repo-owned OpenHands skill pack with a live submission receipt. OpenHands/extensions PR #152 is open; treat the listing as review-pending until it merges.",
+      "plugin_status": "Repo-owned OpenHands skill pack. The active host line is OpenHands/extensions PR #151, which still has maintainer-requested changes; treat PR #152 as the retired predecessor, not the current listing lane.",
       "distribution_surface_kind": "official_skill_registry",
       "official_public_surface": {
         "label": "OpenHands global skill registry",
         "url": "https://docs.openhands.dev/overview/skills/public"
       },
-      "distribution_candidate": "skill_registry_submission_pending",
-      "listing_status": "submission_open",
+      "distribution_candidate": "submission_done_platform_not_accepted_yet",
+      "listing_status": "submission_done_platform_not_accepted_yet",
       "repo_distribution_artifacts": [
         "docs/integrations/skills/openhands-readonly-builder-skill.md",
         "docs/integrations/prompts/openhands-starter.md",

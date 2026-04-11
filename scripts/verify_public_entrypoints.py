@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import urlparse
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -79,6 +81,81 @@ FORBIDDEN_RELEASE_TAG_PATTERNS = (
     "/releases/tag/v",
 )
 
+FORBIDDEN_LOCAL_FIRST_HOP_SUFFIXES = {".md", ".yaml", ".yml"}
+FIRST_HOP_PAGES = (SITE_INDEX, SITE_BUILDERS)
+
+REQUIRED_FIRST_HOP_LINKS = {
+    SITE_INDEX: (
+        "./compare-preview.html#sample-compare-demo",
+        "./proof.html",
+        "./quick-start.html",
+        "./builders.html",
+    ),
+    SITE_BUILDERS: (
+        "./data/builder-client-catalog.json",
+        "./data/builder-client-starters.json",
+        "./data/builder-starter-pack.json",
+        "./data/builder-client-configs.json",
+    ),
+}
+
+
+class _HrefCollector(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.hrefs: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag != "a":
+            return
+        attr_map = dict(attrs)
+        href = attr_map.get("href")
+        if href:
+            self.hrefs.append(href)
+
+
+def _collect_hrefs(path: Path) -> list[str]:
+    collector = _HrefCollector()
+    collector.feed(path.read_text(encoding="utf-8"))
+    return collector.hrefs
+
+
+def _resolve_local_href(page_path: Path, href: str) -> Path | None:
+    parsed = urlparse(href)
+    if parsed.scheme or parsed.netloc or not parsed.path or parsed.path.startswith("#"):
+        return None
+    return (page_path.parent / parsed.path).resolve()
+
+
+def _assert_first_hop_targets(path: Path, findings: list[str]) -> None:
+    hrefs = _collect_hrefs(path)
+    href_set = set(hrefs)
+    site_root = (ROOT / "site").resolve()
+
+    for expected in REQUIRED_FIRST_HOP_LINKS[path]:
+        if expected not in href_set:
+            findings.append(f"{path.relative_to(ROOT)} missing first-hop link: {expected}")
+
+    for href in hrefs:
+        target = _resolve_local_href(path, href)
+        if target is None:
+            continue
+        try:
+            target.relative_to(site_root)
+        except ValueError:
+            findings.append(
+                f"{path.relative_to(ROOT)} points outside site root with local href: {href}"
+            )
+            continue
+        if target.suffix in FORBIDDEN_LOCAL_FIRST_HOP_SUFFIXES:
+            findings.append(
+                f"{path.relative_to(ROOT)} local first-hop should not target source docs: {href}"
+            )
+        if not target.exists():
+            findings.append(
+                f"{path.relative_to(ROOT)} local first-hop target is missing: {href}"
+            )
+
 
 def _assert_readme_start_here_order(text: str, findings: list[str]) -> None:
     try:
@@ -112,6 +189,9 @@ def main() -> int:
                 )
         if path == README:
             _assert_readme_start_here_order(text, findings)
+
+    for path in FIRST_HOP_PAGES:
+        _assert_first_hop_targets(path, findings)
 
     if findings:
         print("Public entrypoint verification failed:")

@@ -100,6 +100,39 @@ jobs:
       - name: Verify Python package build
         run: uv run python -m build --sdist --wheel
 
+      - name: Build browser companion bundle artifact
+        run: |
+          python scripts/build_browser_extension_bundle.py
+          python - <<'PY'
+          import json
+          import zipfile
+          from pathlib import Path
+
+          root = Path.cwd()
+          manifest = json.loads((root / "browser-extension" / "manifest.json").read_text(encoding="utf-8"))
+          version = manifest["version"]
+          bundle_dir = root / "dist" / "browser-extension" / f"dealwatch-companion-{version}"
+          archive = root / "dist" / "browser-extension" / f"dealwatch-companion-{version}.zip"
+
+          if not bundle_dir.exists():
+              raise SystemExit(f"bundle directory missing: {bundle_dir.relative_to(root)}")
+          if not archive.exists():
+              raise SystemExit(f"bundle archive missing: {archive.relative_to(root)}")
+
+          required = {"manifest.json", "background.js", "popup.html", "popup.js"}
+          with zipfile.ZipFile(archive) as zf:
+              names = set(zf.namelist())
+          missing = sorted(required - names)
+          if missing:
+              raise SystemExit(
+                  "bundle archive missing required files: "
+                  + ", ".join(missing)
+              )
+
+          print(f"browser_extension_bundle_dir={bundle_dir.relative_to(root)}")
+          print(f"browser_extension_bundle_zip={archive.relative_to(root)}")
+          PY
+
       - name: Guard legacy names
         run: |
           ! rg -n '\btracker\b|src/tracker|python -m tracker|var/' README.md AGENTS.md CHANGELOG.md CONTRIBUTING.md SECURITY.md SUPPORT.md Dockerfile docker-compose.yml scripts src tests .github

@@ -79,8 +79,8 @@
             <a class="button-secondary" href="https://github.com/xiaojiou176-open/dealwatch/blob/main/docs/roadmaps/dealwatch-api-mcp-substrate-phase1.md" data-i18n="site.buildersPage.heroContractCta">Read the phase-1 contract</a>
             <a class="button-secondary" href="./data/builder-client-catalog.json" data-i18n="site.buildersPage.heroSecondaryCta">Open the client catalog</a>
           </div>
-          <p class="small-note" data-i18n="site.buildersPage.heroNote">Human path first: builder pack, contract, then runtime. If you still need the product pitch or the evidence trail, go back to Compare Preview and Proof first. Native Claude/Codex bundle candidates and listing-prep inputs only come after the route is clear, and none of them mean an official listing exists yet.</p>
-          <p class="small-note" data-i18n="site.buildersPage.jumpSummary">Both paths still stop at the same read-only, local-first boundary. No hosted control plane, no published listing, and no write-side MCP promise.</p>
+          <p class="small-note" data-i18n="site.buildersPage.heroNote">Human path first: builder pack, contract, then runtime. If you still need the product pitch or the evidence trail, go back to Compare Preview and Proof first. Native Claude/Codex bundle candidates and listing-prep inputs only come after the route is clear. Public proof is intentionally mixed: PyPI, the Official MCP Registry, and OpenClaw's ClawHub skill are live, while OpenHands and MCP.so still wait on host acceptance.</p>
+          <p class="small-note" data-i18n="site.buildersPage.jumpSummary">Both paths still stop at the same read-only, local-first boundary. No hosted control plane, no write-side MCP promise, and no claim that every host listing is already live.</p>
           <div class="micro-links">
             <a href="./data/builder-client-catalog.json" data-i18n="site.buildersPage.catalogLink">Static client catalog JSON</a>
             <a href="./data/builder-client-starters.json" data-i18n="site.buildersPage.mirrorStartersLink">Static client starters JSON</a>
@@ -286,7 +286,7 @@ PYTHONPATH=src uv run python -m dealwatch.mcp serve --transport stdio</pre>
             </tbody>
           </table>
           <p data-i18n="site.buildersPage.recipeExportSummary">Need a machine-readable handoff? The same builder page now points to both per-client and all-clients config export surfaces for CLI, HTTP, and MCP consumers.</p>
-          <p class="small-note" data-i18n="site.buildersPage.recipeNote">Verified wrapper syntax now points back to the same repo-owned builder pack and local-first contract, but it still does not prove a published listing, hosted control plane, or write-side MCP.</p>
+          <p class="small-note" data-i18n="site.buildersPage.recipeNote">Verified wrapper syntax now points back to the same repo-owned builder pack and local-first contract, but it still does not prove that every host listing is accepted, that a hosted control plane exists, or that write-side MCP is available.</p>
           <div class="cta-row">
             <a class="button-secondary" href="https://github.com/xiaojiou176-open/dealwatch/blob/main/docs/integrations/config-recipes.md" data-i18n="site.buildersPage.recipeCta">Open the recipe ledger with source links</a>
           </div>
@@ -309,7 +309,7 @@ PYTHONPATH=src uv run python -m dealwatch.mcp serve --transport stdio</pre>
           </div>
           <div class="card">
             <h3 data-i18n="site.buildersPage.distributionMarketplaceTitle">Native bundle candidates</h3>
-            <p data-i18n="site.buildersPage.distributionMarketplaceSummary">Claude Code and Codex now also have repo-owned native bundle artifacts in the shared builder pack. OpenHands has a submitted OpenHands/extensions receipt, OpenCode remains an ecosystem-listing candidate, and OpenClaw now has a live ClawHub skill.</p>
+            <p data-i18n="site.buildersPage.distributionMarketplaceSummary">Claude Code and Codex now also have repo-owned native bundle artifacts in the shared builder pack. OpenHands is active on `OpenHands/extensions#151` with maintainer-requested changes, `#152` is the retired predecessor, OpenCode remains an ecosystem-listing candidate, and OpenClaw is live on ClawHub.</p>
             <div class="cta-row">
               <a class="button-secondary" href="https://github.com/xiaojiou176-open/dealwatch/tree/main/plugins/dealwatch-builder-pack" data-i18n="site.buildersPage.distributionSocialCta">Open the shared bundle</a>
               <a class="button-secondary" href="https://github.com/xiaojiou176-open/dealwatch/blob/main/docs/integrations/README.md#official-distribution-reality-by-client" data-i18n="site.buildersPage.distributionProofCta">Open the distribution matrix</a>
@@ -347,7 +347,7 @@ PYTHONPATH=src uv run python -m dealwatch.mcp serve --transport stdio</pre>
         <div class="faq-grid">
           <div class="faq-item">
             <h3 data-i18n="site.buildersPage.boundaryPluginTitle">Bundle candidates, not official listings</h3>
-            <p data-i18n="site.buildersPage.boundaryPluginSummary">DealWatch now ships repo-owned builder-pack materials for every client, native bundle candidates for Claude Code and Codex, and listing-prep inputs for the broader ecosystem. That still does not mean any official marketplace or registry listing already exists.</p>
+            <p data-i18n="site.buildersPage.boundaryPluginSummary">DealWatch now ships repo-owned builder-pack materials for every client, native bundle candidates for Claude Code and Codex, and listing-prep inputs for the broader ecosystem. Some public proof is already live (PyPI, the Official MCP Registry, and OpenClaw's ClawHub skill), while OpenHands and MCP.so are still submitted but not yet accepted, and the Chrome companion remains not published.</p>
           </div>
           <div class="faq-item">
             <h3 data-i18n="site.buildersPage.boundaryHostedTitle">No hosted control plane</h3>

@@ -323,6 +323,71 @@ def test_public_comparison_page_switches_locale_and_keeps_assets() -> None:
                 server.server_close()
 
 
+def test_public_index_page_primary_cta_routes_to_compare_preview() -> None:
+    from playwright.sync_api import sync_playwright
+
+    root = Path(__file__).resolve().parents[1]
+    site_root = root / "site"
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+        temp_path = Path(temp_dir)
+        shutil.copytree(site_root, temp_path, dirs_exist_ok=True)
+        server, base_url = _start_http_server(temp_path)
+        try:
+            with sync_playwright() as playwright:
+                browser = playwright.chromium.launch()
+                page = browser.new_page(viewport={"width": 1440, "height": 1400})
+                page.goto(f"{base_url}/index.html", wait_until="networkidle")
+
+                assert "Compare the aisle before you commit to one cart." in page.locator("h1").inner_text()
+                page.get_by_role("link", name="Open the sample compare").first.click()
+                page.wait_for_url(f"{base_url}/compare-preview.html#sample-compare-demo")
+
+                assert "Check the product target before you create durable state." in page.locator("h1").inner_text()
+                assert page.locator("#sample-compare-demo").is_visible()
+                browser.close()
+        except PlaywrightError as exc:
+            pytest.skip(f"Playwright unavailable: {exc}")
+        finally:
+            with contextlib.suppress(Exception):
+                server.shutdown()
+            with contextlib.suppress(Exception):
+                server.server_close()
+
+
+def test_public_builders_page_catalog_cta_routes_to_json_surface() -> None:
+    from playwright.sync_api import sync_playwright
+
+    root = Path(__file__).resolve().parents[1]
+    site_root = root / "site"
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+        temp_path = Path(temp_dir)
+        shutil.copytree(site_root, temp_path, dirs_exist_ok=True)
+        server, base_url = _start_http_server(temp_path)
+        try:
+            with sync_playwright() as playwright:
+                browser = playwright.chromium.launch()
+                page = browser.new_page(viewport={"width": 1440, "height": 1400})
+                page.goto(f"{base_url}/builders.html", wait_until="networkidle")
+
+                assert "Start with the human path, then let the machine path mirror it." in page.locator("h1").inner_text()
+                page.get_by_role("link", name="Open the client catalog").first.click()
+                page.wait_for_url(f"{base_url}/data/builder-client-catalog.json")
+
+                body = page.locator("body").inner_text().lower()
+                assert "codex" in body
+                assert "openhands" in body
+                browser.close()
+        except PlaywrightError as exc:
+            pytest.skip(f"Playwright unavailable: {exc}")
+        finally:
+            with contextlib.suppress(Exception):
+                server.shutdown()
+            with contextlib.suppress(Exception):
+                server.server_close()
+
+
 def test_webui_compare_locale_validation_follows_locale_switch() -> None:
     from playwright.sync_api import sync_playwright
 
