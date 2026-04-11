@@ -14,6 +14,40 @@
     "summary": "先从 Compare Preview 开始，把最合适的候选保留为 watch task 或 compare-aware watch group，再从同一个控制舱查看运行证据、AI 辅助解释、恢复指引，以及门店和运维信息。",
     "productShapeLabel": "当前产品形态",
     "productShapeValue": "URL -> Compare Preview -> WatchTask / WatchGroup -> 运行记录 -> 恢复 / 提醒 / 门店运维",
+    "primaryPathLabel": "主路线",
+    "primaryPathCompare": "先比价",
+    "primaryPathDecision": "读懂决策看板",
+    "primaryPathCommit": "再提交正确的监控状态",
+    "primaryNavLabel": "主入口",
+    "secondaryNavLabel": "上下文入口",
+    "secondaryHint": "只有当你打开或创建了任务 / 分组，详情入口才会出现。",
+    "focus": {
+      "proofLabel": "证据路径",
+      "compare": {
+        "label": "当前重点",
+        "headline": "先把 basket 比干净，再决定是否进入 watch state",
+        "summary": "先比较至少两条商品 URL，让 decision board 说清楚谁更强、哪里还不稳，再决定是建 group 还是只保留证据。",
+        "proofPath": "先保存本地 evidence package；只有在 basket 足够诚实时，才继续创建 runtime package 或 watch group。"
+      },
+      "watchNew": {
+        "label": "当前重点",
+        "headline": "把已确认的一行变成可执行 watch state",
+        "summary": "这里只有在 compare 结果已经站住脚之后才值得继续。先把标题、候选键和提醒人填对，再提交。",
+        "proofPath": "先保留 compare 包，再把单行 watch task 当成最后一步。"
+      },
+      "watchList": {
+        "label": "当前重点",
+        "headline": "先看哪些 watch 还需要人确认，不要直接继续加新 URL",
+        "summary": "如果已有 watch 或 group 在排队，就先回到它们的证据和冷却状态，再决定是否重新 compare。",
+        "proofPath": "watch list 只吃已经站稳的 compare 结果，不替代 compare 本身。"
+      },
+      "settings": {
+        "label": "当前重点",
+        "headline": "把提醒节奏调成可信执行面",
+        "summary": "这里不是主入口，但它决定后面的提醒有没有噪音。先确认收件人和冷却时间，再回 compare。",
+        "proofPath": "设置页负责守纪律，不负责制造结论。"
+      }
+    },
     "nav": {
       "compare": "比价",
       "watchList": "监控列表",
@@ -31,7 +65,7 @@
     "form": {
       "eyebrow": "比价预览",
       "title": "先检查跨门店 URL 候选，再决定是否创建任务或分组",
-      "summary": "把这个页面理解成产品的“收件台”。它帮助你判断这些候选应该进入同一个 compare-aware basket、拆成单项任务，还是因为证据仍然混杂而先留在复核区。",
+      "summary": "先把候选 URL 贴进来，让 DealWatch 规范化这个篮子，再根据决策看板判断它该继续留在复核区、变成单任务，还是升级成 compare-aware group。",
       "zipCode": "邮编",
     "productUrls": "商品链接",
     "productUrlsHelp": "每行填写一个 URL。Compare Preview 接受 2 到 10 个非空链接。",
@@ -44,6 +78,57 @@
       "maxUrls": "最多输入十个商品 URL。"
     }
   },
+    "route": {
+      "eyebrow": "首个成功路径",
+      "title": "第一屏要围绕一个决策，而不是六扇门同时喊你",
+      "summary": "把这里理解成一张有向导的工作台：先比较候选，再读决策看板，最后只提交证据真正支持的那种 watch 状态。",
+      "stepCompareTitle": "先比较这个篮子",
+      "stepCompareSummary": "先贴 URL，让产品告诉你哪些行真的属于同一个候选集合。",
+      "stepDecisionTitle": "再读决策看板",
+      "stepDecisionSummary": "先看 headline、风险摘要和最强配对，再决定要不要创建长期状态。",
+      "stepCommitTitle": "最后提交正确状态",
+      "stepCommitSummary": "如果只有一行足够清楚，就建单任务；只有当整个篮子真的站得住，才建 watch group。"
+    },
+    "execution": {
+      "lane": {
+        "label": "执行路线",
+        "title": {
+          "idle": "下一步：先跑出 compare 结果",
+          "ready": "下一步：按 decision board 行动"
+        },
+        "summary": {
+          "idle": "先提交至少两条 URL，让 compare 结果把 basket 里最强的一行和最该警惕的风险说清楚。",
+          "ready": "别直接跳去建 watch。先看 decision board 推荐的是继续 review、建 group，还是只保留证据。"
+        }
+      },
+      "proof": {
+        "label": "证明路线",
+        "title": {
+          "empty": "证据还没落袋",
+          "local": "证据已本地保存，仍可继续加固",
+          "runtime": "证据已进入 runtime 包"
+        },
+        "summary": {
+          "empty": "先把 evidence package 存下来，再谈 commit。这样你回头复核时不会只剩一张好看的页面。",
+          "local": "本地 evidence package 已保存。下一步只有在这篮子还站得住时，才值得继续铸成 runtime 包。",
+          "runtime": "这轮 compare 已经有 runtime-backed proof，可以带着清楚的边界继续往下走。"
+        },
+        "saveLabel": "先保存本地证据",
+        "runtimeLabel": "再铸成 runtime 包"
+      },
+      "commit": {
+        "label": "提交路线",
+        "title": {
+          "idle": "还不到 commit 成 group 的时机",
+          "ready": "可以考虑进入 compare-aware watch group"
+        },
+        "summary": {
+          "idle": "现在更像 review lane，不像 commit lane。先把支持度不足的行留在证据层，不要急着变成长期 watch state。",
+          "ready": "当前已有 {{count}} 个 group-ready 行，可以进入 watch group builder，但前提还是证据先站稳。"
+        },
+        "jumpLabel": "查看 commit 入口"
+      }
+    },
     "decision": {
       "eyebrow": "决策看板",
       "recommendedNextStep": "推荐下一步",
@@ -911,6 +996,14 @@
       "heroKicker": "以 compare-first 为核心的价格情报",
       "heroTitle": "先比较整条货架，再决定放进哪辆购物车。",
       "heroSummary": "DealWatch 最强的地方，是在你保存 watch 之前就开始帮你做决策：先比较候选 URL，保留跨门店篮子，再把真正值得长期跟踪的那一行带进本地运行栈，同时保留 proof、到手价上下文和提醒历史。",
+      "routeCompareTitle": "1. Compare Preview",
+      "routeCompareSummary": "先看固定样例把产品讲明白，再决定要不要安装任何东西。",
+      "routeProofTitle": "2. Proof",
+      "routeProofSummary": "先核对验证链路，让这个故事像拿出了证据，而不是只会宣传。",
+      "routeQuickStartTitle": "3. Quick Start",
+      "routeQuickStartSummary": "只有当 compare 故事已经讲清楚时，才进入本地运行栈。",
+      "routeBuildersTitle": "专业路线",
+      "routeBuildersSummary": "Builders 继续留给 Codex、Claude Code 等只读 client 接线场景，不抢首页主线。",
       "heroPrimaryCta": "打开样例 compare",
       "heroSecondaryCta": "查看 proof 链路",
       "heroBuilderCta": "运行本地产品",

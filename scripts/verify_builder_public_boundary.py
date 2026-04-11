@@ -6,6 +6,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+CONFLICT_MARKER_PREFIXES = ("<<<<<<< ", ">>>>>>> ")
+CONFLICT_MARKER_SEPARATOR = "======="
 
 TARGET_GLOBS = (
     "README.md",
@@ -57,6 +59,21 @@ OVERCLAIM_PATTERNS = (
     re.compile(r"\bruntime[- ]base\b", re.I),
     re.compile(r"\bdealwatch runs on (?:codex|claude code|openhands|opencode|openclaw)\b", re.I),
     re.compile(r"\bbuilt on (?:codex|claude code|openhands|opencode|openclaw)\b", re.I),
+)
+
+RETIRED_PREDECESSOR_PATTERNS = (
+    re.compile(r"OpenHands/extensions#152\b"),
+    re.compile(r"OpenHands/extensions/pull/152\b"),
+)
+
+ALLOWED_RETIRED_PREDECESSOR_CONTEXT_MARKERS = (
+    "retired predecessor",
+    "closed predecessor",
+    "not the current line",
+    "not current line",
+    "not the active line",
+    "retired line",
+    "closed line",
 )
 
 DISALLOWED_EXACT_PHRASES_BY_GLOB = {
@@ -122,7 +139,15 @@ def collect_findings() -> list[str]:
         relative = path.relative_to(ROOT).as_posix()
         text = path.read_text(encoding="utf-8")
         lines = text.splitlines() or [text]
+        has_conflict_block = any(
+            line.lstrip().startswith(prefix) for line in lines for prefix in CONFLICT_MARKER_PREFIXES
+        )
         for lineno, line in enumerate(lines, start=1):
+            stripped = line.lstrip()
+            if any(stripped.startswith(prefix) for prefix in CONFLICT_MARKER_PREFIXES):
+                findings.append(f"{relative}:{lineno} contains unresolved conflict marker")
+            elif has_conflict_block and stripped == CONFLICT_MARKER_SEPARATOR:
+                findings.append(f"{relative}:{lineno} contains unresolved conflict marker")
             for pattern in OVERCLAIM_PATTERNS:
                 if not pattern.search(line):
                     continue
@@ -132,6 +157,17 @@ def collect_findings() -> list[str]:
                 findings.append(
                     f"{relative}:{lineno} contains builder public overclaim pattern: {pattern.pattern}"
                 )
+            for pattern in RETIRED_PREDECESSOR_PATTERNS:
+                if pattern.search(line):
+                    normalized_line = _normalize_text(line)
+                    if any(
+                        marker in normalized_line
+                        for marker in ALLOWED_RETIRED_PREDECESSOR_CONTEXT_MARKERS
+                    ):
+                        continue
+                    findings.append(
+                        f"{relative}:{lineno} still references retired OpenHands predecessor: {pattern.pattern}"
+                    )
 
         required = REQUIRED_PHRASES.get(relative)
         if required:

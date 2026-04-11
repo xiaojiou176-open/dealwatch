@@ -14,6 +14,40 @@
     "summary": "Start with Compare Preview, keep the right candidate alive as a watch task or compare-aware watch group, then use runtime evidence, AI-assisted explanations, recovery guidance, and store/operator surfaces from one place.",
     "productShapeLabel": "Current Product Shape",
     "productShapeValue": "URL -> Compare Preview -> WatchTask / WatchGroup -> Runs -> Recovery / Alerts / Store Ops",
+    "primaryPathLabel": "Primary flow",
+    "primaryPathCompare": "Compare",
+    "primaryPathDecision": "Read the decision board",
+    "primaryPathCommit": "Commit the right watch state",
+    "primaryNavLabel": "Primary lanes",
+    "secondaryNavLabel": "Context lane",
+    "secondaryHint": "Detail views appear after you open or create a task or group.",
+    "focus": {
+      "proofLabel": "Proof path",
+      "compare": {
+        "label": "Current focus",
+        "headline": "Cleanly compare the basket before moving anything into watch state",
+        "summary": "Compare at least two product URLs first, let the decision board explain what is strong and what is still shaky, then decide between a watch group or evidence-only review.",
+        "proofPath": "Save a local evidence package first; only move into runtime packages or watch groups once the basket is honest enough."
+      },
+      "watchNew": {
+        "label": "Current focus",
+        "headline": "Turn one confirmed row into executable watch state",
+        "summary": "This lane only matters after the compare result is honest enough. Confirm the title, candidate key, and recipient before you commit.",
+        "proofPath": "Keep the compare package first, then treat the one-row watch task as the final move."
+      },
+      "watchList": {
+        "label": "Current focus",
+        "headline": "Review which watches still need confirmation before adding more URLs",
+        "summary": "If watches or groups are already queued, return to their evidence and cooldown state before starting another compare run.",
+        "proofPath": "The watch list only consumes compare results that already stand on solid evidence; it does not replace compare itself."
+      },
+      "settings": {
+        "label": "Current focus",
+        "headline": "Tune the reminder cadence into a trustworthy execution surface",
+        "summary": "This is not the primary lane, but it decides whether later alerts become noise. Confirm the recipient and cooldown before you go back to compare.",
+        "proofPath": "Settings enforce discipline; they do not create the decision itself."
+      }
+    },
     "nav": {
       "compare": "Compare",
       "watchList": "Watches",
@@ -31,7 +65,7 @@
     "form": {
       "eyebrow": "Compare preview",
       "title": "Inspect cross-store URL candidates before you create a task or group",
-      "summary": "Think of this page as the intake desk for the product. It helps you decide whether the rows belong in one compare-aware basket, should become a single task, or should stay in review because the evidence is still mixed.",
+      "summary": "Start small: paste the candidate URLs, let DealWatch normalize the basket, then use the decision board to decide whether this should stay in review, become one task, or become a compare-aware group.",
       "zipCode": "ZIP Code",
     "productUrls": "Product URLs",
     "productUrlsHelp": "Use one URL per line. The compare preview accepts 2 to 10 non-empty URLs.",
@@ -44,6 +78,57 @@
       "maxUrls": "Enter no more than ten product URLs."
     }
   },
+    "route": {
+      "eyebrow": "First-success path",
+      "title": "Keep the first screen about one decision, not six doors",
+      "summary": "This page works best when you treat it like a guided desk: compare the rows first, read the decision board second, then commit only the watch state that the evidence actually supports.",
+      "stepCompareTitle": "Compare the basket",
+      "stepCompareSummary": "Paste the URLs and let the product tell you which rows really belong in the same candidate set.",
+      "stepDecisionTitle": "Read the decision board",
+      "stepDecisionSummary": "Use the headline, risk summary, and strongest pair before you create anything durable.",
+      "stepCommitTitle": "Commit the right state",
+      "stepCommitSummary": "Create one watch task for a clear single row, or a watch group only when the basket truly holds together."
+    },
+    "execution": {
+      "lane": {
+        "label": "Execution lane",
+        "title": {
+          "idle": "Next move: generate a clean compare result",
+          "ready": "Next move: follow the decision board"
+        },
+        "summary": {
+          "idle": "Submit at least two URLs first so the compare run can name the strongest row and the sharpest risk inside the basket.",
+          "ready": "Do not jump straight into watch creation. Use the decision board to decide whether this basket should stay in review, become a group, or stop at evidence."
+        }
+      },
+      "proof": {
+        "label": "Proof lane",
+        "title": {
+          "empty": "Proof is not stored yet",
+          "local": "Proof is saved locally and still reviewable",
+          "runtime": "Proof already has a runtime-backed package"
+        },
+        "summary": {
+          "empty": "Save the evidence package before you commit anything. That way the proof survives even if the basket needs one more review pass.",
+          "local": "A local evidence package exists. Promote it only if the basket still stands up after review.",
+          "runtime": "This compare run already has a runtime-backed proof package, so the next move can stay honest without pretending the basket is final."
+        },
+        "saveLabel": "Save local proof first",
+        "runtimeLabel": "Then mint runtime proof"
+      },
+      "commit": {
+        "label": "Commit lane",
+        "title": {
+          "idle": "This basket is not ready to commit into a group yet",
+          "ready": "This basket can move toward a compare-aware watch group"
+        },
+        "summary": {
+          "idle": "This still behaves like a review lane, not a commit lane. Keep weaker rows in evidence instead of freezing them into long-lived watch state.",
+          "ready": "{{count}} rows are group-ready, so the group builder can become the final lane after the proof is preserved."
+        },
+        "jumpLabel": "Open commit lane"
+      }
+    },
     "decision": {
       "eyebrow": "Decision board",
       "recommendedNextStep": "Recommended next step",
@@ -911,6 +996,14 @@
       "heroKicker": "Compare-first grocery intelligence",
       "heroTitle": "Compare the aisle before you commit to one cart.",
       "heroSummary": "DealWatch is strongest when the real job starts before you save a watch: compare the candidate URLs, keep the cross-store basket alive, then carry the winning row into a local runtime with proof, effective-price context, and alert history still attached.",
+      "routeCompareTitle": "1. Compare Preview",
+      "routeCompareSummary": "See the product on a fixed sample first, before you install anything.",
+      "routeProofTitle": "2. Proof",
+      "routeProofSummary": "Check the verifier trail so the story feels earned, not just advertised.",
+      "routeQuickStartTitle": "3. Quick Start",
+      "routeQuickStartSummary": "Move into the local runtime only after the compare story already makes sense.",
+      "routeBuildersTitle": "Specialist route",
+      "routeBuildersSummary": "Builders stays secondary for Codex, Claude Code, and similar read-only client wiring.",
       "heroPrimaryCta": "Open the sample compare",
       "heroSecondaryCta": "See the proof trail",
       "heroBuilderCta": "Run the local product",
@@ -1458,8 +1551,8 @@
       "heroPackCta": "Open the builder pack",
       "heroSecondaryCta": "Open the client catalog",
       "heroContractCta": "Read the phase-1 contract",
-      "heroNote": "Human path first: builder pack, contract, then runtime. If you still need the product pitch or the evidence trail, go back to Compare Preview and Proof first. Native Claude/Codex bundle candidates and listing-prep inputs only come after the route is clear, and none of them mean an official listing exists yet.",
-      "jumpSummary": "Both paths still stop at the same read-only, local-first boundary. No hosted control plane, no published listing, and no write-side MCP promise.",
+      "heroNote": "Human path first: builder pack, contract, then runtime. If you still need the product pitch or the evidence trail, go back to Compare Preview and Proof first. Native Claude/Codex bundle candidates and listing-prep inputs only come after the route is clear. Public proof is intentionally mixed: PyPI, the Official MCP Registry, and OpenClaw's ClawHub skill are live, while OpenHands and MCP.so still wait on host acceptance.",
+      "jumpSummary": "Both paths still stop at the same read-only, local-first boundary. No hosted control plane, no write-side MCP promise, and no claim that every host listing is already live.",
       "mirrorStartersLink": "Static client starters JSON",
       "mirrorPackLink": "Static starter pack JSON",
       "mirrorBundleLink": "Static all-clients bundle JSON",
@@ -1510,7 +1603,7 @@
       "recipeStatusOfficial": "Official",
       "recipeCta": "Open the recipe ledger with source links",
       "recipeStatusExampleOnly": "Repo-only",
-      "recipeNote": "Verified wrapper syntax now points back to the same repo-owned builder pack and local-first contract, but it still does not prove a published listing, hosted control plane, or write-side MCP.",
+      "recipeNote": "Verified wrapper syntax now points back to the same repo-owned builder pack and local-first contract, but it still does not prove that every host listing is accepted, that a hosted control plane exists, or that write-side MCP is available.",
       "distributionTitle": "Builder pack, native bundles, and crawlable entrypoints",
       "distributionSummary": "Once the read-only route is clear, this frontdoor also exposes repo-owned builder-pack docs, native bundle candidates, listing-prep inputs, and crawlable machine entrypoints that stay tied back to the same local runtime contract.",
       "distributionPluginTitle": "Builder pack docs",
@@ -1518,7 +1611,7 @@
       "distributionPluginCta": "Open the builder pack docs",
       "distributionSkillCta": "Open the builder skill pack",
       "distributionMarketplaceTitle": "Native bundle candidates",
-      "distributionMarketplaceSummary": "Claude Code and Codex now also have repo-owned native bundle artifacts in the shared builder pack. OpenHands has a submitted OpenHands/extensions receipt, OpenCode remains an ecosystem-listing candidate, and OpenClaw now has a live ClawHub skill.",
+      "distributionMarketplaceSummary": "Claude Code and Codex now also have repo-owned native bundle artifacts in the shared builder pack. OpenHands is active on `OpenHands/extensions#151` with maintainer-requested changes, `#152` is the retired predecessor, OpenCode remains an ecosystem-listing candidate, and OpenClaw is live on ClawHub.",
       "distributionSocialCta": "Open the shared bundle",
       "distributionProofCta": "Open the distribution matrix",
       "distributionCatalogCta": "Open the client catalog",
@@ -1547,7 +1640,7 @@
       "boundaryTitle": "Boundary reminder",
       "boundarySummary": "A good builder frontdoor says both what to open next and what not to assume yet, so the page does not quietly turn into plugin theater.",
       "boundaryPluginTitle": "Bundle candidates, not official listings",
-      "boundaryPluginSummary": "DealWatch now ships repo-owned builder-pack materials for every client, native bundle candidates for Claude Code and Codex, and listing-prep inputs for the broader ecosystem. That still does not mean any official marketplace or registry listing already exists.",
+      "boundaryPluginSummary": "DealWatch now ships repo-owned builder-pack materials for every client, native bundle candidates for Claude Code and Codex, and listing-prep inputs for the broader ecosystem. Some public proof is already live (PyPI, the Official MCP Registry, and OpenClaw's ClawHub skill), while OpenHands and MCP.so are still submitted but not yet accepted, and the Chrome companion remains not published.",
       "boundaryHostedTitle": "No hosted control plane",
       "boundaryHostedSummary": "These builder paths are local-first. They do not prove a hosted remote control plane is live today.",
       "boundaryWriteTitle": "No write-side MCP promise",

@@ -118,16 +118,17 @@ _CLIENT_STARTER_SPECS: list[dict[str, Any]] = [
         "distribution_surface_kind": "official_skill_registry",
         "official_public_surface_label": "OpenHands global skill registry",
         "official_public_surface_url": "https://docs.openhands.dev/overview/skills/public",
-        "distribution_candidate": "skill_registry_submission_pending",
-        "listing_status": "submission_open",
+        "distribution_candidate": "submission_done_platform_not_accepted_yet",
+        "listing_status": "submission_done_platform_not_accepted_yet",
         "repo_distribution_artifacts": [
             "docs/integrations/skills/openhands-readonly-builder-skill.md",
             "docs/integrations/prompts/openhands-starter.md",
             "docs/integrations/recipes/openhands.md",
         ],
         "plugin_status": (
-            "Repo-owned OpenHands skill pack with a live submission receipt. "
-            "OpenHands/extensions PR #152 is open; treat the listing as review-pending until it merges."
+            "Repo-owned OpenHands skill pack. "
+            "The active host line is OpenHands/extensions PR #151, which still has maintainer-requested changes; "
+            "treat PR #152 as the retired predecessor, not the current listing lane."
         ),
         "boundary_reminders": [
             "Do not assume destructive automation is safe.",
