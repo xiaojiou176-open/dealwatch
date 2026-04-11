@@ -7,6 +7,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+CONFLICT_MARKER_PREFIXES = ("<<<<<<< ", ">>>>>>> ")
+CONFLICT_MARKER_SEPARATOR = "======="
 PUBLIC_FILES = [
     ROOT / "README.md",
     ROOT / "AGENTS.md",
@@ -158,6 +160,19 @@ def get_tracked_markdown() -> list[str]:
     return sorted(path for path in tracked if path.endswith(".md") and (ROOT / path).exists())
 
 
+def _collect_conflict_markers(relative_path: str, text: str, findings: list[str]) -> None:
+    lines = text.splitlines()
+    has_conflict_block = any(
+        line.lstrip().startswith(prefix) for line in lines for prefix in CONFLICT_MARKER_PREFIXES
+    )
+    for lineno, line in enumerate(lines, start=1):
+        stripped = line.lstrip()
+        if any(stripped.startswith(prefix) for prefix in CONFLICT_MARKER_PREFIXES):
+            findings.append(f"{relative_path}:{lineno} contains unresolved conflict marker")
+        elif has_conflict_block and stripped == CONFLICT_MARKER_SEPARATOR:
+            findings.append(f"{relative_path}:{lineno} contains unresolved conflict marker")
+
+
 def main() -> int:
     findings: list[str] = []
     tracked_markdown = get_tracked_markdown()
@@ -165,8 +180,13 @@ def main() -> int:
     if unexpected:
         findings.append(f"Tracked markdown surface is not minimal: {', '.join(unexpected)}")
 
+    for relative_path in tracked_markdown:
+        text = (ROOT / relative_path).read_text(encoding="utf-8")
+        _collect_conflict_markers(relative_path, text, findings)
+
     for path in PUBLIC_FILES:
         text = path.read_text(encoding="utf-8")
+        _collect_conflict_markers(path.relative_to(ROOT).as_posix(), text, findings)
         for lineno, line in enumerate(text.splitlines(), start=1):
             for pattern in BANNED_PATTERNS:
                 if not pattern.search(line):

@@ -206,14 +206,15 @@ def test_mcp_client_starters_keep_platform_specific_distribution_wording() -> No
     assert "Plugin Directory candidate" in starters["codex"]["plugin_status"]
     assert starters["openhands"]["distribution_surface_kind"] == "official_skill_registry"
     assert "skill registry" in starters["openhands"]["official_public_surface_label"].lower()
-    assert "review-pending" in starters["openhands"]["plugin_status"]
+    assert "#151" in starters["openhands"]["plugin_status"]
+    assert "retired predecessor" in starters["openhands"]["plugin_status"]
     assert starters["opencode"]["distribution_surface_kind"] == "official_ecosystem_listing"
     assert "ecosystem list" in starters["opencode"]["plugin_status"]
     assert starters["openclaw"]["distribution_surface_kind"] == "clawhub_public_registry"
     assert "ClawHub" in starters["openclaw"]["plugin_status"]
     assert starters["claude-code"]["listing_status"] == "not_officially_listed"
     assert starters["codex"]["listing_status"] == "not_officially_listed"
-    assert starters["openhands"]["listing_status"] == "submission_open"
+    assert starters["openhands"]["listing_status"] == "submission_done_platform_not_accepted_yet"
     assert starters["opencode"]["listing_status"] == "not_officially_listed"
     assert starters["openclaw"]["listing_status"] == "live_on_clawhub"
 

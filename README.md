@@ -78,7 +78,7 @@ Most visitors should follow one short sequence:
 - **Builder Machine Frontdoor**
   Use [`site/llms.txt`](./site/llms.txt), [`site/data/builder-client-catalog.json`](./site/data/builder-client-catalog.json), [`site/data/builder-client-starters.json`](./site/data/builder-client-starters.json), [`site/data/builder-starter-pack.json`](./site/data/builder-starter-pack.json), and [`site/data/builder-client-configs.json`](./site/data/builder-client-configs.json) when an agent wants machine-readable public pointers before it starts the local runtime. Think of them as: `catalog = index`, `client starters = prompt/skill mirror`, `starter pack = contract map`, and `all-clients bundle = full payload`.
 - **Builder Distribution / SEO Surfaces**
-  Use [`site/builders.html`](./site/builders.html), [`site/llms.txt`](./site/llms.txt), [`site/sitemap.xml`](./site/sitemap.xml), [`site/feed.xml`](./site/feed.xml), and [`assets/social/social-preview-1280x640.png`](./assets/social/social-preview-1280x640.png) when you want the repo-owned builder pack, listing-prep distribution assets, and crawlable SEO surfaces without pretending a published listing or hosted control plane already exists.
+  Use [`site/builders.html`](./site/builders.html), [`site/llms.txt`](./site/llms.txt), [`site/sitemap.xml`](./site/sitemap.xml), [`site/feed.xml`](./site/feed.xml), and [`assets/social/social-preview-1280x640.png`](./assets/social/social-preview-1280x640.png) when you want the repo-owned builder pack, mixed live-vs-submitted distribution truth, and crawlable SEO surfaces without pretending every host listing is already accepted or that a hosted control plane exists.
 
 ## Builder Start Here
 

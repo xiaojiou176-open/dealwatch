@@ -185,8 +185,7 @@ ships in-repo today, and what we still must **not** claim.
 | --- | --- | --- | --- |
 | Claude Code | official marketplace + custom marketplaces | [`plugins/dealwatch-builder-pack/.claude-plugin/plugin.json`](../../plugins/dealwatch-builder-pack/.claude-plugin/plugin.json), [`.claude-plugin/marketplace.json`](../../.claude-plugin/marketplace.json) | marketplace-submission candidate, **not officially listed** |
 | Codex | Plugin Directory + repo/personal marketplace | [`plugins/dealwatch-builder-pack/.codex-plugin/plugin.json`](../../plugins/dealwatch-builder-pack/.codex-plugin/plugin.json), [`../../marketplace.json`](../../marketplace.json) | Plugin Directory candidate, **not officially listed** |
-<<<<<<< HEAD
-| OpenHands | global skill registry | [`./skills/openhands-readonly-builder-skill.md`](./skills/openhands-readonly-builder-skill.md) | submission filed in [`OpenHands/extensions#152`](https://github.com/OpenHands/extensions/pull/152), **not merged yet** |
+| OpenHands | global skill registry | [`./skills/openhands-readonly-builder-skill.md`](./skills/openhands-readonly-builder-skill.md) | active submission is [`OpenHands/extensions#151`](https://github.com/OpenHands/extensions/pull/151) with maintainer-requested changes; [`#152`](https://github.com/OpenHands/extensions/pull/152) is the retired predecessor |
 | OpenCode | ecosystem listing | [`./recipes/opencode.md`](./recipes/opencode.md), [`./examples/opencode.jsonc`](./examples/opencode.jsonc) | ecosystem-listing candidate, **not officially listed** |
 | OpenClaw | ClawHub public registry | [`./recipes/openclaw.md`](./recipes/openclaw.md), [`./skills/openclaw-readonly-builder-skill.md`](./skills/openclaw-readonly-builder-skill.md), compatible bundle assets under [`plugins/dealwatch-builder-pack/`](../../plugins/dealwatch-builder-pack/) | live on ClawHub as `dealwatch-readonly-builder` |
 
@@ -217,7 +216,8 @@ DealWatch now has both halves of the MCP story: the product side and the registr
 That means the remaining stop line is no longer “publish the first package.”
 It is:
 
-- wait for directory-style host reviews such as OpenHands/extensions and MCP.so
+- keep the active OpenHands line on `#151` until the host accepts it, while treating `#152` as a retired predecessor
+- wait for directory-style host reviews such as MCP.so
 - decide which additional first-party host surfaces deserve a live listing beyond the current local-first boundary
 
 ## File map
@@ -310,13 +310,13 @@ The honest current shape is still local-first:
 Not every client has a native package today:
 
 - Claude Code and Codex now have repo-owned native bundle artifacts
-- OpenHands now has a submission receipt in `OpenHands/extensions#152`, but it is still review-pending
+- OpenHands now has an active submission in `OpenHands/extensions#151`, but it is still waiting on host acceptance after requested changes; `#152` is a retired predecessor
 - OpenCode remains an ecosystem-listing candidate
 - OpenClaw now has a live ClawHub skill backed by the same compatible bundle assets and repo-native docs
 
 Those artifacts still live in the repo as builder material first, but they no longer all stop at “candidate” status.
 
-That is enough to make plugin packaging, listing-prep copy, and SEO frontdoor work real without pretending a published listing or hosted plugin ecosystem already exists.
+That is enough to make plugin packaging, listing-prep copy, and SEO frontdoor work real without pretending every host listing or hosted plugin ecosystem already exists.
 
 ## Boundary reminder
 

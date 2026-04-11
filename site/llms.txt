@@ -68,7 +68,7 @@
 - Not a hosted SaaS.
 - Not a generic chat bot or autonomous agent.
 - Not a broad or builder-facing buy / wait recommendation engine. The shipped recommendation surface is limited to the local Compare Preview runtime flow.
-- Not a hosted plugin runtime or a published marketplace listing today. The repo does ship repo-owned builder-pack materials, native bundle candidates where supported, and listing-prep distribution assets that still point back to the same local-first contract.
+- Not a hosted plugin runtime or a universally accepted client listing today. PyPI, the Official MCP Registry, and OpenClaw's ClawHub skill are already live public surfaces, while OpenHands `#151` and MCP.so `#1558` are still waiting on host acceptance and the Chrome companion remains not published.
 
 ## Trust surfaces
 
