@@ -12,7 +12,8 @@ DealWatch turns “which grocery URL is actually the right target?” into one p
 
 The public boundary stays strict on purpose: DealWatch is local-first, compare-first, and evidence-first. It is not a hosted SaaS, not a generic shopping chatbot, and not an autonomous buying agent. AI helps explain compare, watch-group, and recovery decisions, but deterministic product truth still leads.
 
-[Try the Sample Compare](https://xiaojiou176-open.github.io/dealwatch/compare-preview.html#sample-compare-demo) · [See the Proof](https://xiaojiou176-open.github.io/dealwatch/proof.html) · [Run Local Quick Start](https://xiaojiou176-open.github.io/dealwatch/quick-start.html) · [Builder Route](https://xiaojiou176-open.github.io/dealwatch/builders.html) · [Releases](https://github.com/xiaojiou176-open/dealwatch/releases/latest)
+[Try the Sample Compare](https://xiaojiou176-open.github.io/dealwatch/compare-preview.html#sample-compare-demo) · [See the Proof](https://xiaojiou176-open.github.io/dealwatch/proof.html) · [Run Local Quick Start](https://xiaojiou176-open.github.io/dealwatch/quick-start.html) · [Releases](https://github.com/xiaojiou176-open/dealwatch/releases/latest)  
+Specialist route: [Builder Route](https://xiaojiou176-open.github.io/dealwatch/builders.html)
 
 ![DealWatch control cabin brand bridge showing compare preview, artifact evidence, and notification surfaces](./assets/social/social-preview-1280x640.png)
 

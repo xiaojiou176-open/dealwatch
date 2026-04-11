@@ -1160,7 +1160,7 @@
       "heroSecondaryCta": "Run the local quick start",
       "statusReadonlyTitle": "2 URLs in, 0 durable writes",
       "statusReadonlySummary": "Compare Preview stays read-only until you intentionally create a task.",
-      "statusApiTitle": "1 live API route",
+      "statusApiTitle": "1 local-runtime API route",
       "statusApiSummary": "`POST /api/compare/preview` is the route behind the first product step.",
       "statusAiTitle": "AI explains, evidence stays primary",
       "statusAiSummary": "The current product uses AI-assisted compare explanations, but deterministic compare evidence still remains the source of truth.",

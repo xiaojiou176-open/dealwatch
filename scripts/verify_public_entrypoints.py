@@ -21,6 +21,7 @@ REQUIRED_SNIPPETS = {
         "https://xiaojiou176-open.github.io/dealwatch/compare-preview.html#sample-compare-demo",
         "https://xiaojiou176-open.github.io/dealwatch/quick-start.html",
         "https://xiaojiou176-open.github.io/dealwatch/builders.html",
+        "Specialist route: [Builder Route](https://xiaojiou176-open.github.io/dealwatch/builders.html)",
         "https://xiaojiou176-open.github.io/dealwatch/compare-preview.html",
         "https://xiaojiou176-open.github.io/dealwatch/proof.html",
         "./site/builders.html",
@@ -46,6 +47,9 @@ REQUIRED_SNIPPETS = {
         "python3 scripts/verify_remote_github_state.py",
         "python3 scripts/print_remote_repo_settings_checklist.py",
         "https://github.com/xiaojiou176-open/dealwatch/releases/latest",
+    ],
+    ROOT / "site" / "compare-preview.html": [
+        "1 local-runtime API route",
     ],
     SITE_BUILDERS: [
         "https://github.com/xiaojiou176-open/dealwatch/blob/main/docs/roadmaps/dealwatch-api-mcp-substrate-phase1.md",
