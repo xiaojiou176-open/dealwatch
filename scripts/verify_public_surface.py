@@ -27,6 +27,7 @@ ALLOWED_TRACKED_MARKDOWN = {
     "browser-extension/chrome-web-store-listing.md",
     "DISTRIBUTION.md",
     "INTEGRATIONS.md",
+    "llms-install.md",
     "SECURITY.md",
     "SUPPORT.md",
     "THIRD_PARTY.md",
