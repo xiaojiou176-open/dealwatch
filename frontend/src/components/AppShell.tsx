@@ -63,11 +63,49 @@ function buildShellFocus(route: string, t: (key: string) => string): {
   };
 }
 
+function buildFirstSuccessRail(
+  route: string,
+  t: (key: string) => string,
+): Array<{ step: string; title: string; summary: string; active: boolean }> {
+  const commitActive =
+    route === "watch-new" ||
+    route === "watch-detail" ||
+    route === "watch-group-detail" ||
+    route === "watch-list";
+  const settingsActive = route === "settings";
+
+  return [
+    {
+      step: "1",
+      title: t("compare.route.stepCompareTitle"),
+      summary: t("compare.route.stepCompareSummary"),
+      active: route === "compare",
+    },
+    {
+      step: "2",
+      title: t("compare.route.stepDecisionTitle"),
+      summary: settingsActive
+        ? t("shell.focus.settings.summary")
+        : t("compare.route.stepDecisionSummary"),
+      active: route === "compare" || settingsActive,
+    },
+    {
+      step: "3",
+      title: t("compare.route.stepCommitTitle"),
+      summary: commitActive
+        ? t("shell.focus.watchList.summary")
+        : t("compare.route.stepCommitSummary"),
+      active: commitActive,
+    },
+  ];
+}
+
 export function AppShell(props: { children: ComponentChildren }) {
   const { locale, setLocale, t } = useI18n();
   const hasContextActions =
     currentRoute.value === "watch-new" || Boolean(currentTaskId.value) || Boolean(currentGroupId.value);
   const shellFocus = buildShellFocus(currentRoute.value, t);
+  const firstSuccessRail = buildFirstSuccessRail(currentRoute.value, t);
 
   return (
     <div class="min-h-screen bg-mesh grid-fade text-ink">
@@ -214,6 +252,51 @@ export function AppShell(props: { children: ComponentChildren }) {
                   {t("shell.focus.proofLabel")}
                 </div>
                 <p class="mt-2 text-sm leading-6 text-slate-700">{shellFocus.proofPath}</p>
+              </div>
+            </div>
+
+            <div class="mt-4 rounded-[1.5rem] border border-base-300/80 bg-base-100/80 px-4 py-4">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                    {t("compare.route.eyebrow")}
+                  </p>
+                  <p class="mt-2 text-sm font-semibold text-ink">{t("compare.route.title")}</p>
+                </div>
+                <span class="rounded-full border border-ember/20 bg-ember/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-ember">
+                  {shellFocus.label}
+                </span>
+              </div>
+              <div class="mt-4 grid gap-3 lg:grid-cols-3">
+                {firstSuccessRail.map((item) => (
+                  <article
+                    class={
+                      item.active
+                        ? "rounded-[1.2rem] border border-ink bg-ink px-4 py-4 text-base-100 shadow-sm"
+                        : "rounded-[1.2rem] border border-base-300 bg-base-200/60 px-4 py-4 text-ink"
+                    }
+                    key={item.step}
+                  >
+                    <p
+                      class={
+                        item.active
+                          ? "text-[11px] font-semibold uppercase tracking-[0.16em] text-base-100/70"
+                          : "text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500"
+                      }
+                    >
+                      {item.step}. {item.title}
+                    </p>
+                    <p
+                      class={
+                        item.active
+                          ? "mt-3 text-sm leading-6 text-base-100/90"
+                          : "mt-3 text-sm leading-6 text-slate-600"
+                      }
+                    >
+                      {item.summary}
+                    </p>
+                  </article>
+                ))}
               </div>
             </div>
           </div>
