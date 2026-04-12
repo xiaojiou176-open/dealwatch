@@ -13,7 +13,7 @@ In plain English:
 
 Use this directory when the question is:
 
-> "I am wiring Claude Code, Codex, OpenHands, OpenCode, OpenClaw, or a similar client to DealWatch. Where do I start, what is safe, and what should I not assume yet?"
+> "I am wiring Claude Code, Codex, Cline, OpenHands, OpenCode, OpenClaw, or a similar client to DealWatch. Where do I start, what is safe, and what should I not assume yet?"
 
 ## What this pack is
 
@@ -185,6 +185,7 @@ ships in-repo today, and what we still must **not** claim.
 | --- | --- | --- | --- |
 | Claude Code | official marketplace + custom marketplaces | [`plugins/dealwatch-builder-pack/.claude-plugin/plugin.json`](../../plugins/dealwatch-builder-pack/.claude-plugin/plugin.json), [`.claude-plugin/marketplace.json`](../../.claude-plugin/marketplace.json) | marketplace-submission candidate, **not officially listed** |
 | Codex | Plugin Directory + repo/personal marketplace | [`plugins/dealwatch-builder-pack/.codex-plugin/plugin.json`](../../plugins/dealwatch-builder-pack/.codex-plugin/plugin.json), [`../../marketplace.json`](../../marketplace.json) | Plugin Directory candidate, **not officially listed** |
+| Cline | MCP Marketplace issue intake | [`../../llms-install.md`](../../llms-install.md), [`../../assets/marketplace/dealwatch-cline-logo-400.png`](../../assets/marketplace/dealwatch-cline-logo-400.png) | marketplace-submission candidate, **not officially listed** |
 | OpenHands | global skill registry | [`./skills/openhands-readonly-builder-skill.md`](./skills/openhands-readonly-builder-skill.md) | active submission is [`OpenHands/extensions#151`](https://github.com/OpenHands/extensions/pull/151) with maintainer-requested changes; [`#152`](https://github.com/OpenHands/extensions/pull/152) is the retired predecessor |
 | OpenCode | ecosystem listing | [`./recipes/opencode.md`](./recipes/opencode.md), [`./examples/opencode.jsonc`](./examples/opencode.jsonc) | ecosystem-listing candidate, **not officially listed** |
 | OpenClaw | ClawHub public registry | [`./recipes/openclaw.md`](./recipes/openclaw.md), [`./skills/openclaw-readonly-builder-skill.md`](./skills/openclaw-readonly-builder-skill.md), compatible bundle assets under [`plugins/dealwatch-builder-pack/`](../../plugins/dealwatch-builder-pack/) | live on ClawHub as `dealwatch-readonly-builder` |

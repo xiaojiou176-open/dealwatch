@@ -4,6 +4,7 @@ Use this file as the shortest entrypoint to DealWatch's builder-facing surface.
 
 Start here:
 
+- [`llms-install.md`](./llms-install.md)
 - [`docs/integrations/README.md`](./docs/integrations/README.md)
 - [`docs/roadmaps/dealwatch-api-mcp-substrate-phase1.md`](./docs/roadmaps/dealwatch-api-mcp-substrate-phase1.md)
 - [`plugins/dealwatch-builder-pack/README.md`](./plugins/dealwatch-builder-pack/README.md)

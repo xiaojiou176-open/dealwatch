@@ -72,6 +72,8 @@ Most visitors should follow one short sequence:
   Use [`INTEGRATIONS.md`](./INTEGRATIONS.md) when you want the shortest truthful front desk for the builder pack, native bundle candidates, and current read-only consumption surfaces before diving into the full integration handbook.
 - **Builder Starter Pack**
   Use [`docs/integrations/README.md`](./docs/integrations/README.md) when you want repo-owned example payloads, local onboarding order, starter prompts, config recipes, a copyable builder skill card, and per-client guidance for Claude Code, Codex, OpenHands, OpenCode, OpenClaw, and similar builder workflows that should stay inside the current read-only / local-first boundary.
+- **Cline Install**
+  Use [`llms-install.md`](./llms-install.md) when you want the shortest reviewer-facing Cline install path, the exact `cline_mcp_settings.json` entry, and the local-stdio boundary without reading the whole integration handbook first.
 - **Native Plugin Bundles**
   Use [`plugins/dealwatch-builder-pack/README.md`](./plugins/dealwatch-builder-pack/README.md), [`.claude-plugin/marketplace.json`](./.claude-plugin/marketplace.json), and [`marketplace.json`](./marketplace.json) when you want the repo-owned Claude Code and Codex package artifacts that now back the builder story. They are package candidates, not official listings.
 - **Chrome Companion**

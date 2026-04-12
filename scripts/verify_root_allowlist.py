@@ -52,6 +52,7 @@ ALLOWED_ROOT_ENTRIES = {
     "DISTRIBUTION.md",
     "frontend",
     "INTEGRATIONS.md",
+    "llms-install.md",
     "LICENSE",
     "MANIFEST.in",
     "marketplace.json",
