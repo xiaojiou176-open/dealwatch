@@ -47,7 +47,7 @@ function RouteView() {
 
 function RouteLoadingFallback() {
   const { t } = useI18n();
-  return <div class="alert alert-info">{t("common.loadingRoute")}</div>;
+  return <div aria-live="polite" class="alert alert-info">{t("common.loadingRoute")}</div>;
 }
 
 export function App() {

@@ -468,38 +468,38 @@ export function ComparePage() {
     : null;
 
   return (
-    <section class="space-y-4">
-      <div class="grid gap-4 xl:grid-cols-[1.05fr,0.95fr]">
-        <div class="rounded-[1.75rem] border border-base-300 bg-base-100/95 p-6 shadow-card">
-          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-ember">{t("compare.route.eyebrow")}</p>
+    <section class="page-stack">
+      <div class="page-hero-grid">
+        <div class="surface-panel surface-panel-primary surface-panel-block">
+          <p class="eyebrow-label">{t("compare.route.eyebrow")}</p>
           <h2 class="mt-2 text-2xl font-semibold text-ink">{t("compare.route.title")}</h2>
-          <p class="mt-2 text-sm leading-6 text-slate-600">{t("compare.route.summary")}</p>
+          <p class="supporting-copy">{t("compare.route.summary")}</p>
 
-          <div class="mt-5 grid gap-3 md:grid-cols-3">
-            <div class="rounded-2xl border border-base-300 bg-base-200/50 px-4 py-4">
-              <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">1</div>
-              <div class="mt-2 text-base font-semibold text-ink">{t("compare.route.stepCompareTitle")}</div>
-              <p class="mt-2 text-sm leading-6 text-slate-600">{t("compare.route.stepCompareSummary")}</p>
+          <div class="workflow-cards">
+            <div class="workflow-step-card">
+              <div class="workflow-step-number">1</div>
+              <div class="workflow-step-title">{t("compare.route.stepCompareTitle")}</div>
+              <p class="workflow-step-copy">{t("compare.route.stepCompareSummary")}</p>
             </div>
-            <div class="rounded-2xl border border-base-300 bg-base-200/50 px-4 py-4">
-              <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">2</div>
-              <div class="mt-2 text-base font-semibold text-ink">{t("compare.route.stepDecisionTitle")}</div>
-              <p class="mt-2 text-sm leading-6 text-slate-600">{t("compare.route.stepDecisionSummary")}</p>
+            <div class="workflow-step-card">
+              <div class="workflow-step-number">2</div>
+              <div class="workflow-step-title">{t("compare.route.stepDecisionTitle")}</div>
+              <p class="workflow-step-copy">{t("compare.route.stepDecisionSummary")}</p>
             </div>
-            <div class="rounded-2xl border border-base-300 bg-base-200/50 px-4 py-4">
-              <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">3</div>
-              <div class="mt-2 text-base font-semibold text-ink">{t("compare.route.stepCommitTitle")}</div>
-              <p class="mt-2 text-sm leading-6 text-slate-600">{t("compare.route.stepCommitSummary")}</p>
+            <div class="workflow-step-card">
+              <div class="workflow-step-number">3</div>
+              <div class="workflow-step-title">{t("compare.route.stepCommitTitle")}</div>
+              <p class="workflow-step-copy">{t("compare.route.stepCommitSummary")}</p>
             </div>
           </div>
         </div>
 
-        <div class="rounded-[1.75rem] border border-base-300 bg-base-100/95 p-6 shadow-card">
-          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-ember">{t("compare.form.eyebrow")}</p>
+        <div class="surface-panel surface-panel-block">
+          <p class="eyebrow-label">{t("compare.form.eyebrow")}</p>
           <h2 class="mt-2 text-2xl font-semibold text-ink">
             {t("compare.form.title")}
           </h2>
-          <p class="mt-2 text-sm leading-6 text-slate-600">
+          <p class="supporting-copy">
             {t("compare.form.summary")}
           </p>
 
@@ -516,7 +516,7 @@ export function ComparePage() {
             <label class="form-control gap-2">
               <span class="label-text block font-medium">{t("compare.form.productUrls")}</span>
               <textarea
-                class="textarea textarea-bordered min-h-48"
+                class="textarea textarea-bordered min-h-56"
                 onInput={(event) => setRawUrls((event.currentTarget as HTMLTextAreaElement).value)}
                 value={rawUrls}
               />
@@ -527,27 +527,27 @@ export function ComparePage() {
             {mutation.isPending ? <div class="alert alert-info">{t("compare.form.loading")}</div> : null}
 
             <div class="pt-2">
-              <button class="btn btn-primary" type="submit">{t("compare.form.submit")}</button>
+              <button class="btn btn-primary w-full sm:w-auto" type="submit">{t("compare.form.submit")}</button>
             </div>
           </form>
         </div>
       </div>
 
-      <div class="grid gap-4 xl:grid-cols-[1.1fr,0.9fr,0.9fr]">
-        <div class="rounded-[1.5rem] border border-ink/10 bg-base-100/95 p-5 shadow-card">
-          <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+      <div class="execution-grid">
+        <div class="surface-panel surface-panel-block">
+          <p class="workflow-label">
             {t("compare.execution.lane.label")}
           </p>
           <h3 class="mt-2 text-lg font-semibold text-ink">{executionRail.laneTitle}</h3>
-          <p class="mt-2 text-sm leading-6 text-slate-600">{executionRail.laneSummary}</p>
+          <p class="supporting-copy">{executionRail.laneSummary}</p>
         </div>
 
-        <div class="rounded-[1.5rem] border border-ember/20 bg-ember/5 p-5 shadow-card">
-          <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-ember">
+        <div class="surface-panel surface-panel-block execution-card-proof">
+          <p class="workflow-label">
             {t("compare.execution.proof.label")}
           </p>
           <h3 class="mt-2 text-lg font-semibold text-ink">{executionRail.proofTitle}</h3>
-          <p class="mt-2 text-sm leading-6 text-slate-700">{executionRail.proofSummary}</p>
+          <p class="supporting-copy">{executionRail.proofSummary}</p>
           {result ? (
             <div class="mt-4 flex flex-wrap gap-2">
               <button class="btn btn-outline btn-sm" onClick={handleSaveEvidencePackage} type="button">
@@ -565,12 +565,12 @@ export function ComparePage() {
           ) : null}
         </div>
 
-        <div class="rounded-[1.5rem] border border-base-300 bg-base-100/95 p-5 shadow-card">
-          <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+        <div class="surface-panel surface-panel-block execution-card-commit">
+          <p class="workflow-label">
             {t("compare.execution.commit.label")}
           </p>
           <h3 class="mt-2 text-lg font-semibold text-ink">{executionRail.commitTitle}</h3>
-          <p class="mt-2 text-sm leading-6 text-slate-600">{executionRail.commitSummary}</p>
+          <p class="supporting-copy">{executionRail.commitSummary}</p>
           {result ? (
             <div class="mt-4">
               <a class="btn btn-ghost btn-sm" href="#group-builder-panel">

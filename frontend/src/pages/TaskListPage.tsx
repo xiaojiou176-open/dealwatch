@@ -95,6 +95,37 @@ const TASK_LIST_COPY = {
       en: "No compare-aware groups yet. Build one from a successful Compare Preview result.",
     },
   },
+  dashboard: {
+    operatorDeskSummary: {
+      en: "Keep this page feeling like an operator desk: scan what is live, see what needs intervention, and move back into compare or detail only when the evidence truly requires it.",
+    },
+    activeTasks: { en: "active tasks", },
+    activeTasksNote: {
+      en: "The current set of single-target monitoring lanes that are still live.",
+    },
+    attentionNow: { en: "attention now", },
+    attentionNowNote: {
+      en: "Rows that already asked for deliberate operator review.",
+    },
+    compareGroups: { en: "compare groups", },
+    compareGroupsNote: {
+      en: "Baskets with enough members to behave like a real compare lane.",
+    },
+    liveWinners: { en: "live winners", },
+    liveWinnersNote: {
+      en: "Groups that currently expose a winner instead of only awaiting proof.",
+    },
+    bestNextMove: { en: "best next move", },
+    bestNextMoveTitle: { en: "Start in Compare when evidence is still noisy.", },
+    bestNextMoveSummary: {
+      en: "The dashboard should not invite operators to create watch state too early. Use Compare first whenever the winner is still ambiguous.",
+    },
+    proofDiscipline: { en: "proof discipline", },
+    proofDisciplineTitle: { en: "Keep evidence before commitment.", },
+    proofDisciplineSummary: {
+      en: "A saved compare package is the safer checkpoint. Long-lived tasks and groups should only happen after the basket reads honestly.",
+    },
+  },
 } as const;
 
 function resolvePageCopy(
@@ -541,23 +572,27 @@ export function TaskListPage() {
 
   const tasks = taskQuery.data;
   const groups = groupQuery.data;
+  const activeTasks = tasks.filter((task) => task.status === "active").length;
+  const attentionTasks = tasks.filter((task) => task.manualInterventionRequired).length;
+  const compareAwareGroups = groups.filter((group) => group.memberCount >= 2).length;
+  const liveWinnerGroups = groups.filter((group) => Boolean(group.winnerTitle)).length;
 
   const boardContent =
     tasks.length === 0 && groups.length === 0 ? (
-      <section class="grid gap-4 xl:grid-cols-[1.6fr,0.9fr]">
-        <div class="rounded-[1.75rem] border border-dashed border-base-300 bg-base-100/95 p-8 text-center shadow-card">
+      <section class="dashboard-dual-grid">
+        <div class="surface-panel surface-panel-block surface-panel-primary surface-enter text-center">
           <h2 class="text-2xl font-semibold text-ink">{t("taskList.emptyTitle")}</h2>
-          <p class="mt-3 text-sm leading-6 text-slate-600">
+          <p class="supporting-copy">
             {t("taskList.emptySummary")}
           </p>
-          <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <div class="dashboard-action-row mt-6 items-center justify-center">
             <button class="btn btn-primary" onClick={() => navigate("compare")} type="button">{t("taskList.openCompare")}</button>
             <button class="btn btn-outline" onClick={() => navigate("watch-new")} type="button">{t("taskList.createSingleTask")}</button>
           </div>
         </div>
 
-        <aside class="rounded-[1.75rem] border border-base-300 bg-base-100/95 p-5 shadow-card">
-          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-ember">{t("taskList.newShapeEyebrow")}</p>
+        <aside class="surface-panel surface-section-tight surface-enter">
+          <p class="eyebrow-label">{t("taskList.newShapeEyebrow")}</p>
           <h3 class="mt-2 text-xl font-semibold text-ink">{t("taskList.newShapeTitle")}</h3>
           <ul class="mt-4 space-y-3 text-sm leading-6 text-slate-600">
             <li>{t("taskList.newShapeBullet1")}</li>
@@ -567,18 +602,66 @@ export function TaskListPage() {
         </aside>
       </section>
     ) : (
-      <section class="grid gap-4 xl:grid-cols-[1.6fr,0.9fr]">
-        <div class="space-y-4">
-          <div class="rounded-[1.75rem] border border-base-300 bg-base-100/95 p-5 shadow-card">
-            <div class="flex items-center justify-between">
+      <section class="page-stack">
+        <div class="surface-panel surface-panel-block surface-panel-primary surface-enter">
+          <p class="eyebrow-label">{t("taskList.controlNotesEyebrow")}</p>
+          <h2 class="mt-2 text-2xl font-semibold text-ink">{t("taskList.singleWatchTitle")}</h2>
+          <p class="supporting-copy">
+            {taskListText("taskList.dashboard.operatorDeskSummary", TASK_LIST_COPY.dashboard.operatorDeskSummary)}
+          </p>
+
+          <div class="dashboard-kpi-grid mt-6">
+            <div class="dashboard-kpi-card">
+              <div class="workflow-label">
+                {taskListText("taskList.dashboard.activeTasks", TASK_LIST_COPY.dashboard.activeTasks)}
+              </div>
+              <div class="dashboard-kpi-value">{formatCount(activeTasks)}</div>
+              <p class="dashboard-kpi-note">
+                {taskListText("taskList.dashboard.activeTasksNote", TASK_LIST_COPY.dashboard.activeTasksNote)}
+              </p>
+            </div>
+            <div class="dashboard-kpi-card">
+              <div class="workflow-label">
+                {taskListText("taskList.dashboard.attentionNow", TASK_LIST_COPY.dashboard.attentionNow)}
+              </div>
+              <div class="dashboard-kpi-value">{formatCount(attentionTasks)}</div>
+              <p class="dashboard-kpi-note">
+                {taskListText("taskList.dashboard.attentionNowNote", TASK_LIST_COPY.dashboard.attentionNowNote)}
+              </p>
+            </div>
+            <div class="dashboard-kpi-card">
+              <div class="workflow-label">
+                {taskListText("taskList.dashboard.compareGroups", TASK_LIST_COPY.dashboard.compareGroups)}
+              </div>
+              <div class="dashboard-kpi-value">{formatCount(compareAwareGroups)}</div>
+              <p class="dashboard-kpi-note">
+                {taskListText("taskList.dashboard.compareGroupsNote", TASK_LIST_COPY.dashboard.compareGroupsNote)}
+              </p>
+            </div>
+            <div class="dashboard-kpi-card">
+              <div class="workflow-label">
+                {taskListText("taskList.dashboard.liveWinners", TASK_LIST_COPY.dashboard.liveWinners)}
+              </div>
+              <div class="dashboard-kpi-value">{formatCount(liveWinnerGroups)}</div>
+              <p class="dashboard-kpi-note">
+                {taskListText("taskList.dashboard.liveWinnersNote", TASK_LIST_COPY.dashboard.liveWinnersNote)}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-dual-grid">
+          <div class="dashboard-ledger surface-enter">
+            <div class="dashboard-ledger-head">
               <div>
-                <h2 class="text-2xl font-semibold text-ink">{t("taskList.singleWatchTitle")}</h2>
-                <p class="text-sm text-slate-600">{t("taskList.singleWatchSummary")}</p>
+                <div class="eyebrow-label">{t("taskList.singleWatchTitle")}</div>
+                <h3 class="mt-2 text-xl font-semibold text-ink">{t("taskList.singleWatchTitle")}</h3>
+                <p class="supporting-copy">{t("taskList.singleWatchSummary")}</p>
               </div>
               <button class="btn btn-primary" onClick={() => navigate("watch-new")} type="button">{t("taskList.newTask")}</button>
             </div>
 
-            <div class="mt-4 overflow-x-auto">
+            <div class="dashboard-ledger-table mt-4 overflow-x-auto">
               <table class="table">
                 <thead>
                   <tr>
@@ -594,9 +677,9 @@ export function TaskListPage() {
                   {tasks.map((task) => (
                     <tr key={task.id}>
                       <td>
-                        <div class="font-semibold text-ink">{task.title}</div>
-                        <div class="text-xs text-slate-500">{task.normalizedUrl}</div>
-                        <div class="mt-2 flex flex-wrap gap-2">
+                        <div class="entity-section-title">{task.title}</div>
+                        <div class="entity-meta-line">{task.normalizedUrl}</div>
+                        <div class="entity-chip-row">
                           <span class={`badge ${statusTone[task.status] ?? "badge-neutral"}`}>
                             {taskListText(
                               `taskList.status.${task.status}`,
@@ -617,7 +700,7 @@ export function TaskListPage() {
                           {healthCopy(t, locale, task.healthStatus)}
                         </span>
                         {task.backoffUntil ? (
-                          <div class="mt-2 text-xs text-slate-500">
+                          <div class="entity-meta-line">
                             {taskListText("taskList.board.backoffUntil", TASK_LIST_COPY.board.backoffUntil, {
                               value: formatDateTime(locale, task.backoffUntil),
                             })}
@@ -643,26 +726,66 @@ export function TaskListPage() {
             </div>
           </div>
 
-          <div class="rounded-[1.75rem] border border-base-300 bg-base-100/95 p-5 shadow-card">
-            <div class="flex items-center justify-between">
+          <aside class="dashboard-mini-stack surface-enter">
+            <div class="surface-panel surface-section-tight">
+              <p class="eyebrow-label">{t("taskList.controlNotesEyebrow")}</p>
+              <h3 class="mt-2 text-xl font-semibold text-ink">{t("taskList.controlNotesTitle")}</h3>
+              <ul class="mt-4 space-y-3 text-sm leading-6 text-slate-600">
+                <li>{t("taskList.controlNotesBullet1")}</li>
+                <li>{t("taskList.controlNotesBullet2")}</li>
+                <li>{t("taskList.controlNotesBullet3")}</li>
+                <li>{t("taskList.controlNotesBullet4")}</li>
+              </ul>
+            </div>
+
+            <div class="dashboard-mini-card">
+              <div class="workflow-label">
+                {taskListText("taskList.dashboard.bestNextMove", TASK_LIST_COPY.dashboard.bestNextMove)}
+              </div>
+              <div class="dashboard-mini-title">
+                {taskListText("taskList.dashboard.bestNextMoveTitle", TASK_LIST_COPY.dashboard.bestNextMoveTitle)}
+              </div>
+              <p class="dashboard-mini-copy">
+                {taskListText("taskList.dashboard.bestNextMoveSummary", TASK_LIST_COPY.dashboard.bestNextMoveSummary)}
+              </p>
+            </div>
+
+            <div class="dashboard-mini-card">
+              <div class="workflow-label">
+                {taskListText("taskList.dashboard.proofDiscipline", TASK_LIST_COPY.dashboard.proofDiscipline)}
+              </div>
+              <div class="dashboard-mini-title">
+                {taskListText("taskList.dashboard.proofDisciplineTitle", TASK_LIST_COPY.dashboard.proofDisciplineTitle)}
+              </div>
+              <p class="dashboard-mini-copy">
+                {taskListText("taskList.dashboard.proofDisciplineSummary", TASK_LIST_COPY.dashboard.proofDisciplineSummary)}
+              </p>
+            </div>
+          </aside>
+        </div>
+
+        <div class="dashboard-dual-grid">
+          <div class="surface-panel surface-section-tight surface-enter">
+            <div class="flex items-center justify-between gap-4">
               <div>
-                <h2 class="text-2xl font-semibold text-ink">{t("taskList.groupsTitle")}</h2>
-                <p class="text-sm text-slate-600">{t("taskList.groupsSummary")}</p>
+                <p class="eyebrow-label">{t("taskList.groupsTitle")}</p>
+                <h3 class="mt-2 text-xl font-semibold text-ink">{t("taskList.groupsTitle")}</h3>
+                <p class="supporting-copy">{t("taskList.groupsSummary")}</p>
               </div>
               <button class="btn btn-outline" onClick={() => navigate("compare")} type="button">{t("taskList.buildFromCompare")}</button>
             </div>
 
-            <div class="mt-4 grid gap-4 md:grid-cols-2">
+            <div class="dashboard-split-grid mt-5">
               {groups.length ? (
                 groups.map((group) => (
                   <article
-                    class="rounded-2xl border border-base-300 bg-base-100/80 p-4"
+                    class="dashboard-card dashboard-card-strong"
                     key={group.id}
                   >
                     <div class="flex items-start justify-between gap-3">
                       <div>
-                        <h3 class="text-lg font-semibold text-ink">{group.title}</h3>
-                        <p class="mt-1 text-xs text-slate-500">
+                        <h3 class="entity-section-title">{group.title}</h3>
+                        <p class="entity-meta-line">
                           {taskListText("taskList.board.memberCandidates", TASK_LIST_COPY.board.memberCandidates, {
                             count: formatCount(group.memberCount),
                           })}
@@ -673,7 +796,7 @@ export function TaskListPage() {
                       </span>
                     </div>
 
-                    <div class="mt-3 flex flex-wrap gap-2 text-xs">
+                    <div class="entity-chip-row">
                       <span class={`badge ${statusTone[group.status] ?? "badge-neutral"}`}>
                         {taskListText(
                           `taskList.status.${group.status}`,
@@ -694,34 +817,28 @@ export function TaskListPage() {
                       ) : null}
                     </div>
 
-                    <div class="mt-4 grid gap-3 sm:grid-cols-2">
-                      <div class="rounded-2xl bg-base-200/60 px-4 py-3">
-                        <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
-                          {t("groupDetail.winnerEffective")}
-                        </div>
-                        <div class="mt-2 font-semibold text-ink">
-                          {group.winnerTitle ?? t("groupDetail.noRuns")}
-                        </div>
-                        <div class="mt-1 text-sm text-ember">
+                    <div class="metric-grid mt-4 sm:grid-cols-2">
+                      <div class="metric-card">
+                        <div class="workflow-label">{t("groupDetail.winnerEffective")}</div>
+                        <div class="panel-title">{group.winnerTitle ?? t("groupDetail.noRuns")}</div>
+                        <p class="mt-2 text-base font-semibold text-moss">
                           {formatCurrency(locale, group.winnerEffectivePrice)}
-                        </div>
+                        </p>
                       </div>
-                      <div class="rounded-2xl bg-base-200/60 px-4 py-3">
-                        <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
-                          {t("groupDetail.spread")} / {t("groupDetail.latestRun")}
-                        </div>
-                        <div class="mt-2 font-semibold text-ink">{formatCurrency(locale, group.priceSpread)}</div>
-                        <div class="mt-1 text-xs text-slate-500">{formatDateTime(locale, group.nextRunAt)}</div>
+                      <div class="metric-card">
+                        <div class="workflow-label">{t("groupDetail.spread")} / {t("groupDetail.latestRun")}</div>
+                        <div class="panel-title">{formatCurrency(locale, group.priceSpread)}</div>
+                        <p class="dashboard-mini-copy">{formatDateTime(locale, group.nextRunAt)}</p>
                       </div>
                     </div>
 
                     {group.backoffUntil ? (
-                      <p class="mt-3 text-xs text-slate-500">
+                      <div class="notice-strip mt-4 text-sm leading-6 text-slate-600">
                         {t("groupDetail.riskTitle")} {formatDateTime(locale, group.backoffUntil)}
-                      </p>
+                      </div>
                     ) : null}
 
-                    <div class="mt-4">
+                    <div class="dashboard-action-row mt-4">
                       <button
                         class="btn btn-sm btn-outline"
                         onClick={() => navigate("watch-group-detail", group.id)}
@@ -733,30 +850,22 @@ export function TaskListPage() {
                   </article>
                 ))
               ) : (
-                <div class="rounded-2xl border border-dashed border-base-300 px-5 py-6 text-sm text-slate-600 md:col-span-2">
+                <div class="notice-strip md:col-span-2 text-sm text-slate-600">
                   {taskListText("taskList.board.noGroups", TASK_LIST_COPY.board.noGroups)}
                 </div>
               )}
             </div>
           </div>
-        </div>
 
-        <aside class="rounded-[1.75rem] border border-base-300 bg-base-100/95 p-5 shadow-card">
-          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-ember">{t("taskList.controlNotesEyebrow")}</p>
-          <h3 class="mt-2 text-xl font-semibold text-ink">{t("taskList.controlNotesTitle")}</h3>
-          <ul class="mt-4 space-y-3 text-sm leading-6 text-slate-600">
-            <li>{t("taskList.controlNotesBullet1")}</li>
-            <li>{t("taskList.controlNotesBullet2")}</li>
-            <li>{t("taskList.controlNotesBullet3")}</li>
-            <li>{t("taskList.controlNotesBullet4")}</li>
-          </ul>
-        </aside>
+          <div class="surface-enter">
+            <RecoveryInboxSection />
+          </div>
+        </div>
       </section>
     );
 
   return (
-    <section class="space-y-4">
-      <RecoveryInboxSection />
+    <section class="page-stack">
       {boardContent}
     </section>
   );

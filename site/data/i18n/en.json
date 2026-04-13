@@ -2,6 +2,7 @@
   "common": {
     "loadingRoute": "Loading route...",
     "languageLabel": "Language",
+    "skipToMain": "Skip to main content",
     "lang": "en",
     "locale": {
       "en": "English",
@@ -461,6 +462,23 @@
     "controlNotesBullet2": "2. `Degraded` means the monitor still runs, but recent failures or delivery issues lowered confidence.",
     "controlNotesBullet3": "3. `Blocked` or `Needs Attention` means the system wants a human to intervene before trusting automation again.",
     "controlNotesBullet4": "4. Watch groups are where compare-first becomes long-lived decision logic, not just a one-time intake step.",
+    "dashboard": {
+      "operatorDeskSummary": "Keep this page feeling like an operator desk: scan what is live, see what needs intervention, and move back into compare or detail only when the evidence truly requires it.",
+      "activeTasks": "active tasks",
+      "activeTasksNote": "The current set of single-target monitoring lanes that are still live.",
+      "attentionNow": "attention now",
+      "attentionNowNote": "Rows that already asked for deliberate operator review.",
+      "compareGroups": "compare groups",
+      "compareGroupsNote": "Baskets with enough members to behave like a real compare lane.",
+      "liveWinners": "live winners",
+      "liveWinnersNote": "Groups that currently expose a winner instead of only awaiting proof.",
+      "bestNextMove": "best next move",
+      "bestNextMoveTitle": "Start in Compare when evidence is still noisy.",
+      "bestNextMoveSummary": "The dashboard should not invite operators to create watch state too early. Use Compare first whenever the winner is still ambiguous.",
+      "proofDiscipline": "proof discipline",
+      "proofDisciplineTitle": "Keep evidence before commitment.",
+      "proofDisciplineSummary": "A saved compare package is the safer checkpoint. Long-lived tasks and groups should only happen after the basket reads honestly."
+    },
     "board": {
       "needsAttention": "needs attention",
       "memberCandidates": "{{count}} member candidates",
@@ -468,6 +486,43 @@
       "zipBadge": "ZIP {{value}}",
       "noGroups": "No compare-aware groups yet. Build one from a successful Compare Preview result."
     }
+  },
+  "createTaskPage": {
+    "eyebrow": "Create watch task",
+    "title": "Turn a product URL into a long-lived task",
+    "summary": "Think of this form as the intake desk for the product pipeline: the URL is registered first, then monitoring cadence, history, and notifications can accumulate around it.",
+    "draftLoadedPrefix": "Loaded compare preview context for",
+    "draftLoadedSuffix": "Review the threshold and create the task when it looks right.",
+    "compareHandoff": "Compare handoff",
+    "normalizedUrl": "Normalized URL",
+    "candidateKey": "Candidate key",
+    "submittedUrl": "Submitted URL",
+    "zipCode": "ZIP Code",
+    "cadenceMinutes": "Cadence (minutes)",
+    "thresholdType": "Threshold Type",
+    "thresholdValue": "Threshold Value",
+    "cooldownMinutes": "Cooldown (minutes)",
+    "recipientEmail": "Recipient Email",
+    "thresholdTypeOptions": {
+      "priceBelow": "Price below",
+      "priceDropPercent": "Price drop percent",
+      "effectivePriceBelow": "Effective price below"
+    },
+    "creating": "Creating task...",
+    "submit": "Create Watch Task",
+    "backToCompare": "Back to compare result",
+    "cancel": "Cancel",
+    "apiEyebrow": "API mapping",
+    "apiTitle": "Why this shape matters",
+    "apiSummaryLead": "This page is not a decorative form. It maps directly to the live",
+    "apiSummaryTail": "request payload.",
+    "apiSummaryBody": "In other words, the frontend is already wired to the active API instead of hiding behind placeholder data.",
+    "existsLabel": "Why this page exists",
+    "existsTitle": "One intake desk, not six scattered forms",
+    "existsSummary": "The operator only needs one clear decision here: is this URL worth turning into a durable watch lane?",
+    "progressiveLabel": "Progressive disclosure",
+    "progressiveTitle": "Only surface detail when it changes the decision",
+    "progressiveSummary": "Compare context appears only when it exists, so the page stays lightweight for a direct single-task intake but still supports handoff from Compare Preview."
   },
   "settings": {
     "runtime": {

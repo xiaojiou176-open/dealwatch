@@ -2,6 +2,7 @@
   "common": {
     "loadingRoute": "正在加载页面...",
     "languageLabel": "语言",
+    "skipToMain": "跳到主内容",
     "lang": "zh-CN",
     "locale": {
       "en": "English",
@@ -461,6 +462,23 @@
     "controlNotesBullet2": "2. `Degraded` 表示监控仍然能跑，但近期失败或投递问题已经降低了可信度。",
     "controlNotesBullet3": "3. `Blocked` 或 `Needs Attention` 表示系统希望先有人介入，再继续相信自动化。",
     "controlNotesBullet4": "4. Watch group 是 compare-first 变成长周期决策逻辑的地方，而不只是一次性入口。",
+    "dashboard": {
+      "operatorDeskSummary": "把这页当成操作者的主桌面：先看哪些监控还在跑、哪些已经需要人工确认，只有在证据真的要求时才回到 compare 或 detail。",
+      "activeTasks": "运行中的任务",
+      "activeTasksNote": "当前仍然保持为单目标监控的长期通道。",
+      "attentionNow": "当前待处理",
+      "attentionNowNote": "这些行已经明确请求人工复核，而不是继续盲目自动重试。",
+      "compareGroups": "对比分组",
+      "compareGroupsNote": "已经有足够成员、可以像真实 compare 篮子那样运作的分组。",
+      "liveWinners": "当前有赢家",
+      "liveWinnersNote": "这些分组已经暴露当前赢家，而不是还停留在等待证据的状态。",
+      "bestNextMove": "最佳下一步",
+      "bestNextMoveTitle": "证据还嘈杂时，先回到 Compare。",
+      "bestNextMoveSummary": "这个看板不该诱导操作者太早创建 watch state。只要赢家还不够明确，就先回到 Compare。",
+      "proofDiscipline": "证据纪律",
+      "proofDisciplineTitle": "先留证据，再做承诺。",
+      "proofDisciplineSummary": "保存 compare package 才是更安全的检查点。只有当篮子已经足够诚实时，才应该进入长期任务或分组。"
+    },
     "board": {
       "needsAttention": "需人工处理",
       "memberCandidates": "{{count}} 个成员候选",
@@ -468,6 +486,43 @@
       "zipBadge": "邮编 {{value}}",
       "noGroups": "还没有 compare-aware 分组。先从一次成功的 Compare Preview 结果里创建一个。"
     }
+  },
+  "createTaskPage": {
+    "eyebrow": "创建监控任务",
+    "title": "把一个商品 URL 变成长期监控任务",
+    "summary": "把这个表单理解成产品管线的接待台：先登记 URL，再把 cadence、历史和通知逐步挂到同一条任务线上。",
+    "draftLoadedPrefix": "已加载 Compare Preview 上下文：",
+    "draftLoadedSuffix": "请确认阈值后再创建任务。",
+    "compareHandoff": "Compare 交接信息",
+    "normalizedUrl": "规范化 URL",
+    "candidateKey": "候选键",
+    "submittedUrl": "提交的 URL",
+    "zipCode": "邮编",
+    "cadenceMinutes": "运行频率（分钟）",
+    "thresholdType": "阈值类型",
+    "thresholdValue": "阈值数值",
+    "cooldownMinutes": "冷却时间（分钟）",
+    "recipientEmail": "收件邮箱",
+    "thresholdTypeOptions": {
+      "priceBelow": "价格低于",
+      "priceDropPercent": "价格跌幅百分比",
+      "effectivePriceBelow": "到手价低于"
+    },
+    "creating": "正在创建任务...",
+    "submit": "创建监控任务",
+    "backToCompare": "回到 Compare 结果",
+    "cancel": "取消",
+    "apiEyebrow": "API 映射",
+    "apiTitle": "为什么这个形态重要",
+    "apiSummaryLead": "这页不是装饰性表单，它直接映射到 live 的",
+    "apiSummaryTail": "请求载荷。",
+    "apiSummaryBody": "换句话说，前端已经直接接到了真实 API，而不是躲在占位数据后面。",
+    "existsLabel": "为什么需要这页",
+    "existsTitle": "一个接待台，而不是六个散落表单",
+    "existsSummary": "对操作者来说，这里只该有一个核心问题：这个 URL 值不值得变成长期 watch lane？",
+    "progressiveLabel": "渐进式披露",
+    "progressiveTitle": "只有会改变决定的细节才往前放",
+    "progressiveSummary": "只有 compare 上下文真的存在时才显示出来，这样页面在直建单任务时仍然轻，而在承接 Compare Preview 时又不会丢信息。"
   },
   "settings": {
     "runtime": {

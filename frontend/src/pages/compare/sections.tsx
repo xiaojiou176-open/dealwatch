@@ -80,13 +80,13 @@ export function CompareDecisionSection({
   t,
 }: CompareDecisionSectionProps) {
   return (
-    <div class="grid gap-4 xl:grid-cols-[1.1fr,0.9fr]">
-      <section class="rounded-[1.75rem] border border-base-300 bg-base-100/95 p-6 shadow-card">
+    <div class="dashboard-dual-grid">
+      <section class="surface-panel surface-panel-block surface-enter">
         <div class="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-ember">{t("compare.decision.eyebrow")}</p>
+            <p class="eyebrow-label">{t("compare.decision.eyebrow")}</p>
             <h3 class="mt-2 text-2xl font-semibold text-ink">{decisionBoard.headline}</h3>
-            <p class="mt-3 text-sm leading-6 text-slate-600">{decisionBoard.summary}</p>
+            <p class="supporting-copy">{decisionBoard.summary}</p>
           </div>
           <span class={`badge ${decisionBadgeClass(decisionBoard.tone)}`}>
             {decisionBoard.tone === "success"
@@ -99,27 +99,27 @@ export function CompareDecisionSection({
           </span>
         </div>
 
-        <div class="mt-4 grid gap-3 md:grid-cols-4">
-          <div class="rounded-2xl bg-base-200/60 px-4 py-3">
-            <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+        <div class="metric-grid mt-4 md:grid-cols-4">
+          <div class="metric-card">
+            <div class="workflow-label">
               {compareText("compare.decision.stats.resolved", COMPARE_COPY.decision.stats.resolved)}
             </div>
             <div class="mt-2 text-2xl font-semibold text-ink">{formatNumber(locale, result.resolvedCount, "0")}</div>
           </div>
-          <div class="rounded-2xl bg-base-200/60 px-4 py-3">
-            <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+          <div class="metric-card">
+            <div class="workflow-label">
               {compareText("compare.decision.stats.groupReady", COMPARE_COPY.decision.stats.groupReady)}
             </div>
             <div class="mt-2 text-2xl font-semibold text-ink">{formatNumber(locale, decisionBoard.groupReadyCount, "0")}</div>
           </div>
-          <div class="rounded-2xl bg-base-200/60 px-4 py-3">
-            <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+          <div class="metric-card">
+            <div class="workflow-label">
               {compareText("compare.decision.stats.bestListed", COMPARE_COPY.decision.stats.bestListed)}
             </div>
-            <div class="mt-2 text-2xl font-semibold text-ember">{formatCurrency(locale, decisionBoard.bestListedPrice)}</div>
+            <div class="mt-2 text-2xl font-semibold text-moss">{formatCurrency(locale, decisionBoard.bestListedPrice)}</div>
           </div>
-          <div class="rounded-2xl bg-base-200/60 px-4 py-3">
-            <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+          <div class="metric-card">
+            <div class="workflow-label">
               {compareText("compare.decision.stats.strongestPair", COMPARE_COPY.decision.stats.strongestPair)}
             </div>
             <div class="mt-2 text-2xl font-semibold text-ink">
@@ -136,10 +136,10 @@ export function CompareDecisionSection({
         </div>
 
         {recommendation ? (
-          <div class="mt-4 rounded-2xl border border-base-300 bg-base-200/30 px-4 py-4">
+          <div class="dashboard-card dashboard-card-strong mt-4">
             <div class="flex items-start justify-between gap-3">
               <div>
-                <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                <div class="workflow-label">
                   {compareText("compare.recommendation.eyebrow", COMPARE_COPY.recommendation.eyebrow)}
                 </div>
                 <h4 class="mt-2 text-lg font-semibold text-ink">{recommendation.headline}</h4>
@@ -160,16 +160,16 @@ export function CompareDecisionSection({
             </div>
             <p class="mt-2 text-sm leading-6 text-slate-600">{recommendation.summary}</p>
             {recommendation.abstention.active && recommendation.abstention.reason ? (
-              <div class="mt-3 rounded-2xl border border-dashed border-base-300 bg-base-100/80 px-4 py-3 text-sm leading-6 text-slate-600">
+              <div class="notice-strip mt-3 text-sm leading-6 text-slate-600">
                 <div class="font-semibold">
                   {compareText("compare.recommendation.whyAbstained", COMPARE_COPY.recommendation.whyAbstained)}
                 </div>
                 <p class="mt-2">{recommendation.abstention.reason}</p>
               </div>
             ) : null}
-            <div class="mt-4 grid gap-3 lg:grid-cols-3">
-              <div class="rounded-2xl bg-base-100/80 px-4 py-4">
-                <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+            <div class="dashboard-split-grid mt-4 lg:grid-cols-3">
+              <div class="dashboard-card">
+                <div class="workflow-label">
                   {compareText("compare.recommendation.basisTitle", COMPARE_COPY.recommendation.basisTitle)}
                 </div>
                 <ul class="mt-3 space-y-2 text-sm leading-6 text-slate-600">
@@ -178,8 +178,8 @@ export function CompareDecisionSection({
                   ))}
                 </ul>
               </div>
-              <div class="rounded-2xl bg-base-100/80 px-4 py-4">
-                <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+              <div class="dashboard-card">
+                <div class="workflow-label">
                   {compareText("compare.recommendation.uncertaintyTitle", COMPARE_COPY.recommendation.uncertaintyTitle)}
                 </div>
                 <ul class="mt-3 space-y-2 text-sm leading-6 text-slate-600">
@@ -188,8 +188,8 @@ export function CompareDecisionSection({
                   ))}
                 </ul>
               </div>
-              <div class="rounded-2xl bg-base-100/80 px-4 py-4">
-                <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+              <div class="dashboard-card">
+                <div class="workflow-label">
                   {compareText("compare.recommendation.evidenceRefsTitle", COMPARE_COPY.recommendation.evidenceRefsTitle)}
                 </div>
                 <ul class="mt-3 space-y-2 text-sm leading-6 text-slate-600">
@@ -233,10 +233,10 @@ export function CompareDecisionSection({
           {t("compare.decision.summaryNote")}
         </p>
 
-        <div class="mt-4 rounded-2xl border border-dashed border-base-300 bg-base-200/30 px-4 py-4">
+        <div class="notice-strip mt-4">
           <div class="flex items-start justify-between gap-3">
             <div>
-              <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+              <div class="workflow-label">
                 {compareText("compare.decision.stats.aiTitle", COMPARE_COPY.decision.stats.aiTitle)}
               </div>
               <h4 class="mt-2 text-lg font-semibold text-ink">
@@ -266,10 +266,10 @@ export function CompareDecisionSection({
         </div>
       </section>
 
-      <aside class="rounded-[1.75rem] border border-base-300 bg-base-100/95 p-6 shadow-card">
+      <aside class="surface-panel surface-panel-block surface-enter">
         <div class="flex items-center justify-between gap-3">
           <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-ember">{t("compare.decision.riskEyebrow")}</p>
+            <p class="eyebrow-label">{t("compare.decision.riskEyebrow")}</p>
             <h3 class="mt-2 text-xl font-semibold text-ink">{decisionBoard.riskSummary}</h3>
           </div>
           <span class={`badge ${decisionBadgeClass(decisionBoard.tone)}`}>
@@ -282,21 +282,21 @@ export function CompareDecisionSection({
 
         <div class="mt-4 space-y-3">
           {decisionBoard.risks.map((risk) => (
-            <div class="rounded-2xl border border-base-300 bg-base-100/80 px-4 py-3 text-sm leading-6 text-slate-600" key={risk}>
+            <div class="dashboard-mini-card text-sm leading-6 text-slate-600" key={risk}>
               {risk}
             </div>
           ))}
         </div>
 
-        <div class="mt-4 grid gap-3 md:grid-cols-2">
-          <div class="rounded-2xl bg-base-200/60 px-4 py-3">
-            <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+        <div class="metric-grid mt-4 md:grid-cols-2">
+          <div class="metric-card">
+            <div class="workflow-label">
               {compareText("compare.decision.stats.unsupported", COMPARE_COPY.decision.stats.unsupported)}
             </div>
             <div class="mt-2 text-xl font-semibold text-ink">{formatNumber(locale, decisionBoard.unsupportedCount, "0")}</div>
           </div>
-          <div class="rounded-2xl bg-base-200/60 px-4 py-3">
-            <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+          <div class="metric-card">
+            <div class="workflow-label">
               {compareText("compare.decision.stats.fetchFailures", COMPARE_COPY.decision.stats.fetchFailures)}
             </div>
             <div class="mt-2 text-xl font-semibold text-ink">{formatNumber(locale, decisionBoard.fetchFailureCount, "0")}</div>
@@ -342,12 +342,12 @@ export function SavedEvidenceSection({
   t,
 }: SavedEvidenceSectionProps) {
   return (
-    <section class="rounded-[1.75rem] border border-base-300 bg-base-100/95 p-6 shadow-card">
+    <section class="surface-panel surface-panel-block surface-enter">
       <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-ember">{t("compare.decision.savedEyebrow")}</p>
+          <p class="eyebrow-label">{t("compare.decision.savedEyebrow")}</p>
           <h3 class="mt-2 text-xl font-semibold text-ink">{t("compare.decision.savedTitle")}</h3>
-          <p class="mt-2 text-sm leading-6 text-slate-600">
+          <p class="supporting-copy">
             {t("compare.decision.savedSummary")}
           </p>
         </div>
@@ -366,7 +366,7 @@ export function SavedEvidenceSection({
               <button
                 class={`w-full rounded-2xl border px-4 py-4 text-left transition ${
                   selectedPackageId === item.id
-                    ? "border-ember bg-amber-50/70"
+                    ? "border-ember bg-base-200/80"
                     : "border-base-300 bg-base-100/80 hover:border-ember/50"
                 }`}
                 key={item.id}
@@ -389,7 +389,7 @@ export function SavedEvidenceSection({
             ))}
           </div>
 
-          <div class="rounded-2xl border border-base-300 bg-base-100/80 p-5">
+          <div class="dashboard-card dashboard-card-strong">
             {selectedSavedPackage ? (
               <div class="space-y-4">
                 <div class="flex flex-wrap items-start justify-between gap-3">
@@ -415,36 +415,36 @@ export function SavedEvidenceSection({
                   )}
                 </div>
 
-                <div class="grid gap-3 md:grid-cols-3">
-                  <div class="rounded-2xl bg-base-200/60 px-4 py-3">
-                    <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                <div class="metric-grid md:grid-cols-3">
+                  <div class="metric-card">
+                    <div class="workflow-label">
                       {compareText("compare.savedPanel.zip", COMPARE_COPY.savedPanel.zip)}
                     </div>
                     <div class="mt-2 text-lg font-semibold text-ink">{selectedSavedPackage.zipCode}</div>
                   </div>
-                  <div class="rounded-2xl bg-base-200/60 px-4 py-3">
-                    <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  <div class="metric-card">
+                    <div class="workflow-label">
                       {compareText("compare.savedPanel.submitted", COMPARE_COPY.savedPanel.submitted)}
                     </div>
                     <div class="mt-2 text-lg font-semibold text-ink">{selectedSavedPackage.submittedCount}</div>
                   </div>
-                  <div class="rounded-2xl bg-base-200/60 px-4 py-3">
-                    <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  <div class="metric-card">
+                    <div class="workflow-label">
                       {compareText("compare.savedPanel.resolved", COMPARE_COPY.savedPanel.resolved)}
                     </div>
                     <div class="mt-2 text-lg font-semibold text-ink">{selectedSavedPackage.resolvedCount}</div>
                   </div>
                 </div>
 
-                <div class="rounded-2xl bg-base-200/40 px-4 py-4">
-                  <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                <div class="dashboard-card">
+                  <div class="workflow-label">
                     {compareText("compare.savedPanel.decisionSummary", COMPARE_COPY.savedPanel.decisionSummary)}
                   </div>
                   <p class="mt-2 text-sm leading-6 text-slate-600">{selectedSavedPackage.decisionSummary}</p>
                 </div>
 
-                <div class="rounded-2xl bg-base-200/40 px-4 py-4">
-                  <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                <div class="dashboard-card">
+                  <div class="workflow-label">
                     {compareText("compare.savedPanel.riskSummary", COMPARE_COPY.savedPanel.riskSummary)}
                   </div>
                   <p class="mt-2 text-sm leading-6 text-slate-600">{selectedSavedPackage.riskSummary}</p>
@@ -512,7 +512,7 @@ export function CandidateEvidenceSection({
   useComparisonForTask,
 }: CandidateEvidenceSectionProps) {
   return (
-    <div class="rounded-[1.75rem] border border-base-300 bg-base-100/95 p-6 shadow-card">
+    <div class="surface-panel surface-panel-block surface-enter">
       <div class="flex flex-wrap items-center gap-3">
         <h3 class="text-xl font-semibold text-ink">{t("compare.decision.candidateEvidenceTitle")}</h3>
         <span class="badge badge-outline">
@@ -531,13 +531,13 @@ export function CandidateEvidenceSection({
           })}
         </span>
       </div>
-      <p class="mt-3 text-sm leading-6 text-slate-600">
+      <p class="supporting-copy">
         {t("compare.candidatePanel.intro")}
       </p>
 
       <div class="mt-5 grid gap-4">
         {result.comparisons.map((item) => (
-          <article class="rounded-2xl border border-base-300 px-4 py-4" key={item.submittedUrl}>
+          <article class="dashboard-card dashboard-card-strong" key={item.submittedUrl}>
             <div class="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
               <div class="min-w-0 flex-1">
                 <div class="flex flex-wrap items-center gap-2">
@@ -573,9 +573,9 @@ export function CandidateEvidenceSection({
                   </p>
                 ) : null}
                 {item.supportContract ? (
-                  <div class="mt-4 grid gap-3 md:grid-cols-2">
-                    <div class="rounded-2xl bg-base-200/40 px-4 py-3">
-                      <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  <div class="dashboard-split-grid mt-4">
+                    <div class="dashboard-card">
+                      <div class="workflow-label">
                         {t("compare.candidatePanel.stillAllowed")}
                       </div>
                       <div class="mt-2 flex flex-wrap gap-2">
@@ -584,8 +584,8 @@ export function CandidateEvidenceSection({
                         ))}
                       </div>
                     </div>
-                    <div class="rounded-2xl bg-base-200/40 px-4 py-3">
-                      <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                    <div class="dashboard-card">
+                      <div class="workflow-label">
                         {t("compare.candidatePanel.stillBlocked")}
                       </div>
                       <div class="mt-2 flex flex-wrap gap-2">
@@ -611,15 +611,15 @@ export function CandidateEvidenceSection({
                   </div>
                 ) : null}
 
-                <div class="mt-4 grid gap-3 md:grid-cols-2">
-                  <div class="rounded-2xl bg-base-200/60 px-4 py-3">
-                    <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                <div class="metric-grid mt-4 md:grid-cols-2">
+                  <div class="metric-card">
+                    <div class="workflow-label">
                       {t("compare.candidatePanel.listed")}
                     </div>
                     <div class="mt-2 text-xl font-semibold text-ink">{formatCurrency(locale, item.offer?.price)}</div>
                   </div>
-                  <div class="rounded-2xl bg-base-200/60 px-4 py-3">
-                    <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  <div class="metric-card">
+                    <div class="workflow-label">
                       {t("compare.candidatePanel.evidenceNotes")}
                     </div>
                     <div class="mt-2 text-sm leading-6 text-slate-600">
@@ -643,15 +643,15 @@ export function CandidateEvidenceSection({
                 </div>
 
                 <div class="mt-4 space-y-3">
-                  <div class="rounded-2xl bg-base-200/50 px-4 py-3">
-                    <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  <div class="dashboard-card">
+                    <div class="workflow-label">
                       {compareText("compare.candidatePanel.submittedUrl", COMPARE_COPY.candidatePanel.submittedUrl)}
                     </div>
                     <p class="mt-2 break-words font-mono text-xs leading-6 text-slate-600">{item.submittedUrl}</p>
                   </div>
                   {item.normalizedUrl ? (
-                    <div class="rounded-2xl bg-base-200/30 px-4 py-3">
-                      <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                    <div class="dashboard-card">
+                      <div class="workflow-label">
                         {compareText("compare.candidatePanel.normalizedUrl", COMPARE_COPY.candidatePanel.normalizedUrl)}
                       </div>
                       <p class="mt-2 break-words font-mono text-xs leading-6 text-slate-600">{item.normalizedUrl}</p>
@@ -670,8 +670,8 @@ export function CandidateEvidenceSection({
 
               <div class="w-full xl:max-w-sm">
                 {item.offer ? (
-                  <div class="rounded-2xl border border-base-300 bg-base-100/80 p-4">
-                    <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  <div class="dashboard-card">
+                    <div class="workflow-label">
                       {t("compare.candidatePanel.recommendedCta")}
                     </div>
                     <p class="mt-2 text-sm leading-6 text-slate-600">
@@ -696,8 +696,8 @@ export function CandidateEvidenceSection({
                     </button>
 
                     {item.candidateKey ? (
-                      <div class="mt-4 rounded-2xl bg-base-200/40 px-4 py-3">
-                        <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                      <div class="dashboard-card mt-4">
+                        <div class="workflow-label">
                           {compareText("compare.candidatePanel.evidenceFingerprint", COMPARE_COPY.candidatePanel.evidenceFingerprint)}
                         </div>
                         <p class="mt-2 break-words font-mono text-xs leading-6 text-slate-600">{item.candidateKey}</p>
@@ -744,8 +744,8 @@ export function GroupBuilderSection({
   updateGroupForm,
 }: GroupBuilderSectionProps) {
   return (
-    <aside class="rounded-[1.75rem] border border-base-300 bg-base-100/95 p-6 shadow-card">
-      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-ember">
+    <aside class="surface-panel surface-panel-block surface-enter">
+      <p class="eyebrow-label">
         {t("compare.groupBuilder.eyebrow")}
       </p>
       <h3 class="mt-2 text-xl font-semibold text-ink">
@@ -882,8 +882,8 @@ export function GroupBuilderSection({
         </label>
       </div>
 
-      <div class="mt-5 rounded-2xl bg-base-200/60 p-4">
-        <div class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+      <div class="dashboard-card dashboard-card-strong mt-5">
+        <div class="workflow-label">
           {compareText("compare.groupBuilder.rowsEnteringBasket", COMPARE_COPY.groupBuilder.rowsEnteringBasket)}
         </div>
         <div class="mt-3 space-y-3">
@@ -891,7 +891,7 @@ export function GroupBuilderSection({
             groupReadyCandidates.map((candidate) => {
               const comparison = comparisonByCandidateKey.get(candidate.candidateKey);
               return (
-                <div class="rounded-2xl border border-base-300 bg-base-100/80 px-4 py-3" key={candidate.candidateKey}>
+                <div class="dashboard-mini-card" key={candidate.candidateKey}>
                   <div class="flex items-start justify-between gap-3">
                     <div>
                       <div class="font-semibold text-ink">{candidate.titleSnapshot}</div>
@@ -962,11 +962,11 @@ export function PairEvidenceSection({
   t,
 }: PairEvidenceSectionProps) {
   return (
-    <aside class="rounded-[1.75rem] border border-base-300 bg-base-100/95 p-6 shadow-card">
+    <aside class="surface-panel surface-panel-block surface-enter">
       <h3 class="text-lg font-semibold text-ink">
         {t("compare.pairEvidence.title")}
       </h3>
-      <p class="mt-2 text-sm leading-6 text-slate-600">
+      <p class="supporting-copy">
         {t("compare.pairEvidence.summary")}
       </p>
       {matches.length ? (
@@ -982,7 +982,7 @@ export function PairEvidenceSection({
                   : "badge-error";
 
             return (
-              <div class="rounded-2xl border border-base-300 px-4 py-3" key={`${item.leftProductKey}-${item.rightProductKey}`}>
+              <div class="dashboard-card" key={`${item.leftProductKey}-${item.rightProductKey}`}>
                 <div class="flex items-start justify-between gap-4">
                   <div>
                     <div class="font-semibold text-ink">
@@ -1054,7 +1054,7 @@ export function PairEvidenceSection({
                   </div>
                 ) : null}
 
-                <div class="mt-3 rounded-2xl bg-base-200/40 px-3 py-3 text-xs leading-6 text-slate-500">
+                <div class="dashboard-card mt-3 text-xs leading-6 text-slate-500">
                   {item.leftCandidateKey ?? "--"}
                   <br />
                   {item.rightCandidateKey ?? "--"}
