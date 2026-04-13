@@ -11,10 +11,10 @@ The first screen must answer three questions immediately:
 
 That is the core interpretation of our UI/UX laws:
 
-- 最小认知负担
-- 美观但不花哨
-- 产品化而不是 demo 化
-- 渐进式披露
+- minimal cognitive load
+- polished without becoming flashy
+- productized instead of demo-shaped
+- progressive disclosure
 
 ## Source inspirations
 
