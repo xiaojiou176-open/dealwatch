@@ -70,7 +70,7 @@ importlib-metadata==8.6.1
     # via opentelemetry-api
 jstyleson==0.0.2
     # via extruct
-lxml==6.0.2
+lxml==6.1.0
     # via
     #   extruct
     #   html-text
