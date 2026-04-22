@@ -68,17 +68,17 @@
       "title": "Inspect cross-store URL candidates before you create a task or group",
       "summary": "Start small: paste the candidate URLs, let DealWatch normalize the basket, then use the decision board to decide whether this should stay in review, become one task, or become a compare-aware group.",
       "zipCode": "ZIP Code",
-    "productUrls": "Product URLs",
-    "productUrlsHelp": "Use one URL per line. The compare preview accepts 2 to 10 non-empty URLs.",
-    "loading": "Comparing product URLs...",
-    "submit": "Compare URLs",
-    "errors": {
-      "zipRequired": "ZIP code is required.",
-      "invalidProductUrl": "Each line must be a valid product URL.",
-      "minUrls": "Enter at least two product URLs.",
-      "maxUrls": "Enter no more than ten product URLs."
-    }
-  },
+      "productUrls": "Product URLs",
+      "productUrlsHelp": "Use one URL per line. The compare preview accepts 2 to 10 non-empty URLs.",
+      "loading": "Comparing product URLs...",
+      "submit": "Compare URLs",
+      "errors": {
+        "zipRequired": "ZIP code is required.",
+        "invalidProductUrl": "Each line must be a valid product URL.",
+        "minUrls": "Enter at least two product URLs.",
+        "maxUrls": "Enter no more than ten product URLs."
+      }
+    },
     "route": {
       "eyebrow": "First-success path",
       "title": "Keep the first screen about one decision, not six doors",
@@ -177,55 +177,55 @@
         "hold": "hold",
         "info": "info"
       },
-    "stats": {
-      "resolved": "Resolved",
-      "groupReady": "Group-ready",
-      "bestListed": "Best listed",
-      "strongestPair": "Strongest pair",
-      "aiTitle": "AI-assisted explanation",
-      "aiNote": "The deterministic decision board stays primary. This card is only the explain layer on top of that evidence.",
-      "riskNotes": "{{count}} note{{plural}}",
-      "unsupported": "Unsupported",
-      "fetchFailures": "Fetch failures"
-    },
-    "ai": {
-      "badge": {
-        "ok": "available",
-        "disabled": "disabled",
-        "error": "error",
-        "skipped": "skipped",
-        "unavailable": "unavailable"
+      "stats": {
+        "resolved": "Resolved",
+        "groupReady": "Group-ready",
+        "bestListed": "Best listed",
+        "strongestPair": "Strongest pair",
+        "aiTitle": "AI-assisted explanation",
+        "aiNote": "The deterministic decision board stays primary. This card is only the explain layer on top of that evidence.",
+        "riskNotes": "{{count}} note{{plural}}",
+        "unsupported": "Unsupported",
+        "fetchFailures": "Fetch failures"
       },
-      "headline": {
-        "ok": "AI-assisted explanation",
-        "disabled": "AI assistance is disabled",
-        "error": "AI-assisted explanation hit an error",
-        "skipped": "AI-assisted explanation was skipped",
-        "unavailable": "AI-assisted explanation unavailable"
+      "ai": {
+        "badge": {
+          "ok": "available",
+          "disabled": "disabled",
+          "error": "error",
+          "skipped": "skipped",
+          "unavailable": "unavailable"
+        },
+        "headline": {
+          "ok": "AI-assisted explanation",
+          "disabled": "AI assistance is disabled",
+          "error": "AI-assisted explanation hit an error",
+          "skipped": "AI-assisted explanation was skipped",
+          "unavailable": "AI-assisted explanation unavailable"
+        },
+        "summary": {
+          "disabled": "AI assistance is disabled for this workspace. The decision board, risk summary, and pair evidence remain the source of truth.",
+          "error": "AI-assisted explanation could not be generated for this compare run. Review the deterministic summary and pair evidence instead.",
+          "skipped": "AI-assisted explanation was skipped for this compare run. The deterministic summary and pair evidence still tell the full story.",
+          "unavailable": "AI-assisted explanation unavailable. Showing deterministic summary and evidence only."
+        }
       },
-      "summary": {
-        "disabled": "AI assistance is disabled for this workspace. The decision board, risk summary, and pair evidence remain the source of truth.",
-        "error": "AI-assisted explanation could not be generated for this compare run. Review the deterministic summary and pair evidence instead.",
-        "skipped": "AI-assisted explanation was skipped for this compare run. The deterministic summary and pair evidence still tell the full story.",
-        "unavailable": "AI-assisted explanation unavailable. Showing deterministic summary and evidence only."
+      "recommendation": {
+        "eyebrow": "Recommendation",
+        "basisTitle": "Basis",
+        "uncertaintyTitle": "Uncertainty",
+        "evidenceRefsTitle": "Evidence refs",
+        "whyAbstained": "Why this recommendation abstained",
+        "verdict": {
+          "wait": "Keep watching",
+          "recheck_later": "Re-check later",
+          "insufficient_evidence": "Not enough evidence yet"
+        }
       }
     },
-    "recommendation": {
-      "eyebrow": "Recommendation",
-      "basisTitle": "Basis",
-      "uncertaintyTitle": "Uncertainty",
-      "evidenceRefsTitle": "Evidence refs",
-      "whyAbstained": "Why this recommendation abstained",
-      "verdict": {
-        "wait": "Keep watching",
-        "recheck_later": "Re-check later",
-        "insufficient_evidence": "Not enough evidence yet"
-      }
-    }
-  },
-  "saved": {
-    "labelWithTitle": "{{title}} · ZIP {{zipCode}}",
-    "labelFallback": "Compare evidence · ZIP {{zipCode}}",
+    "saved": {
+      "labelWithTitle": "{{title}} · ZIP {{zipCode}}",
+      "labelFallback": "Compare evidence · ZIP {{zipCode}}",
       "shareTitle": "DealWatch compare evidence package",
       "shareLabel": "Label: {{value}}",
       "shareSavedAt": "Saved at: {{value}}",
@@ -341,24 +341,24 @@
       "recipientEmail": "Recipient Email",
       "enableNotifications": "Enable notifications for this group",
       "rowsEnteringBasket": "Rows that will enter the basket",
-    "listedAtStore": "{{storeKey}} · listed {{value}}",
-    "similarity": "similarity {{value}}",
-    "noSuccessfulCandidates": "No successful compare candidates are available yet, so group creation stays locked.",
-    "lockedHint": "A compare-aware group stays locked until at least two successful candidates survive the preview. That keeps a thin basket from pretending it is durable compare truth.",
-    "creating": "Creating watch group from compare candidates...",
-    "createButton": "Create watch group from successful candidates",
-    "defaultTitleSuffix": "compare group",
-    "errors": {
-      "titleTooLong": "Group title must stay within 120 characters.",
-      "zipRequired": "ZIP code is required.",
-      "cadenceMin": "Cadence must be at least 5 minutes.",
-      "cadenceMax": "Cadence must stay within 10080 minutes.",
-      "thresholdValueMin": "Threshold value must be zero or above.",
-      "cooldownMin": "Cooldown must be zero or above.",
-      "cooldownMax": "Cooldown must stay within 10080 minutes.",
-      "recipientEmailRequired": "Recipient email is required."
-    }
-  },
+      "listedAtStore": "{{storeKey}} · listed {{value}}",
+      "similarity": "similarity {{value}}",
+      "noSuccessfulCandidates": "No successful compare candidates are available yet, so group creation stays locked.",
+      "lockedHint": "A compare-aware group stays locked until at least two successful candidates survive the preview. That keeps a thin basket from pretending it is durable compare truth.",
+      "creating": "Creating watch group from compare candidates...",
+      "createButton": "Create watch group from successful candidates",
+      "defaultTitleSuffix": "compare group",
+      "errors": {
+        "titleTooLong": "Group title must stay within 120 characters.",
+        "zipRequired": "ZIP code is required.",
+        "cadenceMin": "Cadence must be at least 5 minutes.",
+        "cadenceMax": "Cadence must stay within 10080 minutes.",
+        "thresholdValueMin": "Threshold value must be zero or above.",
+        "cooldownMin": "Cooldown must be zero or above.",
+        "cooldownMax": "Cooldown must stay within 10080 minutes.",
+        "recipientEmailRequired": "Recipient email is required."
+      }
+    },
     "pairEvidence": {
       "title": "Pair evidence",
       "summary": "These scores are the pair-by-pair proof. They explain why two rows look close, and why a row might still stay out of the basket.",
@@ -1367,8 +1367,6 @@
       "mapTableSignal": "Signal",
       "mapTableWhere": "Where to look now",
       "mapTableWhy": "Why it is useful in public",
-      "evidenceMapTitle": "Evidence map",
-      "evidenceMapSummary": "Think of this as a map legend, not a scoreboard. It shows where each public claim should point when you want fresh proof without hard-coding counts into the page.",
       "evidenceMapTableSignal": "Signal",
       "evidenceMapTableWhere": "Where to look now",
       "evidenceMapTableWhy": "Why it is useful in public",
@@ -1606,7 +1604,7 @@
       "heroPackCta": "Open the builder pack",
       "heroSecondaryCta": "Open the client catalog",
       "heroContractCta": "Read the phase-1 contract",
-      "heroNote": "Human path first: builder pack, contract, then runtime. If you still need the product pitch or the evidence trail, go back to Compare Preview and Proof first. Native Claude/Codex bundle candidates and listing-prep inputs only come after the route is clear. Public proof is intentionally mixed: PyPI, the Official MCP Registry, and OpenClaw's ClawHub skill are live, while OpenHands and MCP.so still wait on host acceptance.",
+      "heroNote": "Human path first: builder pack, contract, then runtime. If you still need the product pitch or the evidence trail, go back to Compare Preview and Proof first. Native Claude/Codex bundle candidates and listing-prep inputs only come after the route is clear. Public proof is intentionally mixed: PyPI and the Official MCP Registry are live, while OpenClaw still lacks fresh public ClawHub listing proof, OpenHands is closed and unmerged, and MCP.so still waits on host acceptance.",
       "jumpSummary": "Both paths still stop at the same read-only, local-first boundary. No hosted control plane, no write-side MCP promise, and no claim that every host listing is already live.",
       "mirrorStartersLink": "Static client starters JSON",
       "mirrorPackLink": "Static starter pack JSON",
@@ -1666,7 +1664,7 @@
       "distributionPluginCta": "Open the builder pack docs",
       "distributionSkillCta": "Open the builder skill pack",
       "distributionMarketplaceTitle": "Native bundle candidates",
-      "distributionMarketplaceSummary": "Claude Code and Codex now also have repo-owned native bundle artifacts in the shared builder pack. OpenHands is active on `OpenHands/extensions#151` with maintainer-requested changes, `#152` is the retired predecessor, OpenCode remains an ecosystem-listing candidate, and OpenClaw is live on ClawHub.",
+      "distributionMarketplaceSummary": "Claude Code and Codex now also have repo-owned native bundle artifacts in the shared builder pack. OpenHands #151 is closed and unmerged, #152 is the retired predecessor, OpenCode remains an ecosystem-listing candidate, and OpenClaw still lacks fresh public ClawHub listing proof.",
       "distributionSocialCta": "Open the shared bundle",
       "distributionProofCta": "Open the distribution matrix",
       "distributionCatalogCta": "Open the client catalog",
@@ -1695,7 +1693,7 @@
       "boundaryTitle": "Boundary reminder",
       "boundarySummary": "A good builder frontdoor says both what to open next and what not to assume yet, so the page does not quietly turn into plugin theater.",
       "boundaryPluginTitle": "Bundle candidates, not official listings",
-      "boundaryPluginSummary": "DealWatch now ships repo-owned builder-pack materials for every client, native bundle candidates for Claude Code and Codex, and listing-prep inputs for the broader ecosystem. Some public proof is already live (PyPI, the Official MCP Registry, and OpenClaw's ClawHub skill), while OpenHands and MCP.so are still submitted but not yet accepted, and the Chrome companion remains not published.",
+      "boundaryPluginSummary": "DealWatch now ships repo-owned builder-pack materials for every client, native bundle candidates for Claude Code and Codex, and listing-prep inputs for the broader ecosystem. Some public proof is already live (PyPI and the Official MCP Registry), while OpenClaw still lacks fresh public ClawHub listing proof, OpenHands is closed and unmerged, MCP.so is still not publicly accepted, and the Chrome companion remains not published.",
       "boundaryHostedTitle": "No hosted control plane",
       "boundaryHostedSummary": "These builder paths are local-first. They do not prove a hosted remote control plane is live today.",
       "boundaryWriteTitle": "No write-side MCP promise",

@@ -154,9 +154,9 @@ The stable part is:
 | --- | --- | --- | --- |
 | Claude Code | register the local stdio MCP command, then read the substrate doc | `get_runtime_readiness` -> `get_builder_starter_pack` -> `compare_preview` -> `list_watch_tasks` or `list_watch_groups` | no write-side MCP, no hosted remote control plane |
 | Codex | point Codex at the local runtime plus the streamable-HTTP MCP contract | `get_runtime_readiness` -> `get_builder_starter_pack` -> `compare_preview` -> one detail read | no SDK, no multi-tenant auth story |
-| OpenHands | keep the client in observation mode first even though the skill submission is already filed | runtime readiness -> builder starter pack -> compare preview -> recovery or store cockpit reads | OpenHands/extensions submission is open; do not call it merged until the host accepts it |
+| OpenHands | keep the client in observation mode first even though the repo-owned skill packet already exists | runtime readiness -> builder starter pack -> compare preview -> recovery or store cockpit reads | `OpenHands/extensions#151` is currently closed and unmerged; do not call it an active accepted host surface |
 | OpenCode | treat DealWatch as a local product truth source, not as a hosted platform service | MCP discovery -> builder starter pack -> compare preview -> watch or group detail | ecosystem-listing candidate only, no first-party store claim |
-| OpenClaw | treat DealWatch as a local compare-first truth backend or workflow shell dependency, not as a runtime base | `get_runtime_readiness` -> `get_builder_starter_pack` -> `compare_preview` -> watch or group reads -> recovery or store cockpit reads | the ClawHub skill is live, but the safe first flow still starts from the same local read-only runtime |
+| OpenClaw | treat DealWatch as a local compare-first truth backend or workflow shell dependency, not as a runtime base | `get_runtime_readiness` -> `get_builder_starter_pack` -> `compare_preview` -> watch or group reads -> recovery or store cockpit reads | ClawHub is still the intended public host surface, but current public search/API evidence is not strong enough to claim a live listing |
 
 Use the recipe ledger when you need the next level of honesty:
 
@@ -186,9 +186,9 @@ ships in-repo today, and what we still must **not** claim.
 | Claude Code | official marketplace + custom marketplaces | [`plugins/dealwatch-builder-pack/.claude-plugin/plugin.json`](../../plugins/dealwatch-builder-pack/.claude-plugin/plugin.json), [`.claude-plugin/marketplace.json`](../../.claude-plugin/marketplace.json) | marketplace-submission candidate, **not officially listed** |
 | Codex | Plugin Directory + repo/personal marketplace | [`plugins/dealwatch-builder-pack/.codex-plugin/plugin.json`](../../plugins/dealwatch-builder-pack/.codex-plugin/plugin.json), [`../../marketplace.json`](../../marketplace.json) | Plugin Directory candidate, **not officially listed** |
 | Cline | MCP Marketplace issue intake | [`../../llms-install.md`](../../llms-install.md), [`../../assets/marketplace/dealwatch-cline-logo-400.png`](../../assets/marketplace/dealwatch-cline-logo-400.png) | marketplace-submission candidate, **not officially listed** |
-| OpenHands | global skill registry | [`./skills/openhands-readonly-builder-skill.md`](./skills/openhands-readonly-builder-skill.md) | active submission is [`OpenHands/extensions#151`](https://github.com/OpenHands/extensions/pull/151) with maintainer-requested changes; [`#152`](https://github.com/OpenHands/extensions/pull/152) is the retired predecessor |
+| OpenHands | global skill registry | [`./skills/openhands-readonly-builder-skill.md`](./skills/openhands-readonly-builder-skill.md) | `OpenHands/extensions#151` is closed and unmerged after maintainer-requested changes; [`#152`](https://github.com/OpenHands/extensions/pull/152) is the retired predecessor |
 | OpenCode | ecosystem listing | [`./recipes/opencode.md`](./recipes/opencode.md), [`./examples/opencode.jsonc`](./examples/opencode.jsonc) | ecosystem-listing candidate, **not officially listed** |
-| OpenClaw | ClawHub public registry | [`./recipes/openclaw.md`](./recipes/openclaw.md), [`./skills/openclaw-readonly-builder-skill.md`](./skills/openclaw-readonly-builder-skill.md), compatible bundle assets under [`plugins/dealwatch-builder-pack/`](../../plugins/dealwatch-builder-pack/) | live on ClawHub as `dealwatch-readonly-builder` |
+| OpenClaw | ClawHub public registry | [`./recipes/openclaw.md`](./recipes/openclaw.md), [`./skills/openclaw-readonly-builder-skill.md`](./skills/openclaw-readonly-builder-skill.md), compatible bundle assets under [`plugins/dealwatch-builder-pack/`](../../plugins/dealwatch-builder-pack/) | repo-owned OpenClaw cargo is ready, but current public ClawHub search/API evidence is not strong enough to claim a live listing |
 
 ## Official MCP Registry reality
 
@@ -217,7 +217,7 @@ DealWatch now has both halves of the MCP story: the product side and the registr
 That means the remaining stop line is no longer “publish the first package.”
 It is:
 
-- keep the active OpenHands line on `#151` until the host accepts it, while treating `#152` as a retired predecessor
+- if the OpenHands lane matters, restart from the closed state of `#151` rather than pretending it is still an active host review queue
 - wait for directory-style host reviews such as MCP.so
 - decide which additional first-party host surfaces deserve a live listing beyond the current local-first boundary
 
@@ -311,9 +311,9 @@ The honest current shape is still local-first:
 Not every client has a native package today:
 
 - Claude Code and Codex now have repo-owned native bundle artifacts
-- OpenHands now has an active submission in `OpenHands/extensions#151`, but it is still waiting on host acceptance after requested changes; `#152` is a retired predecessor
+- OpenHands `#151` is now closed and unmerged after requested changes; `#152` is a retired predecessor
 - OpenCode remains an ecosystem-listing candidate
-- OpenClaw now has a live ClawHub skill backed by the same compatible bundle assets and repo-native docs
+- OpenClaw still has repo-owned cargo and the intended ClawHub host surface, but this repo no longer claims fresh public live-listing proof
 
 Those artifacts still live in the repo as builder material first, but they no longer all stop at “candidate” status.
 

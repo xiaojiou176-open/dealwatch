@@ -1,7 +1,6 @@
 schema_version: 1
 name: dealwatch-readonly-builder
 display_name: DealWatch Read-only Builder
-version: 1.0.0
 version: 1.1.0
 summary: >
   Public skill bundle for DealWatch that packages MCP install guidance, a
@@ -20,7 +19,7 @@ compatibility:
     published_listing: false
   clawhub:
     mode: skill publish plus published MCP config
-    published_listing: true
+    published_listing: false
 capabilities:
   - install the published DealWatch MCP package in host-specific config
   - expose the stable read-only DealWatch tool inventory
@@ -30,9 +29,9 @@ boundaries:
   hosted_operator: false
   write_capable_mcp: false
   oauth_login: false
-  official_listing_live: true
+  official_listing_live: false
 distribution_notes:
-  current_claim: ClawHub listing is live; other hosts should only claim submission or live state when independently confirmed.
+  current_claim: No fresh public ClawHub listing proof is currently available; other hosts should only claim submission or live state when independently confirmed.
 verification:
   repo_commands:
     - python3 scripts/verify_public_surface.py

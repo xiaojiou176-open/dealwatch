@@ -13,7 +13,8 @@ Truthful status:
 
 - the read-only MCP and HTTP builder surfaces are shipped
 - starter prompts, skill cards, config exports, and native bundle candidates exist in-repo
-- live public surfaces today are PyPI, the Official MCP Registry, and OpenClaw's ClawHub skill
-- OpenHands is active on `OpenHands/extensions#151` with maintainer-requested changes; `#152` is a retired predecessor, not the current line
+- live public surfaces today are PyPI and the Official MCP Registry
+- OpenClaw currently stays in `repo-owned cargo / no fresh public ClawHub proof yet`
+- OpenHands `OpenHands/extensions#151` is closed and unmerged; `#152` is a retired predecessor, not an active review lane
 - MCP.so is submitted but not yet accepted into a live public page, and the Chrome companion remains **not published**
 - write-side MCP, hosted auth, SDK packaging, and broader builder recommendation claims remain deferred

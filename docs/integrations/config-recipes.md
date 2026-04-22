@@ -84,4 +84,4 @@ These recipes do **not** mean:
 - write-side MCP is ready
 - DealWatch runs on Claude Code, Codex, OpenHands, OpenCode, or OpenClaw
 
-The honest reading is smaller: DealWatch now has a mixed state. PyPI, the Official MCP Registry, and the ClawHub skill are live; the OpenHands/extensions and MCP.so submissions are filed; Claude Code, Codex, OpenCode, and the Chrome Web Store still remain repo-owned or pending rather than first-party live listings.
+The honest reading is smaller: DealWatch now has a mixed state. PyPI and the Official MCP Registry are live; OpenClaw still lacks fresh public ClawHub listing proof; OpenHands `#151` is closed and unmerged; MCP.so is filed but not publicly listed; Claude Code, Codex, OpenCode, and the Chrome Web Store still remain repo-owned or pending rather than first-party live listings.

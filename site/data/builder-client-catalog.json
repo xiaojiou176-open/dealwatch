@@ -161,14 +161,14 @@
         "get_recovery_inbox",
         "get_store_onboarding_cockpit"
       ],
-      "plugin_status": "Repo-owned OpenHands skill pack. The active host line is OpenHands/extensions PR #151, which still has maintainer-requested changes; treat PR #152 as the retired predecessor, not the current listing lane.",
+      "plugin_status": "Repo-owned OpenHands skill pack. OpenHands/extensions PR #151 is now closed, unmerged, and left with maintainer-requested changes; treat it as not-accepted host evidence, and treat PR #152 as the retired predecessor.",
       "distribution_surface_kind": "official_skill_registry",
       "official_public_surface": {
         "label": "OpenHands global skill registry",
         "url": "https://docs.openhands.dev/overview/skills/public"
       },
-      "distribution_candidate": "submission_done_platform_not_accepted_yet",
-      "listing_status": "submission_done_platform_not_accepted_yet",
+      "distribution_candidate": "closed_unmerged_host_changes_requested",
+      "listing_status": "closed_unmerged_not_accepted",
       "repo_distribution_artifacts": [
         "docs/integrations/skills/openhands-readonly-builder-skill.md",
         "docs/integrations/prompts/openhands-starter.md",
@@ -277,14 +277,14 @@
         "get_recovery_inbox",
         "get_store_onboarding_cockpit"
       ],
-      "plugin_status": "Repo-owned OpenClaw skill is live on ClawHub as dealwatch-readonly-builder. The official public surface is ClawHub, but the runtime story still stays local-first and read-only.",
+      "plugin_status": "Repo-owned OpenClaw skill packet exists, but current public ClawHub search/API does not provide fresh listing proof for dealwatch-readonly-builder. Treat ClawHub as the intended host surface, not as confirmed live listing proof.",
       "distribution_surface_kind": "clawhub_public_registry",
       "official_public_surface": {
         "label": "OpenClaw ClawHub registry",
         "url": "https://docs.openclaw.ai/tools/clawhub"
       },
-      "distribution_candidate": "clawhub_live",
-      "listing_status": "live_on_clawhub",
+      "distribution_candidate": "repo_owned_skill_candidate",
+      "listing_status": "no_fresh_public_evidence",
       "repo_distribution_artifacts": [
         "docs/integrations/prompts/openclaw-starter.md",
         "docs/integrations/skills/openclaw-readonly-builder-skill.md",

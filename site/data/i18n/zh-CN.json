@@ -68,17 +68,17 @@
       "title": "先检查跨门店 URL 候选，再决定是否创建任务或分组",
       "summary": "先把候选 URL 贴进来，让 DealWatch 规范化这个篮子，再根据决策看板判断它该继续留在复核区、变成单任务，还是升级成 compare-aware group。",
       "zipCode": "邮编",
-    "productUrls": "商品链接",
-    "productUrlsHelp": "每行填写一个 URL。Compare Preview 接受 2 到 10 个非空链接。",
-    "loading": "正在比对商品链接...",
-    "submit": "开始比价",
-    "errors": {
-      "zipRequired": "邮编不能为空。",
-      "invalidProductUrl": "每一行都必须是有效的商品 URL。",
-      "minUrls": "至少输入两个商品 URL。",
-      "maxUrls": "最多输入十个商品 URL。"
-    }
-  },
+      "productUrls": "商品链接",
+      "productUrlsHelp": "每行填写一个 URL。Compare Preview 接受 2 到 10 个非空链接。",
+      "loading": "正在比对商品链接...",
+      "submit": "开始比价",
+      "errors": {
+        "zipRequired": "邮编不能为空。",
+        "invalidProductUrl": "每一行都必须是有效的商品 URL。",
+        "minUrls": "至少输入两个商品 URL。",
+        "maxUrls": "最多输入十个商品 URL。"
+      }
+    },
     "route": {
       "eyebrow": "首个成功路径",
       "title": "第一屏要围绕一个决策，而不是六扇门同时喊你",
@@ -177,55 +177,55 @@
         "hold": "暂缓",
         "info": "信息"
       },
-    "stats": {
-      "resolved": "已解析",
-      "groupReady": "可建组",
-      "bestListed": "最佳标价",
-      "strongestPair": "最强配对",
-      "aiTitle": "AI 辅助解释",
-      "aiNote": "确定性的决策看板仍然是主轴，这张卡片只是覆盖在证据之上的解释层。",
-      "riskNotes": "{{count}} 条说明",
-      "unsupported": "不支持",
-      "fetchFailures": "抓取失败"
-    },
-    "ai": {
-      "badge": {
-        "ok": "可用",
-        "disabled": "已关闭",
-        "error": "错误",
-        "skipped": "已跳过",
-        "unavailable": "不可用"
+      "stats": {
+        "resolved": "已解析",
+        "groupReady": "可建组",
+        "bestListed": "最佳标价",
+        "strongestPair": "最强配对",
+        "aiTitle": "AI 辅助解释",
+        "aiNote": "确定性的决策看板仍然是主轴，这张卡片只是覆盖在证据之上的解释层。",
+        "riskNotes": "{{count}} 条说明",
+        "unsupported": "不支持",
+        "fetchFailures": "抓取失败"
       },
-      "headline": {
-        "ok": "AI 辅助解释",
-        "disabled": "AI 辅助已关闭",
-        "error": "AI 辅助解释出错了",
-        "skipped": "AI 辅助解释已跳过",
-        "unavailable": "AI 辅助解释不可用"
+      "ai": {
+        "badge": {
+          "ok": "可用",
+          "disabled": "已关闭",
+          "error": "错误",
+          "skipped": "已跳过",
+          "unavailable": "不可用"
+        },
+        "headline": {
+          "ok": "AI 辅助解释",
+          "disabled": "AI 辅助已关闭",
+          "error": "AI 辅助解释出错了",
+          "skipped": "AI 辅助解释已跳过",
+          "unavailable": "AI 辅助解释不可用"
+        },
+        "summary": {
+          "disabled": "当前工作区没有启用 AI 辅助。决策看板、风险摘要和配对证据仍然是主真相来源。",
+          "error": "这次 compare 没能生成 AI 辅助解释。请改看确定性的摘要和配对证据。",
+          "skipped": "这次 compare 跳过了 AI 辅助解释，但确定性的摘要和配对证据仍然能讲完整个故事。",
+          "unavailable": "AI 辅助解释当前不可用，因此这里只显示确定性摘要和证据。"
+        }
       },
-      "summary": {
-        "disabled": "当前工作区没有启用 AI 辅助。决策看板、风险摘要和配对证据仍然是主真相来源。",
-        "error": "这次 compare 没能生成 AI 辅助解释。请改看确定性的摘要和配对证据。",
-        "skipped": "这次 compare 跳过了 AI 辅助解释，但确定性的摘要和配对证据仍然能讲完整个故事。",
-        "unavailable": "AI 辅助解释当前不可用，因此这里只显示确定性摘要和证据。"
+      "recommendation": {
+        "eyebrow": "Recommendation",
+        "basisTitle": "依据",
+        "uncertaintyTitle": "不确定项",
+        "evidenceRefsTitle": "证据引用",
+        "whyAbstained": "为什么这条 recommendation 选择 abstain",
+        "verdict": {
+          "wait": "继续观察",
+          "recheck_later": "稍后再看",
+          "insufficient_evidence": "证据还不够"
+        }
       }
     },
-    "recommendation": {
-      "eyebrow": "Recommendation",
-      "basisTitle": "依据",
-      "uncertaintyTitle": "不确定项",
-      "evidenceRefsTitle": "证据引用",
-      "whyAbstained": "为什么这条 recommendation 选择 abstain",
-      "verdict": {
-        "wait": "继续观察",
-        "recheck_later": "稍后再看",
-        "insufficient_evidence": "证据还不够"
-      }
-    }
-  },
-  "saved": {
-    "labelWithTitle": "{{title}} · 邮编 {{zipCode}}",
-    "labelFallback": "Compare 证据 · 邮编 {{zipCode}}",
+    "saved": {
+      "labelWithTitle": "{{title}} · 邮编 {{zipCode}}",
+      "labelFallback": "Compare 证据 · 邮编 {{zipCode}}",
       "shareTitle": "DealWatch compare 证据包",
       "shareLabel": "标签：{{value}}",
       "shareSavedAt": "保存于：{{value}}",
@@ -341,24 +341,24 @@
       "recipientEmail": "收件邮箱",
       "enableNotifications": "为这个分组启用通知",
       "rowsEnteringBasket": "将进入篮子的候选行",
-    "listedAtStore": "{{storeKey}} · 标价 {{value}}",
-    "similarity": "相似度 {{value}}",
-    "noSuccessfulCandidates": "当前还没有成功的 compare 候选，因此 group 创建入口继续锁定。",
-    "lockedHint": "只有当至少两个成功候选通过 preview 后，compare-aware group 才会解锁，避免一个过薄的篮子假装自己已经是可靠的 compare 真相。",
-    "creating": "正在从 compare 候选创建 watch group...",
-    "createButton": "从成功候选创建 watch group",
-    "defaultTitleSuffix": "对比分组",
-    "errors": {
-      "titleTooLong": "分组标题不能超过 120 个字符。",
-      "zipRequired": "邮编不能为空。",
-      "cadenceMin": "运行频率至少要 5 分钟。",
-      "cadenceMax": "运行频率不能超过 10080 分钟。",
-      "thresholdValueMin": "阈值必须大于等于 0。",
-      "cooldownMin": "冷却时间必须大于等于 0。",
-      "cooldownMax": "冷却时间不能超过 10080 分钟。",
-      "recipientEmailRequired": "收件邮箱不能为空。"
-    }
-  },
+      "listedAtStore": "{{storeKey}} · 标价 {{value}}",
+      "similarity": "相似度 {{value}}",
+      "noSuccessfulCandidates": "当前还没有成功的 compare 候选，因此 group 创建入口继续锁定。",
+      "lockedHint": "只有当至少两个成功候选通过 preview 后，compare-aware group 才会解锁，避免一个过薄的篮子假装自己已经是可靠的 compare 真相。",
+      "creating": "正在从 compare 候选创建 watch group...",
+      "createButton": "从成功候选创建 watch group",
+      "defaultTitleSuffix": "对比分组",
+      "errors": {
+        "titleTooLong": "分组标题不能超过 120 个字符。",
+        "zipRequired": "邮编不能为空。",
+        "cadenceMin": "运行频率至少要 5 分钟。",
+        "cadenceMax": "运行频率不能超过 10080 分钟。",
+        "thresholdValueMin": "阈值必须大于等于 0。",
+        "cooldownMin": "冷却时间必须大于等于 0。",
+        "cooldownMax": "冷却时间不能超过 10080 分钟。",
+        "recipientEmailRequired": "收件邮箱不能为空。"
+      }
+    },
     "pairEvidence": {
       "title": "配对证据",
       "summary": "这些分数是逐对的证据，它们解释为什么两行看起来接近，以及为什么某一行仍然可能不该进入篮子。",
@@ -1191,27 +1191,27 @@
       "eyebrow": "比价预览",
       "brandTagline": "AI 增强产品流程里最安全的第一步。",
       "heroKicker": "服务于 AI 辅助决策的 compare 证据",
-    "heroTitle": "先确认商品目标，再创建持久状态。",
+      "heroTitle": "先确认商品目标，再创建持久状态。",
       "heroSummary": "Compare Preview 存在，是因为普通价格追踪器默认你已经知道正确的商品 URL。DealWatch 会更早一步开始：先验证候选、跨门店比较、查看确定性证据与 AI 辅助解释，再决定这行是否值得进入 watch task，还是应该继续留在 compare-aware watch group 里。",
-    "schema": {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
+      "schema": {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
         "name": "DealWatch Compare Preview | 先 Compare，再进入跟踪",
         "url": "https://xiaojiou176-open.github.io/dealwatch/compare-preview.html",
         "description": "打开一个只读样例 Compare Preview，然后按你的目标选择 Quick Start、Proof 或 Builders：分别对应本地运行栈、验证链路和只读 agent 接线。",
         "keywords": "DealWatch Compare Preview, compare-first, 只读样例, Quick Start, Proof, Builders",
-      "isPartOf": {
-        "@type": "WebSite",
-        "name": "DealWatch",
-        "url": "https://xiaojiou176-open.github.io/dealwatch/"
-      },
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "DealWatch",
+          "url": "https://xiaojiou176-open.github.io/dealwatch/"
+        },
         "about": [
           "以 compare-first 为核心的商品 URL 验证",
           "确定性 compare 证据与 AI 辅助解释",
           "只读样例 compare 体验"
         ]
       },
-    "heroPrimaryCta": "试试样例 Compare Preview",
+      "heroPrimaryCta": "试试样例 Compare Preview",
       "heroSecondaryCta": "运行本地快速开始",
       "statusReadonlyTitle": "2 个 URL 输入，0 个持久写入",
       "statusReadonlySummary": "Compare Preview 会保持只读，直到你明确决定创建任务。",
@@ -1367,8 +1367,6 @@
       "mapTableSignal": "信号",
       "mapTableWhere": "现在该看哪里",
       "mapTableWhy": "为什么它适合放在公共表面",
-      "evidenceMapTitle": "证据地图",
-      "evidenceMapSummary": "把这里理解成图例，不是排行榜。它告诉你每条 public claim 现在该指向哪里找新鲜证据，而不是把一堆会过期的数字硬编码在页面里。",
       "evidenceMapTableSignal": "信号",
       "evidenceMapTableWhere": "现在该看哪里",
       "evidenceMapTableWhy": "为什么它适合放在公共表面",
@@ -1606,7 +1604,7 @@
       "heroPackCta": "打开 builder pack",
       "heroSecondaryCta": "打开客户端目录",
       "heroContractCta": "先读 phase-1 合同",
-      "heroNote": "先走 human path：builder pack、contract、runtime。如果你还需要先看产品故事或证据链，就先回到 Compare Preview 和 Proof。Claude/Codex 的 native bundle candidate 和 listing-prep inputs 都要等这条路线看清以后再看，而且它们也不代表已经有 official listing。",
+      "heroNote": "先走 human path：builder pack、contract、再到 runtime。如果你还没看明白产品故事或证据面，先回 Compare Preview 和 Proof。Claude/Codex 的 native bundle candidate 与 listing-prep 输入，应该在路线讲清后再用。当前公开证据是混合态：PyPI 和官方 MCP Registry 已 live，而 OpenClaw 还缺 fresh 的公开 ClawHub listing 证据，OpenHands 已关闭且未合并，MCP.so 仍在等待 host acceptance。",
       "jumpSummary": "这两条路径最后都停在同一条 read-only、local-first 边界上。没有 hosted control plane、没有 published listing，也没有 write-side MCP 承诺。",
       "mirrorStartersLink": "静态 client starters JSON",
       "mirrorPackLink": "静态 starter pack JSON",
@@ -1669,7 +1667,7 @@
       "distributionPluginCta": "打开 builder pack 文档",
       "distributionSkillCta": "打开 builder skill pack",
       "distributionMarketplaceTitle": "Native bundle candidates",
-      "distributionMarketplaceSummary": "Claude Code 和 Codex 现在也有了共享 builder pack 里的 repo-owned native bundle artifact。OpenHands 已经有 OpenHands/extensions 提交回执，OpenCode 仍然是 ecosystem-listing candidate，而 OpenClaw 现在已经有 live 的 ClawHub skill。",
+      "distributionMarketplaceSummary": "Claude Code 和 Codex 现在已有共享 builder pack 里的 repo-owned native bundle artifact。OpenHands #151 已关闭且未合并，#152 是 retired predecessor，OpenCode 仍是 ecosystem-listing candidate，而 OpenClaw 目前还缺 fresh 的公开 ClawHub listing 证据。",
       "distributionSocialCta": "打开共享 bundle",
       "distributionProofCta": "打开 distribution matrix",
       "distributionCatalogCta": "打开 client catalog",
@@ -1698,7 +1696,7 @@
       "boundaryTitle": "边界提醒",
       "boundarySummary": "好的 builder 前门不只告诉你下一步去哪，也要告诉你现在还不能脑补成什么，否则页面很容易长成 plugin theater。",
       "boundaryPluginTitle": "有 bundle candidate，但还不是 official listing",
-      "boundaryPluginSummary": "DealWatch 现在已经给所有 client 准备好了 repo-owned builder-pack 材料，也给 Claude Code 和 Codex 准备好了 native bundle candidate，并给更大生态准备了 listing-prep inputs。但这仍然不代表任何 official marketplace 或 registry listing 已经存在。",
+      "boundaryPluginSummary": "DealWatch 现在已经给所有 client 准备好了 repo-owned builder-pack 材料，也给 Claude Code 和 Codex 准备好了 native bundle candidate，并给更大生态准备了 listing-prep 输入。当前已经 live 的公开证据只有 PyPI 和官方 MCP Registry；OpenClaw 还缺 fresh 的公开 ClawHub listing 证据，OpenHands 已关闭且未合并，MCP.so 也还没有公开接受，而 Chrome companion 仍未发布。",
       "boundaryHostedTitle": "不是 hosted control plane",
       "boundaryHostedSummary": "这些 builder 路径都是 local-first 的，不代表 hosted remote control plane 已经 live。",
       "boundaryWriteTitle": "没有 write-side MCP 承诺",

@@ -194,7 +194,8 @@ def test_mcp_client_starters_include_openclaw_without_plugin_claim() -> None:
     assert starters["openclaw"]["config_wrapper_status"] == "official_wrapper_documented"
     assert "ClawHub" in starters["openclaw"]["plugin_status"]
     assert starters["openclaw"]["distribution_surface_kind"] == "clawhub_public_registry"
-    assert starters["openclaw"]["listing_status"] == "live_on_clawhub"
+    assert starters["openclaw"]["listing_status"] == "no_fresh_public_evidence"
+    assert "fresh listing proof" in starters["openclaw"]["plugin_status"]
 
 
 def test_mcp_client_starters_keep_platform_specific_distribution_wording() -> None:
@@ -214,9 +215,9 @@ def test_mcp_client_starters_keep_platform_specific_distribution_wording() -> No
     assert "ClawHub" in starters["openclaw"]["plugin_status"]
     assert starters["claude-code"]["listing_status"] == "not_officially_listed"
     assert starters["codex"]["listing_status"] == "not_officially_listed"
-    assert starters["openhands"]["listing_status"] == "submission_done_platform_not_accepted_yet"
+    assert starters["openhands"]["listing_status"] == "closed_unmerged_not_accepted"
     assert starters["opencode"]["listing_status"] == "not_officially_listed"
-    assert starters["openclaw"]["listing_status"] == "live_on_clawhub"
+    assert starters["openclaw"]["listing_status"] == "no_fresh_public_evidence"
 
 
 def test_mcp_client_starters_include_recipe_paths_and_wrapper_status() -> None:
