@@ -23,10 +23,7 @@ Use this document when the question is:
 
 The repository already has:
 
-- a delivery blueprint in [`docs/roadmaps/dealwatch-master-delivery-plan.md`](./dealwatch-master-delivery-plan.md)
-- a repo-side closeout ledger in [`docs/roadmaps/dealwatch-repo-side-closeout.md`](./dealwatch-repo-side-closeout.md)
-- a live-truth ledger in [`docs/roadmaps/dealwatch-live-truth-closeout.md`](./dealwatch-live-truth-closeout.md)
-- a recommendation gate in [`docs/roadmaps/dealwatch-recommendation-readiness-gate.md`](./dealwatch-recommendation-readiness-gate.md)
+- separate maintainer closeout ledgers for repo-side and live/public truth
 
 What was still missing was a single document that says:
 

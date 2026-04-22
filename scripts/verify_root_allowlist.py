@@ -78,6 +78,7 @@ LOCAL_ONLY_PREFIXES = {
     ".agent",
     ".codex",
     ".claude",
+    ".cursor",
     ".serena",
     ".runtime-cache",
     ".legacy-runtime",

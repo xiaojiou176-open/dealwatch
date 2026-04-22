@@ -333,11 +333,6 @@ def _build_store_truth_sources(
     ]
     if adapter_file_path is not None:
         sources.append(_project_relative_path(adapter_file_path))
-    roadmap_path = PROJECT_ROOT / "docs" / "roadmaps" / f"dealwatch-{store_key}-c1.md"
-    if roadmap_path.is_file():
-        sources.append(_project_relative_path(roadmap_path))
-    elif store_key == "walmart":
-        sources.append("docs/roadmaps/dealwatch-next-store-decision-packet.md")
     sources.extend(contract_test_paths)
     return list(dict.fromkeys(sources))
 

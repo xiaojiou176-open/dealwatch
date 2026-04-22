@@ -550,14 +550,10 @@ If you want repo-native builder examples instead of only command references, con
   Compare Preview, watch task creation, task detail, and notification settings still point to one product story instead of four separate screenshots.
 - **Runtime and release truth have authority surfaces**
   Runtime truth stays in the runtime contract, public proof stays on the proof page, and release truth stays in the GitHub Releases surface instead of being hand-copied into every public page.
-- **Repo-side closeout stays separate from live deployment truth**
-  [`docs/roadmaps/dealwatch-repo-side-closeout.md`](./docs/roadmaps/dealwatch-repo-side-closeout.md) records what the current working tree proves today. It should not be read as proof that Render or any live environment is already re-verified end to end.
-- **Dated hard-cut overlay stays separate from current closeout ledgers**
-  [`docs/roadmaps/dealwatch-closeout-overlay-2026-04-06.md`](./docs/roadmaps/dealwatch-closeout-overlay-2026-04-06.md) is the dated hard-cut audit record. Keep using the repo-side and live-truth ledgers for current truth, and only open the dated overlay when you need the original April 6 snapshot.
 - **Post-archive strategy has its own contract**
   [`docs/roadmaps/dealwatch-decision-memo.md`](./docs/roadmaps/dealwatch-decision-memo.md) records the locked strategic boundaries after the archive deep-read, including local-first posture, read-only MCP boundary, systematic i18n requirement, and recommendation defer order.
-- **Live truth has its own closeout ledger**
-  [`docs/roadmaps/dealwatch-live-truth-closeout.md`](./docs/roadmaps/dealwatch-live-truth-closeout.md) records what the currently reachable public and deployment surfaces prove today, including any remaining external blockers.
+- **Maintainer closeout ledgers stay behind the public first-success path**
+  Repo-side convergence notes, dated hard-cut overlays, and live deployment ledgers still exist for maintainers, but they are no longer part of the public front-door reading route. Use the proof page, Compare Preview, and releases first; pull the deeper closeout ledgers only when you are actively auditing repo state.
 
 Deep proof lives in:
 

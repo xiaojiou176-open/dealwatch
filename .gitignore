@@ -34,6 +34,7 @@ __pycache__/
 .agent/
 .codex/
 .claude/
+.cursor/
 # Local MCP / tool state that does not belong to DealWatch runtime governance.
 .serena/
 .agents/local-artifacts/smoke/

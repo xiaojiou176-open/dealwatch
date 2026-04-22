@@ -191,10 +191,8 @@ The practical rule is:
 
 The repository now groups Dependabot updates by ecosystem so the queue stays reviewable instead of exploding into many unrelated PRs at once.
 
-Use this runbook when you need the full policy and triage order:
+Use the public docs below when you need the stable contribution-facing contract:
 
-- [`docs/runbooks/dependency-maintenance-wave.md`](./docs/runbooks/dependency-maintenance-wave.md)
-- [`docs/runbooks/runtime-hygiene.md`](./docs/runbooks/runtime-hygiene.md)
 - [`docs/runbooks/store-onboarding-contract.md`](./docs/runbooks/store-onboarding-contract.md)
 
 ## Secret Hygiene

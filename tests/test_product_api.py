@@ -565,7 +565,6 @@ def test_product_api_store_onboarding_cockpit_endpoint(tmp_path, monkeypatch) ->
     assert walmart["next_step_codes"] == []
     assert walmart["missing_capabilities"] == []
     assert "tests/test_walmart_adapter.py" in walmart["contract_test_paths"]
-    assert "docs/roadmaps/dealwatch-next-store-decision-packet.md" in walmart["source_of_truth_files"]
     assert payload["onboarding_contract"]["source_runbook_path"] == "docs/runbooks/store-onboarding-contract.md"
     assert payload["capability_matrix"][1]["support_tier"] == "official_full"
     assert payload["onboarding_contract"]["runtime_binding_truth"] != []

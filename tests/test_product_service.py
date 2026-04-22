@@ -2592,7 +2592,6 @@ async def test_product_service_store_onboarding_cockpit_reports_real_store_truth
     assert "tests/test_safeway_adapter.py" in safeway["contract_test_paths"]
     assert "tests/test_product_service.py" in safeway["contract_test_paths"]
     assert "tests/test_product_api.py" in safeway["contract_test_paths"]
-    assert "docs/roadmaps/dealwatch-safeway-c1.md" in safeway["source_of_truth_files"]
     walmart = next(item for item in payload["capability_matrix"] if item["store_key"] == "walmart")
     assert walmart["support_channel"] == "official"
     assert walmart["support_tier"] == "official_full"
@@ -2602,7 +2601,6 @@ async def test_product_service_store_onboarding_cockpit_reports_real_store_truth
     assert walmart["next_step_codes"] == []
     assert walmart["missing_capabilities"] == []
     assert "tests/test_walmart_adapter.py" in walmart["contract_test_paths"]
-    assert "docs/roadmaps/dealwatch-next-store-decision-packet.md" in walmart["source_of_truth_files"]
     assert payload["limited_support_lane"]["support_channel"] == "limited"
     assert payload["limited_support_lane"]["support_tier"] == "limited_guidance_only"
     assert "save_compare_evidence" in payload["limited_support_lane"]["supported_actions"]
