@@ -149,7 +149,7 @@ pyrdfa3==3.6.5
     # via extruct
 python-dotenv==1.2.2
     # via pydantic-settings
-python-multipart==0.0.26
+python-multipart==0.0.27
     # via
     #   dealwatch
     #   mcp
