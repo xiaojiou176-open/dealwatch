@@ -227,7 +227,7 @@ tzdata==2024.2
     #   tzlocal
 tzlocal==5.3.1
     # via apscheduler
-urllib3==2.6.3
+urllib3==2.7.0
     # via requests
 uvicorn==0.37.0
     # via
